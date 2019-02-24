@@ -1,21 +1,138 @@
-# Introduction {#intro}
+# Przygotowanie danych {#roz1}
 
-You can label chapter and section titles using `{#label}` after them, e.g., we can reference Chapter \@ref(intro). If you do not manually label them, there will be automatic labels anyway, e.g., Chapter \@ref(methods).
+## Import danych {#podroz11}
 
-Figures and tables with captions will be placed in `figure` and `table` environments, respectively.
+Środowisko **R** pozwala na import i export plików o różnych rozszerzeniach (`txt, csv, xls, xlsx, sav, xpt, dta`, itd.)^[póki co nie jest mi znana funkcja pozwalająca na import plików programu Statistica]. W tym celu czasami trzeba zainstalować pakiety rozszerzające podstawowe możliwości R-a. Najnowsza^[na dzień 19.02.2019] wersja programu [RStudio](https://www.rstudio.com) (v. 1.1.463)^[istnieją rownież nowsze wersje deweloperskie]  pozwala na wczytanie danych z popularnych źródeł za pomocą GUI.
 
-```{r nice-fig, fig.cap='Here is a nice figure!', out.width='80%', fig.asp=.75, fig.align='center'}
-par(mar = c(4, 4, .1, .1))
-plot(pressure, type = 'b', pch = 19)
+```{r import1, echo=FALSE, fig.cap="Narzędzie do importu plików programu RStudio"}
+include_graphics("images/import.JPG", dpi = 70)
 ```
 
-Reference a figure by its code chunk label with the `fig:` prefix, e.g., see Figure \@ref(fig:nice-fig). Similarly, you can reference tables generated from `knitr::kable()`, e.g., see Table \@ref(tab:nice-tab).
+Jeśli dane są zapisane w trybie tekstowym (np. `txt`, `csv`), to wczytujemy je w następujący sposób
 
-```{r nice-tab, tidy=FALSE}
-knitr::kable(
-  head(iris, 20), caption = 'Here is a nice table!',
-  booktabs = TRUE
-)
+```{r import2}
+dane1 <- read.table("data/dane1.txt", header = T)
+head(dane1)
+dane2 <- read.csv2("data/dane1.csv", header = T)
+head(dane2)
+# funkcja pakietu readr wczytuje plik jako ramkę danych w formacie tibble
+# pakiet readr jest częsią większego pakietu tidyverse, 
+# który został wczytany wczsniej
+dane3 <- read_csv2("data/dane1.csv")
+dane3
 ```
 
-You can write citations, too. For example, we are using the **bookdown** package [@R-bookdown] in this sample book, which was built on top of R Markdown and **knitr** [@xie2015].
+Jeśli dane są przechowywane w pliku Excel (np. `xlsx`), to importujemy je za pomocą funkcji `read_excel` pakietu `readxl`. Domyślnie jest wczytywany arkusz pierwszy ale jeśli zachodzi taka potrzeba, to można ustalić, który arkusz pliku Excel ma być wczytany za pomocą paramteru `sheet`, np. `sheet=3`, co oznacza, że zostanie wczytany trzeci arkusz pliku.
+
+```{r excel, echo=FALSE, fig.cap="Fragment pliku Excel"}
+include_graphics("images/excel.jpg")
+```
+
+Ponieważ w pliku `dane1.xlsx` braki danych zostały zakodowane znakami `BD` oraz `-`, to należy ten fakt przekazać funkcji, aby poprawnie wczytać braki danych. W przeciwnym przypadku zmienne zawierające braki tak kodowane, będą wczytane jako zmienne znakowe.
+
+```{r read_excel}
+library(readxl)
+dane4 <- read_excel("data/dane1.xlsx", na = c("BD", "-"))
+dane4
+```
+
+Istniej oczywiście jeszcze wiele innych fomatów danych, charakterystycznych dla programów, w których są traktowane jako domyślne.^[do ich wczytywania stosujemy funkcje pakietu `foreign`] W szczególny sposób należy zwrócić uwagę na pliki o rozszerzeniu `RData` lub `rda`^[oznaczają to samo] oraz pliki `rds`. Pliki `rda` służą do przechowywania obiektów programu `R`. Mogą to być pliki danych ale również obiekty graficzne (typu wyniki funkcji `ggplot`), modele (np. wynik funkcji `lm()`), zdefiniowane funkcje i wszystkie inne obiekty, które da się zapisać w środowisku `R`. Ponadto pliki `rda` pozawalają na zapisanie wilu obiektów w jednym pliku. Pliki o rozszerzeniu `rds` mają podobną funkcję z tym, że pozwalają na przechowywanie tylko jednego obiektu.
+
+```{r RData}
+# wszystkie wczytane wcześniej pliki zapisuje w jednym pliku
+save(dane1, dane2, dane3, dane4, file = "data/dane.rda")
+# plik rda został zapisany
+list.files(path = "data/")
+# usuwam dane ze środowiska R
+rm(dane1, dane2, dane3, dane4)
+# sprawdzam co jest wczytane do R
+ls()
+# wczytuję plik rda
+load("data/dane.rda")
+# jeszcze raz sprawdzam co jest wczytane do R
+ls()
+```
+
+Zapisując obiekty jako oddzielne pliki, można przy wczytywaniu nadawać im nazwy.
+
+```{r rds}
+rm(dane1, dane2, dane3)
+ls()
+saveRDS(dane4, file = "data/dane4.rds")
+nowe_dane <- readRDS("data/dane4.rds")
+nowe_dane
+```
+
+Oprócz wielu zalet takiego sposobu importu i eksportu danych jest jedna poważna wada, pliki te można odczytać jedynie za pomocą `R`. Osobiście polecam stosować do importu i eksportu danych plików w takich formatach, które mogą przeczytać wszyscy. Jak dotąd widać do importu różnych formatów danych potrzebujemy różnych funkcji, czasami nawet z różnych pakietów. Istnieje rozwiązanie tego poroblemu `r emo::ji("happy")`
+
+```{r rio_import}
+library(rio)
+dane1 <- import("data/dane1.txt")
+head(dane1)
+dane2 <- import("data/dane1.csv", dec = ",")
+# dane1.csv miały , jako znak rozdzielający cechę i mantysę liczb
+# dlatego włączamy parametr dec
+head(dane2)
+dane3 <- import("data/dane1.xlsx", na=c("BD","-"))
+head(dane3)
+dane4 <- import("data/dane4.rds")
+dane4
+```
+
+
+Lista możliwości jaką daje nam pakiet `rio` [@R-rio] jest niemal nieograniczona:^[fragment pliku `help` funkcji `import`]
+
+- Comma-separated data (.csv), using fread or, if fread = FALSE, read.table with row.names = FALSE and stringsAsFactors = FALSE
+- Pipe-separated data (.psv), using fread or, if fread = FALSE, read.table with sep = '|', row.names = FALSE and stringsAsFactors = FALSE
+- Tab-separated data (.tsv), using fread or, if fread = FALSE, read.table with row.names = FALSE and stringsAsFactors = FALSE
+- SAS (.sas7bdat), using read_sas.
+- SAS XPORT (.xpt), using read_xpt or, if haven = FALSE, read.xport.
+- SPSS (.sav), using read_sav. If haven = FALSE, read.spss can be used.
+- Stata (.dta), using read_dta. If haven = FALSE, read.dta can be used.
+- SAS XPORT (.xpt), using read.xport.
+- SPSS Portable Files (.por), using read_por.
+- Excel (.xls and .xlsx), using read_excel. Use which to specify a sheet number. For .xlsx files, it is possible to set readxl = FALSE, so that read.xlsx can be used instead of readxl (the default).
+- R syntax object (.R), using dget
+- Saved R objects (.RData,.rda), using load for single-object .Rdata files. Use which to specify an object name for multi-object .Rdata files. This can be any R object (not just a data frame).
+- Serialized R objects (.rds), using readRDS. This can be any R object (not just a data frame).
+- Epiinfo (.rec), using read.epiinfo
+- Minitab (.mtp), using read.mtp
+- Systat (.syd), using read.systat
+- "XBASE" database files (.dbf), using read.dbf
+- Weka Attribute-Relation File Format (.arff), using read.arff
+- Data Interchange Format (.dif), using read.DIF
+- Fortran data (no recognized extension), using read.fortran
+- Fixed-width format data (.fwf), using a faster version of read.fwf that requires a widths argument and by default in rio has stringsAsFactors = FALSE. If readr = TRUE, import will be performed using read_fwf, where widths should be: NULL, a vector of column widths, or the output of fwf_empty, fwf_widths, or fwf_positions.
+- gzip comma-separated data (.csv.gz), using read.table with row.names = FALSE and stringsAsFactors = FALSE
+- CSVY (CSV with a YAML metadata header) using read_csvy.
+- Feather R/Python interchange format (.feather), using read_feather
+- Fast storage (.fst), using read.fst
+- JSON (.json), using fromJSON
+- Matlab (.mat), using read.mat
+- EViews (.wf1), using readEViews
+- OpenDocument Spreadsheet (.ods), using read_ods. Use which to specify a sheet number.
+- Single-table HTML documents (.html), using read_html. The data structure will only be read correctly if the HTML file can be converted to a list via as_list.
+- Shallow XML documents (.xml), using read_xml. The data structure will only be read correctly if the XML file can be converted to a list via as_list.
+- YAML (.yml), using yaml.load
+- Clipboard import (on Windows and Mac OS), using read.table with row.names = FALSE
+- Google Sheets, as Comma-separated data (.csv)
+
+### Przykład 
+
+Poniższa ilustracja przedstawia fragment pliku danych `Analysis.txt` zawierającego pewne błędy, które należy naprawić na etapie importu danych. Po pierwsze brakuje w nim nazw zmiennych^[choć nie widać tego na rysunku]. Poszczególne kolumny nazywają się następująco: `season`, `size`, `speed`, `mxPH`, `mnO2`, `Cl`, `NO3`, `NH4`, `oPO4`, `PO4`, `Chla`, `a1`, `a2`, `a3`, `a4`, `a5`, `a6`, `a7`. Naszym zadaniem jest import tego pliku z jednoczesną obsługą braków^[braki danych są zakodowane przez XXXXXXX] oraz nadaniem nagłówków kolumn. Plik `Analisis.txt` jest umieszczony w kagalogu `data/`. Z racji, że plik dotyczy glonów, to dane zapiszemy pod nazwą `algae`.
+
+```{r foto, fig.fullwidth = TRUE, echo=FALSE}
+include_graphics("images/analalysi_foto.png", dpi = 100)
+```
+
+```{r import3}
+algae <- import('data/Analysis.txt', header=F, 
+                dec='.', 
+                col.names=c('season','size','speed','mxPH','mnO2','Cl',
+                            'NO3','NH4','oPO4','PO4','Chla','a1','a2',
+                            'a3','a4','a5','a6','a7'),
+                na.strings=c('XXXXXXX'))
+head(algae)
+summary(algae)
+export(algae, file = "data/algae.csv")
+```

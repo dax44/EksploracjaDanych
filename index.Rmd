@@ -8,35 +8,80 @@ bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
 description: "Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych."
+output: 
+  html_document: 
+    df_print: kable
+    highlight: espresso
+    theme: journal
+    toc: yes
 ---
 
-# Wstęp
+# Wstęp {-}
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
-knitr::write_bib(c(
-  .packages(), 'bookdown', 'rmarkdown'
-), 'packages.bib')
+# knitr::write_bib(c(
+#   .packages(), 'bookdown', 'rmarkdown'
+# ), 'packages.bib')
 ```
 
 ```{r setup, include=FALSE}
-library(tufte)
 # invalidate cache when the tufte version changes
 knitr::opts_chunk$set(echo=T, message = F, warning = F)
 library(tidyverse)
 library(knitr)
 ```
 
-## O książce
+## O książce {-}
 
-Niniejsza książka powstała na bazie doświadczeń autora, a głównym jej celem jest przybliżenie czytelnikowi podstaw z dziedziny *Data mining* studentom kierunku *Matematyka* Politechniki Lubelskiej. Będzie łączyć w sobie zarówno treści teoretyczne związane z przedstawianymi etapami eksploracji danych i budową modeli, jak i praktyczne wskazówki dotczące budowy modeli w środowisku R [@R-base]. Podane zostaną również wskazówki, jak raportować wyniki analiz i jak dokonać właściwych ilustracji wyników.
+Niniejsza książka powstała na bazie doświadczeń autora, a głównym jej celem jest przybliżenie czytelnikowi podstaw z dziedziny *Data mining* studentom kierunku *Matematyka* Politechniki Lubelskiej. Będzie łączyć w sobie zarówno treści teoretyczne związane z przedstawianymi etapami eksploracji danych i budową modeli, jak i praktyczne wskazówki dotczące budowy modeli w środowisku **R** [@R-base]. Podane zostaną również wskazówki, jak raportować wyniki analiz i jak dokonać właściwych ilustracji wyników. Bardzo użyteczny w napisaniu książki były pakiety programu R: **bookdown** [@R-bookdown], **knitr** [@R-knitr] oraz pakiet **rmarkdown** [@R-rmarkdown].
 
-## Zakres przedmiotu
+## Zakres przedmiotu {-}
 
 Przedmiot *Eksploracja danych* będzie obejmował swoim zakresem eksplorację i wizualizację danych oraz uczenie maszynowe. Eksploracja danych ma na celu pozyskiwanie i systematyzację wiedzy pochodzącej z danych. Odbywa się ona głównie przy użyciu technik statystycznych, rachunku prawdopodobieństwa i metod z zakresu baz danych. Natomiast uczenie maszynowe, to gałąź nauki (obejmuje nie tylko statystykę, choć to na niej się głównie opiera) dotyczącej budowy modeli zdolnych do rozpoznawania wzorców, przewidywania wartości i klasyfikacji obiektów. Data mining to szybko rosnaca grupa metod analizy danych rozwijana nie tylko przez statystyków ale również przez biologów, genetyków, cybernetyków, informatyków, ekonomistów, osoby pracujace nad rozpoznawaniem obrazów i wiele innych grup zawodowych. W dzisiejszych czasch trudno sobie wyobrazić życie bez sztucznej inteligencji. Towarzyszy ona nam w codziennym, życiu kiedy korzystamy z telefonów komórkowych, wyszukiwarek internetowych, robotów sprzątających, automatycznych samochodów, nawigacji czy gier komputerowych. Lista ta jest niepełna i stale się wydłuża `r emo::ji("smile")`.
 
 
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <blockquote class="twitter-video">
   <p> href="https://twitter.com/i/status/1091069356367200256">January 31, 2019</p>
 </blockquote>
+
+## Zakres technik stosowanych w data mining {-}
+
+- statystyka opisowa
+- wielowymiarowa analiza danych
+- analiza szeregów czasowych
+- analiza danych przestrzennych
+- reguły asocjacji
+- uczenie maszynowe^[ang. *machine learning*], w tym:
+    - klasyfikacja
+    - predykcja
+    - analiza skupień
+    - *text mining*
+- i wiele innych `r emo::ji("upward")`
+
+```{r cluster1, echo=FALSE, fig.cap="Przykład nienadzorowanego uczenia maszynowego.\\\  *Źródło:*https://analyticstraining.com/cluster-analysis-for-business/"}
+knitr::include_graphics("images/cluster1.jpg")
+```
+
+<blockquote class="twitter-video">
+  <p> href="https://twitter.com/i/status/1097199751072690176">Ferbruary 17, 2019</p>
+</blockquote>
+
+## Etapy eksploracji danych {-}
+
+```{r echo=FALSE, fig.cap="Etapy eksploracji danych [@KAVAKIOTIS2017]"}
+include_graphics("images/dm_stages.jpg")
+```
+
+
+1. Czyszczenie danych - polega na usuwaniu braków danych, usuwaniu stałych zmiennych, imputacji braków danych oraz przygotowaniu danych do dalszych analiz.
+2. Integracja danych - łączenie danych pochodzących z różnych źródeł.
+3. Selekcja danych - wybór z bazy tych danych, które są potrzebne do dalszych analiz.
+4. Transformacja danych - przekształcenie i konsolidacja danych do postaci przydatnej do eksploracji.
+5. Eksploracja danych - zastosowanie technik wymienionych wcześniej w celu odnalezienia wzorców^[ang. *patterns*] i zależności.
+6. Ewaluacja modeli - ocena poprawności modeli oraz wzorców z nich uzyskanych.
+7. Wizualizacja wyników - graficzne przedstawienie odkrytych wzorców.
+8. Wdrażanie modeli - zastosowanie wyznaczonych wzorców.
+
+

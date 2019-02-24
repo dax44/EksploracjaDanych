@@ -1,1 +1,56 @@
+%\usepackage[cp1250]{inputenc}
+\usepackage[MeX]{polski}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{caption}
+\usepackage{tikzsymbols}
+\usepackage{textcomp}
+\usepackage{parskip}
+\usepackage{wrapfig}
 \usepackage{booktabs}
+\usepackage{lscape}
+\usepackage{tabu}
+\usepackage{bm}
+\usepackage{booktabs}
+
+\newcommand{\zb}[1]{\buildrel #1 \over \longrightarrow}
+\renewcommand{\P}{\mathrm{P}}
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cor}{\operatorname{Cor}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\row}[1]{\buildrel \text{#1} \over =}
+\newcommand{\pp}{\text{p.p.}}
+\newcommand{\wtt}{wtedy i tylko wtedy, gdy }
+\renewcommand{\arraystretch}{1.4}
+
+\newcommand{\btwocol}{\begin{multicols}{2}}
+\newcommand{\etwocol}{\end{multicols}}
+
+%definicje twierdzeń
+\theoremstyle{plain}
+\newtheorem{tw}{Twierdzenie}[section]
+\newtheorem{lm}[tw]{Lemat}
+\newtheorem{uw}[tw]{Uwaga}
+\newtheorem{wn}[tw]{Wniosek}
+
+\theoremstyle{definition}
+\newtheorem{df}[tw]{Definicja}
+\newtheorem{prz}[tw]{Przykład}
+\let\proof\uuundefined
+\let\endproof\uuundefined
+\newenvironment{proof}[1][Dowód]{\textbf{#1} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{makeidx}
+\makeindex
+
+
