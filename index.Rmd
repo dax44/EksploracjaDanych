@@ -11,7 +11,8 @@ description: "Książka stanowi materiał źródłowy do przeprowadzenia przedmi
 output: 
   html_document: 
     df_print: kable
-    highlight: espresso
+    fig_caption: yes
+    highlight: kate
     theme: journal
     toc: yes
 ---
@@ -27,7 +28,7 @@ output:
 
 ```{r setup, include=FALSE}
 # invalidate cache when the tufte version changes
-knitr::opts_chunk$set(echo=T, message = F, warning = F)
+knitr::opts_chunk$set(echo=T, message = F, warning = F, fig.width = 11, fig.height = 8)
 library(tidyverse)
 library(knitr)
 ```

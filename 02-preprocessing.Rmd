@@ -1,0 +1,302 @@
+# Przygotowanie danych
+
+## Korekta zbioru danych
+
+Dane, które importujemy z zewnętrznego źródła najczęściej nie spełniają formatów obowiązujących w **R**. Często zmienne zawierają niedopuszczalne znaki szczególne, odstępy w nazwach, powtórzone nazwy kolumn, nazwy zmiennych zaczynające się od liczby, czy puste wiersze lub kolumny. Przed przystąpieniem do analizy zbioru należy rozważyć ewentualne poprawki nazw zmiennych, czy usunięcie pustych kolumn i wierszy. Niektórych czynności można dokonać już na etapie importu danych, stosując pewne pakiety oraz nowe funkcjonalności środowiska **RStudio**. W większości przypadków uchroni nas to od żmudnego przekształcania typów zmiennych. Oczywiście wszystkie te czynności czyszczenia danych można również dokonać już po imporcie danych, za pomocą odpowiednich komend **R**.
+
+```{r test_df}
+## przykładowe niepożądane nazwy zmiennych
+test_df <- as.data.frame(matrix(rnorm(18),ncol = 6))
+names(test_df) <- c("hIgHlo", "REPEAT VALUE", "REPEAT VALUE",
+                    "% successful (2009)",  "abc@!*", "")
+test_df
+	
+## do poprawy nazw zmiennych użyjemy funkcji make.names
+names(test_df) <- make.names(names(test_df))
+test_df
+```
+
+Efekt końcowy choć skuteczny to nie jest zadowalający. Czyszczenia nazw zmiennych można też dokonać stosując funkcję `clean_names` pakietu **janitor** [@R-janitor]. Pozwala on również na usuwanie pustych wierszy i kolumn, znajdowanie zduplikowanych rekordów, itp.
+
+```{r clean_names}
+library(janitor)
+test_df %>% # aby na stałe zmienić nazwy zmiennych trzeba podstawienia
+    clean_names()
+```
+
+```{r empty_rows}
+# przykładowe dane
+x <- data.frame(w1=c(1,4,2,NA),w2=c(NA,2,3,NA), w3=c(1,NA,1,NA))
+x
+x %>% remove_empty("rows")
+```
+
+### Identyfikacja braków danych
+
+Zanim usuniemy jakiekolwiek braki w zbiorze, powinniśmy je najpierw zidentyfikować, określić ich charakter, a dopiero potem ewentualnie podjąć decyzję o uzupełnianiu braków. 
+
+```{r identification}
+algae <- rio::import("data/algae.csv")
+
+# najprościej jest wywołać summary
+summary(algae)
+
+## wyświetl niekompletne wiersze
+algae[!complete.cases(algae),] %>% head()
+	
+## policz niekompletne wiersze
+nrow(algae[!complete.cases(algae),])
+
+## sprawdzenie liczby braków w wierszach
+apply(algae, 1, function(x) sum(is.na(x)))
+```
+
+Wiele ciekawych funkcji do eksploracji danych znajduje się w pakiecie **DMwR** [@R-DMwR], który został przygotowany przy okacji publikacji książki *Data Mining with R*. 
+
+```{r counting}
+## poszukiwanie wierszy zawierających wiele braków
+## w tym przypadku próg wyświetlania ustawiony jest na 0.2
+## czyli 20% wszystkich kolumn
+library(DMwR)
+manyNAs(algae)
+
+## tworzenie zbioru pozbawionego wierszy zawierających wiele braków
+algae2 <- algae[-manyNAs(algae), ]
+
+## sprawdzamy liczbę wybrakowanych wierszy które pozostały
+nrow(algae2[!complete.cases(algae2),])
+```
+```{r cleaning}
+## usuwamy wszystkie wiersze z brakami
+algae3 <- na.omit(algae)
+	
+## wyświetl wiersze z brakami
+algae3[!complete.cases(algae3),] %>% head()
+	
+## liczba pozostałych wybrakowanych wierszy
+nrow(algae3[!complete.cases(algae3),])
+	
+## można oczywiście też ręcznie usuwać wiersze (nie polecam)
+algae4 <- algae[-c(62,199),]
+```
+
+Można też zbudować funkcję, która będzie usuwała braki danych wg naszego upodobania.
+
+```{r cleaning2}
+## najpierw budujemy funkcję i ją kompilujemy aby R mógł ja stosować
+## parametr prog ustala próg odcięcia wierszy
+czysc.dane <- function(dt, prog = 0){
+	licz.braki <- apply(dt, 1, function(x) sum(is.na(x)))
+	czyste.dt <- dt[!(licz.braki/ncol(dt)>prog), ]
+	return(czyste.dt)
+}
+	
+## potem ją możemy stosować
+algae4 <- czysc.dane(algae)
+nrow(algae4[!complete.cases(algae4),])
+	
+## czyścimy wiersze, których liczba braków przekracza 20% wszystkich kolumn
+algae5 <- czysc.dane(algae, prog = 0.2)
+nrow(algae5[!complete.cases(algae5),])
+```
+
+Bardzo ciekawym narzędziem do znajdowania braków danych jest funkcja `md.pattern` pakietu **mice** [@R-mice]. Wskazuje on ile braków występuje w ramach każdej zmiennej.
+
+```{r mice1, fig.cap="Na czerwono zaznaczone są zmienne, które zwierają braki danych. Liczba w wierszu po lewej stronie wykresu wskazuje ile wierszy w bazie ma daną charakterystykę, a liczba po prawej oznacza ile zmiennych było *wybrakowanych*", fig.width=11, fig.height=8}
+library(mice)
+md.pattern(algae)
+```
+
+### Zastępowanie braków danych
+
+Zastępowanie braków danych (zwane także *imputacją danych*) jest kolejnym etapem procesu przygotowania danych do analiz. Nie można jednak wyróżnić uniwersalnego sposobu zastępowania braków dla wszystkich możliwych sytuacji. Wśród statystków panuje przekonanie, że w przypadku wystąpienia braków danych można zastosować trzy strategie:
+
+- nic nie robić z brakami - co wydaje się  niedorzeczne ale wcale takie nie jest, ponieważ istnieje wiele modeli statystycznych (np. drzewa decyzyjne), które świetnie radzą sobie w sytuacji braków danych. Niestety nie jest to sposób, który można stosować zawsze, ponieważ są również modele wymagające kompletności danych jak na przykład sieci neuronowe.
+- usuwać braki wierszami^[polega na usuwaniu wierszy zawierających braki] - to metoda, która jest stosowana domyślnie w przypadku kiedy twórca modelu nie zadecyduje o innym sposobie obsługi luk. Metoda ta ma swoją niewątpliwą zaletę w postaci jasnej i prostej procedury, ale szczególnie w przypadku niewielkich zbiorów może skutkować obciążeniem estymatorów. Nie wiemy bowiem jaka wartość faktycznie jest przypisana danej cesze. Jeśli jest to wartość bliska np. średniej, to nie wpłynie znacząco na obciążenie estymatora wartości oczekiwanej. W przypadku, gdy różni się ona znacznie od średniej tej cechy, to estymator może już wykazywać obciążenie. Jego wielkość zależy również od liczby usuniętych elementów. Nie jest zalecane usuwanie wielu wierszy ze zbioru danych i na podstawie okrojonego zbioru wyciąganie wniosków o populacji, ponieważ próba jest wówczas znacząco inna niż populacja. Dodatkowo jeśli estymatory są wyznaczane na podstawie zbioru wyraźnie mniej licznego, to precyzja estymatorów wyrażona wariancją spada. Reasumując, jeśli liczba wierszy z brakującymi danymi jest niewielka w stosunku do całego zbioru, to usuwanie wierszy jest sensownym rozwiązaniem.
+- uzupełnianie braków - to procedura polegająca na zastępowaniu braków różnymi technikami. Jej niewątpliwą zaletą jest fakt posiadania kompletnych danych bez koniczności usuwania wierszy. Niestety wiąże się to również z pewnymi wadami. Zbiór posiadający wiele braków uzupełninych nawet bardzo wyrafinowanymi metodami może cechować się zaniżoną wariancją poszczególnych cech oraz tzw. przeuczeniem^[więcej o zjawisku przeuczneia w dalszej części książki].
+
+1. Uzupełnianie średnią - braki w zakresie danej zmiennej uzupełniamy średnią tej zmiennej przypadków uzupełnionych.
+
+```{r mean}
+algae[is.na(algae$mxPH), ]
+m <- mean(algae$mxPH, na.rm = T)
+algae[is.na(algae$mxPH), "mxPH"] <- m
+algae[is.na(algae$mxPH), ]
+```
+
+2. Uzupełnianie medianą - braki w zakresie danej zmiennej uzupełniamy medianą tej zmiennej przypadków uzupełnionych.
+
+```{r median}
+algae %>% filter(is.na(Chla)) %>% head
+algae[is.na(algae$Chla), "Chla"] <- median(algae$Chla, na.rm = T)
+```
+
+3. Wypełnianie zmiennych typu wyliczeniowego, logicznego lub znakowego odbywa się najczęściej przez dobranie w miejsce brakującej wartości, elementu powtarzającego się najczęściej wśród obiektów obserwowanych. W pakiecie **DMwR** istnieje funkcja `centralImputation`, która wypełnia braki wartością centralną (w przypadku zmiennych typu liczbowego - medianą, a dla wartości logicznych, wyliczeniowych lub tekstowych - modą).
+
+```{r mode}
+algae[48, "season"]
+algae[48, "season"] <- NA
+algae.uzup <- centralImputation(algae)
+algae.uzup[48,]
+```
+
+4. Jeszcze innym sposobem imputacji danych są algorytmy oparte o metodę $k$-najbliższych sąsiadów. Algorytm opiera się na prostej zasadzie, uzupełniania brakujących wartości medianą (w przypadku zmiennych ilościowych) lub modą (w przypadku zmiennych jakościowych) elementów, które są $k$-tymi najbliższymi sąsiadami w metryce
+\begin{equation}\label{knn}
+	d(x,y)=\sqrt{\sum_{i=1}^{p}\delta_i(x_i,y_i)},
+\end{equation}
+gdzie $\delta_i$ jest odległością pomiędzy dwoma elementami ze względu na $i$-tą cech, określoną następująco
+\begin{equation}\label{metryka}
+	\delta_i(v_1, v_2)=\begin{cases}
+		1,& \text{jeśli zmienna jest jakościowa i }v_1\neq v_2\\
+		0,& \text{jeśli zmienna jest jakościowa i }v_1=v_2\\
+		(v_1-v_2)^2,& \text{jeśli zmienna jest ilościowa.}
+	\end{cases}
+\end{equation}
+Odległości są mierzone dla zmiennych standaryzowanych. Istnieje też odmiana z wagami, które maleją wraz ze wzrostem odległości pomiędzy sąsiadem a uzupełnianym elementem (np. $w(d)=\exp(d)$).
+
+```{r knn}
+algae[48, ]
+algae <- algae %>% 
+    mutate_if(is.character, as.factor)
+algae.uzup <- knnImputation(algae, k = 5, scale = F, meth = "median")
+algae.uzup[48,]
+```
+
+Istnieją również dużo bardziej złożone algorytmy imputacji danych oparte na bardziej wyrafinowanych technikach, takich jak: predykcja modelami liniowymi, nieliniowymi, analiza dyskryminacyjna, drzewa klasyfikacyjne. Dwa najbardziej znane pakiety zawierające funkcje do imputacji w sposób złożony, to **Amelia** i **mice**.
+
+Imputacja danych z zastosowaniem pakietu **mice** wymaga podjęcia kilku decyzji przed przystąpieniem do uzupełniania danych:
+
+1. Czy dane są MAR (ang. *Missing At Random*) czy MNAR (ang. *Missing Not At Random*), co oznacza, że musimy się zastanowić jakie mogły być źródła braków danych, przypadkowe czy systematyczne?
+2. Należy się zdecydować na formę imputacji, określając strukturę zależności pomiędzy cechami oraz rozkład błędu danej cechy?
+3. Wybrać zbiór danych, który posłuży nam za predyktory w imputacji (nie mogą zawierać braków).
+4. Określenie, które niepełne zmienne są funkcjami innych wybrakowanych zmiennych.
+5. Określić w jakiej kolejności dane będą imputowane.
+6. Określić parametry startowe imputacji (liczbę iteracji, warunek zbieżności).
+7. Określić liczę imputowanych zbiorów.
+
+Ad 1. Wyróżniamy nastepujące rodzaje braków danych:
+- MCAR (ang. *Missing Completely At Random*) - z definicji to braki, których pojawienie się jest kompletnie losowe. Przykładowo gdy osoba poproszona o wypełnienie wieku w ankiecie będzie rzucać monetą czy wypełnić tą zmienną.
+- MAR - oznacza, że obserwowane wartości i wybrakowane mają inne rozkłady ale da się je oszacować na podstawie danych obserwowanych. Przykładowo ciśnienie tętnicze u osób, które nie wypełniły tej wartości jest wyższe niż u osób, które wpisały swoje ciśnienie. Okazuje się, że osoby starsze z nadciśnieniem nie wypełniały ankiety w tym punkcie.
+- MNAR - jeśli nie jest spełniony warunek MCAR i MAR, wówczas brak ma charakter nielosowy. Przykładowo respondenci osiągający wyższe zarobki sukcesywnie nie wypełniają pola "zarobki" i dodatkowo nie ma w ankiecie zmiennych, które pozwoliłyby nam ustalić, jakie to osoby.
+
+Ad 2. Decyzja o algorytmie imputacji wynika bezpośrednio ze skali w jakiej jest mierzona dana zmienna. Ze względu na rodzaj cechy używać będziemy następujących metod:
+
+```{r methods, echo=FALSE}
+tab <- data.frame(stringsAsFactors=FALSE,
+                  method = c("pmm","midastouch", "sample", "cart", "rf", "mean",
+                                "norm", "norm.nob", "norm.boot",
+                                "norm.predict", "quadratic", "ri", "logreg", "logreg.boot",
+                                "polr", "polyreg", "lda", "2l.norm", "2l.lmer",
+                                "2l.pan", "2l.bin", "2lonly.mean", "2lonly.norm",
+                                "2lonly.pmm"),
+                  type = c("any", "any", "any", "any", "any", "numeric",
+                                "numeric", "numeric", "numeric", "numeric",
+                                "numeric", "numeric", "binary", "binary", "ordered",
+                                "unordered", "unordered", "numeric", "numeric",
+                                "numeric", "binary", "numeric", "numeric",
+                                "any"),
+                  description = c("Predictive.mean.matching","Weighted predictive mean matching",
+                                "Random sample from observed values",
+                                "Classification and regression trees",
+                                "Random forest imputations", "Unconditional mean imputation",
+                                "Bayesian linear regression",
+                                "Linear regression ignoring model error",
+                                "Linear regression using bootstrap", "Linear regression, predicted values",
+                                "Imputation of quadratic terms",
+                                "Random indicator for nonignorable data", "Logistic regression",
+                                "Logistic regression with bootstrap",
+                                "Proportional odds model", "Polytomous logistic regression",
+                                "Linear discriminant analysis",
+                                "Level-1 normal heteroscedastic", "Level-1 normal homoscedastic,
+                                lmer", "Level-1 normal homoscedastic, pan",
+                                "Level-1 logistic, glmer", "Level-2 class mean",
+                                "Level-2 class normal",
+                                "Level-2 class predictive mean matching")
+)
+kable(tab, booktabs=T, caption = "Zestaw metod imputacji danych stosowanych w pakiecie **mice**")
+```
+
+Każdy z czterech typów danych ma swój domyślny algorytm przeznaczony do imputacji:
+- zmienna ilościowa - `pmm`
+- zmienna dychotomiczna (stany 0 lub 1) - `logreg`
+- zmienna typu wyliczeniowego (nieuporządkowana) - `polyreg`
+- zmienna typu wyliczeniowego (uporządkowana) - `polr`
+
+Niewątpliwą zaletą metody `pmm` jest to, że wartości imputowane są ograniczone jedynie do obserwowanych wartości. Metody `norm` i `norm.nob` uzupełniają brakujące wartości w oparciu o model liniowy. Są one szybkie i efektywne w przypadku gdy reszty modelu są zbliżone rozkładem do normalności. Druga z tych technik nie bierze pod uwagę niepewności związanej z modelem imputującym. Metoda `2L.norm` opiera się na dwupoziomowym heterogenicznym modelu liniowym (skupienia są włączone jako efekt do modelu). Technika `polyreg` korzysta z funkcji `multinom` pakietu **nnet** tworzącej model wielomianowy. `polr` opiera się o proporcjonalny model logitowy z pakietu **MASS**. `lda` to model dyskryminacyjny klasyfikujący obiekty na podstawie prawdopodobieństw *a posteriori*. Metoda `sample` zastępuje braki losowa wybranymi wartościami spośród wartości obserwowanych.
+
+Ad 3. Do ustalenia predyktorów w modelu `mice` służy funkcja `predictorMatrix`. Po pierwsze wyświetla ona domyślny układ predyktorów włączanych do modelu. Można go dowolnie zmienić i podstawić do modelu imputującego dane parametrem `predictorMatrix`. Zera występujące w kolejnych wierszach macierzy predyktorów oznaczają pominięcie tej zmiennej przy imputacji innej zmiennej. Jeśli dodatkowo chcemy by jakaś zmienna nie była imputowana, to oprócz usunięcia jej z listy predyktorów, należy wymazać ją z listy metod predykcji (`method`).
+		
+Ogólne zalecenia co do tego jakie zmienne stosować jako predyktory jest takie, żeby brać ich jak najwięcej. Spowoduje to, że bardziej prawdopodobny staje się brak typu MAR a nie MNAR. Z drugiej jednak strony, nierzadko zbiory zawierają olbrzymią liczbę zmiennych i włączanie ich wszystkich do modelu imputującego nie będzie miało sensu. 
+
+Zalecenia doboru zmiennych są następujące:
+- weź wszystkie te zmienne, które są włączane do modelu właściwego, czyli tego za pomocą którego chcesz poznać strukturę zależności;
+- czasem do modelu imputującego należy też włączyć interakcje zmiennych z modelu właściwego;
+- dodaj zmienne, które mogą mieć wpływ na wybrakowane cechy;
+- włącz zmienne istotnie podnoszące poziom wyjaśnionej wariancji modelu;
+- na koniec usuń te zmienne spośród predyktorów, które same zawierają zbyt wiele braków.
+
+Ad 4-7. Decyzje podejmowane w tych punktach zależą istotnie od analizowanego zbioru i będą przedmiotem oddzielnych analiz w kontekście rozważanych zbiorów i zadań.
+
+## Przykład
+
+Dokonamy imputacji zbioru `airquality` z wykorzystaniem pakietów **mice** i **VIM** [@R-VIM]
+
+```{r}
+data <- airquality
+summary(data)
+# tworzymy dodatkowe braki danych
+data[4:10,3] <- rep(NA,7)
+data[1:5,4] <- NA
+summary(data)
+md.pattern(data)
+```
+
+Do ilustracji braków danych można zastosować funkcje pakietu **VIM**.
+
+```{r}
+library(VIM)
+aggr(data, numbers=TRUE, 
+     sortVars=TRUE, 
+     labels=names(data), 
+     cex.axis=.7)
+```
+
+Tak przedstawia się wykres rozrzutu zmiennych `Ozone` i `Solar.R` z uwzględnieniem położenia braków danych.
+
+```{r}
+marginplot(data[c(1,2)])
+```
+
+Dokonamy imputacji metodą `pmm`.
+
+```{r}
+tempData <- mice(data, 
+                 maxit=50, 
+                 meth='pmm', 
+                 seed=44, 
+                 printFlag = F)
+summary(tempData)
+```
+
+Ponieważ, funkcja `mice` domyślnie dokonuje 5 kompletnych imputacji, możmy się przekonać jak bardzo różnią się poszczególne imputacje i zdecydować się na jedną z nich.
+
+```{r}
+head(tempData$imp$Ozone)
+```
+
+Ostatecznie imputacji dokonujemy wybierając jeden z zestawów danych uzupełniających (np. pierszy).
+
+```{r}
+completedData <- mice::complete(tempData, 1)
+summary(completedData)
+```
+
+Za pomocą funkcji pakietu `mice` możemy również przedstawić graficznie gdzi jak zostały uzupełnione dane.
+
+```{r}
+densityplot(tempData, ~Ozone+Solar.R+Wind+Temp)
+stripplot(tempData, Ozone+Solar.R+Wind+Temp~.imp, pch = 20, cex = 1.2)
+```
+
+
+

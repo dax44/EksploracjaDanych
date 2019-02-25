@@ -1,6 +1,4 @@
-# Przygotowanie danych {#roz1}
-
-## Import danych {#podroz11}
+# Import danych {#roz1}
 
 Środowisko **R** pozwala na import i export plików o różnych rozszerzeniach (`txt, csv, xls, xlsx, sav, xpt, dta`, itd.)^[póki co nie jest mi znana funkcja pozwalająca na import plików programu Statistica]. W tym celu czasami trzeba zainstalować pakiety rozszerzające podstawowe możliwości R-a. Najnowsza^[na dzień 19.02.2019] wersja programu [RStudio](https://www.rstudio.com) (v. 1.1.463)^[istnieją rownież nowsze wersje deweloperskie]  pozwala na wczytanie danych z popularnych źródeł za pomocą GUI.
 
@@ -117,11 +115,11 @@ Lista możliwości jaką daje nam pakiet `rio` [@R-rio] jest niemal nieograniczo
 - Clipboard import (on Windows and Mac OS), using read.table with row.names = FALSE
 - Google Sheets, as Comma-separated data (.csv)
 
-### Przykład 
+## Przykład {#przyk1}
 
 Poniższa ilustracja przedstawia fragment pliku danych `Analysis.txt` zawierającego pewne błędy, które należy naprawić na etapie importu danych. Po pierwsze brakuje w nim nazw zmiennych^[choć nie widać tego na rysunku]. Poszczególne kolumny nazywają się następująco: `season`, `size`, `speed`, `mxPH`, `mnO2`, `Cl`, `NO3`, `NH4`, `oPO4`, `PO4`, `Chla`, `a1`, `a2`, `a3`, `a4`, `a5`, `a6`, `a7`. Naszym zadaniem jest import tego pliku z jednoczesną obsługą braków^[braki danych są zakodowane przez XXXXXXX] oraz nadaniem nagłówków kolumn. Plik `Analisis.txt` jest umieszczony w kagalogu `data/`. Z racji, że plik dotyczy glonów, to dane zapiszemy pod nazwą `algae`.
 
-```{r foto, fig.fullwidth = TRUE, echo=FALSE}
+```{r foto, echo=FALSE, fig.cap="Fragment pliku danych Analisis.txt"}
 include_graphics("images/analalysi_foto.png", dpi = 100)
 ```
 
