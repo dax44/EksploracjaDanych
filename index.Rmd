@@ -1,7 +1,13 @@
 --- 
 title: "Eksploracja danych"
-author: "Dariusz Majerek"
 date: "`r Sys.Date()`"
+author: 
+  name: Dariusz Majerek
+  affiliation: |
+    | Katedra Matematyki Stosowanej
+    | Wydział Podstaw Techniki
+    | Politechnika Lubelska
+  email: d.majerek@pollub.pl
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
