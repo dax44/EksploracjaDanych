@@ -175,6 +175,7 @@ Imputacja danych z zastosowaniem pakietu **mice** wymaga podjęcia kilku decyzji
 7. Określić liczę imputowanych zbiorów.
 
 Ad 1. Wyróżniamy nastepujące rodzaje braków danych:
+
 - MCAR (ang. *Missing Completely At Random*) - z definicji to braki, których pojawienie się jest kompletnie losowe. Przykładowo gdy osoba poproszona o wypełnienie wieku w ankiecie będzie rzucać monetą czy wypełnić tą zmienną.
 - MAR - oznacza, że obserwowane wartości i wybrakowane mają inne rozkłady ale da się je oszacować na podstawie danych obserwowanych. Przykładowo ciśnienie tętnicze u osób, które nie wypełniły tej wartości jest wyższe niż u osób, które wpisały swoje ciśnienie. Okazuje się, że osoby starsze z nadciśnieniem nie wypełniały ankiety w tym punkcie.
 - MNAR - jeśli nie jest spełniony warunek MCAR i MAR, wówczas brak ma charakter nielosowy. Przykładowo respondenci osiągający wyższe zarobki sukcesywnie nie wypełniają pola "zarobki" i dodatkowo nie ma w ankiecie zmiennych, które pozwoliłyby nam ustalić, jakie to osoby.
@@ -217,6 +218,7 @@ kable(tab, booktabs=T, caption = "Zestaw metod imputacji danych stosowanych w pa
 ```
 
 Każdy z czterech typów danych ma swój domyślny algorytm przeznaczony do imputacji:
+
 - zmienna ilościowa - `pmm`
 - zmienna dychotomiczna (stany 0 lub 1) - `logreg`
 - zmienna typu wyliczeniowego (nieuporządkowana) - `polyreg`
@@ -229,6 +231,7 @@ Ad 3. Do ustalenia predyktorów w modelu `mice` służy funkcja `predictorMatrix
 Ogólne zalecenia co do tego jakie zmienne stosować jako predyktory jest takie, żeby brać ich jak najwięcej. Spowoduje to, że bardziej prawdopodobny staje się brak typu MAR a nie MNAR. Z drugiej jednak strony, nierzadko zbiory zawierają olbrzymią liczbę zmiennych i włączanie ich wszystkich do modelu imputującego nie będzie miało sensu. 
 
 Zalecenia doboru zmiennych są następujące:
+
 - weź wszystkie te zmienne, które są włączane do modelu właściwego, czyli tego za pomocą którego chcesz poznać strukturę zależności;
 - czasem do modelu imputującego należy też włączyć interakcje zmiennych z modelu właściwego;
 - dodaj zmienne, które mogą mieć wpływ na wybrakowane cechy;
@@ -284,14 +287,14 @@ Ponieważ, funkcja `mice` domyślnie dokonuje 5 kompletnych imputacji, możmy si
 head(tempData$imp$Ozone)
 ```
 
-Ostatecznie imputacji dokonujemy wybierając jeden z zestawów danych uzupełniających (np. pierszy).
+Ostatecznie imputacji dokonujemy wybierając jeden z zestawów danych uzupełniających (np. pierwszy).
 
 ```{r}
 completedData <- mice::complete(tempData, 1)
 summary(completedData)
 ```
 
-Za pomocą funkcji pakietu `mice` możemy również przedstawić graficznie gdzi jak zostały uzupełnione dane.
+Za pomocą funkcji pakietu `mice` możemy również przedstawić graficznie gdzie i jak zostały uzupełnione dane.
 
 ```{r}
 densityplot(tempData, ~Ozone+Solar.R+Wind+Temp)

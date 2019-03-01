@@ -1,0 +1,38 @@
+# Podział metod data mining
+
+## Rodzaje wnioskowania
+
+*Data mining* to zestaw metod pozyskiwania wiedzy na podstawie danych. Ową wiedzę zdobywamy w procesie wnioskowania na podstawie modeli. Wnioskowanie możemy podzielić na dedukcyjne i indukcyjne. I tak z wnioskowaniem dedukcyjnym mamy do czynienia wówczas, gdy na podstawie obecnego stanu wiedzy potrafimy odpowiedzieć na postawione pytanie dotyczące nowej wiedzy, stosując reguły wnioskowania. O wnioskowaniem indukcyjnym powiemy, że jest to metoda pozyskiwania wiedzy na podstawie informacji ze zbioru uczącego. Znajduje ono szerokie zastosowanie w data mining i charakteryzuje się obylnością, ponieważ nawet najlepiej nauczony model na zbiorze uczącym nie zapewnia nam prawdziwości odpowiedzi w przypadku nowych danych, a jedynie je uprawdopodabnia. Esencją wnioskowania indukcyjnego w zakresie data mining, jest poszukiwanie na podstawie danych uczących modelu charakteryzującego się najlepszymi właściwościami predykcyjnymi i dającego się zastosować do zupełnie nowego zbioru danych.
+
+Każdy proces uczenia z wykorzystaniem wnioskowania indukcyjnego składa się z następujących elementów.
+
+### Dziedzina
+
+*Dziedzina* to zbiór wszystkich obiektów pozostających w zainteresowaniu badacza, będących przedmiotem wnioskowania, oznaczana najczęsciej przez $X$. Przykładowo mogą to być zbiory osób, transakcji, urządzeń, instytucji, itp.
+
+### Obserwacja
+
+Każdy element dziedziny $x\in X$ nazywamy obserwacją. Obserwacją nazywać będziemy zarówno rekordy danych ze zbioru uczącego, jak i ze zbioru testowego.
+
+### Atrybuty
+
+Każdy obiekt z dzidziny $x\in X$ można opisać zestawem cech (atrybutów), które w notacji matematycznej oznaczymy przez $a:X\to A$, gdzie $A$ jest przestrzenią wartości atrybutów. Każda obserwacja $x$ posiadająca $k$ cech da się wyrazić wektorowo jako $(a_1(x), a_2(x), \ldots, a_k(x))$. Dla większości algorytmów uczenia maszynowego wyróżnia się trzy typy atrybutów:
+- *nominalne* - posiadające skończoną liczbę stanów, które posiadają porządku;
+- *porządkowe* - posiadające skończoną liczbę stanów z zachowaniem porządku;
+- *ciągłe* - przyjmujące wartości numeryczne.
+Często jeden z atrybutów spełnia specjalą rolę, ponieważ stanowi realizację cechy, którą traktujemy jako wyjściową (ang. *target value attribute*). W tym przypadku powiemy o **nadzorowanym uczeniu maszynowym**. Jeśli zmiennej wyjściowej nie ma dziedzinie, to mówimy o **nienadzorowanym uczeniu maszynowym**.
+
+### Zbiór uczący
+
+Zbiorem uczącym $T$ (ang. *training set*) nazywamy podzbiór $D$ dziedziny $X$ (czyli $T\subseteq D\subseteq X$), gdzie zbiór $D$ stanowi ogół dostępnych obserwacji z dziedziny $X$. Zbiór uczący zawiera informacje dotyczące badanego zjawiska, na podstwie których, dokonuje się doboru modelu, selekcji cech istotny z punktu widzenia własności predykcyjnych lub jakości klasyfikacji, budowy modelu oraz optymalizacji jego parametrów. W przypadku uczenia z nauczycielem (nadzorowanego) zbiór $T$ zawiera informację o wartościach atrybutów zmiennej wynikowej.
+
+
+
+```{r}
+library(rio)
+adver <- import("../../../../R/Data mining/An Introduction to Statistical Learning with Applications in R/James2013/Data Sets/Advertising.csv")
+head(adver)
+adver <- adver[,-1]
+
+```
+
