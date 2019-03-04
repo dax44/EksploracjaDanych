@@ -51,7 +51,7 @@ nrow(algae[!complete.cases(algae),])
 apply(algae, 1, function(x) sum(is.na(x)))
 ```
 
-Wiele ciekawych funkcji do eksploracji danych znajduje się w pakiecie **DMwR** [@R-DMwR], który został przygotowany przy okacji publikacji książki *Data Mining with R*. 
+Wiele ciekawych funkcji do eksploracji danych znajduje się w pakiecie **DMwR** [@R-DMwR], który został przygotowany przy okazji publikacji książki *Data Mining with R*. 
 
 ```{r counting}
 ## poszukiwanie wierszy zawierających wiele braków
@@ -109,11 +109,11 @@ md.pattern(algae)
 
 ### Zastępowanie braków danych
 
-Zastępowanie braków danych (zwane także *imputacją danych*) jest kolejnym etapem procesu przygotowania danych do analiz. Nie można jednak wyróżnić uniwersalnego sposobu zastępowania braków dla wszystkich możliwych sytuacji. Wśród statystków panuje przekonanie, że w przypadku wystąpienia braków danych można zastosować trzy strategie:
+Zastępowanie braków danych (zwane także *imputacją danych*) jest kolejnym etapem procesu przygotowania danych do analiz. Nie można jednak wyróżnić uniwersalnego sposobu zastępowania braków dla wszystkich możliwych sytuacji. Wśród statystyków panuje przekonanie, że w przypadku wystąpienia braków danych można zastosować trzy strategie:
 
 - nic nie robić z brakami - co wydaje się  niedorzeczne ale wcale takie nie jest, ponieważ istnieje wiele modeli statystycznych (np. drzewa decyzyjne), które świetnie radzą sobie w sytuacji braków danych. Niestety nie jest to sposób, który można stosować zawsze, ponieważ są również modele wymagające kompletności danych jak na przykład sieci neuronowe.
 - usuwać braki wierszami^[polega na usuwaniu wierszy zawierających braki] - to metoda, która jest stosowana domyślnie w przypadku kiedy twórca modelu nie zadecyduje o innym sposobie obsługi luk. Metoda ta ma swoją niewątpliwą zaletę w postaci jasnej i prostej procedury, ale szczególnie w przypadku niewielkich zbiorów może skutkować obciążeniem estymatorów. Nie wiemy bowiem jaka wartość faktycznie jest przypisana danej cesze. Jeśli jest to wartość bliska np. średniej, to nie wpłynie znacząco na obciążenie estymatora wartości oczekiwanej. W przypadku, gdy różni się ona znacznie od średniej tej cechy, to estymator może już wykazywać obciążenie. Jego wielkość zależy również od liczby usuniętych elementów. Nie jest zalecane usuwanie wielu wierszy ze zbioru danych i na podstawie okrojonego zbioru wyciąganie wniosków o populacji, ponieważ próba jest wówczas znacząco inna niż populacja. Dodatkowo jeśli estymatory są wyznaczane na podstawie zbioru wyraźnie mniej licznego, to precyzja estymatorów wyrażona wariancją spada. Reasumując, jeśli liczba wierszy z brakującymi danymi jest niewielka w stosunku do całego zbioru, to usuwanie wierszy jest sensownym rozwiązaniem.
-- uzupełnianie braków - to procedura polegająca na zastępowaniu braków różnymi technikami. Jej niewątpliwą zaletą jest fakt posiadania kompletnych danych bez koniczności usuwania wierszy. Niestety wiąże się to również z pewnymi wadami. Zbiór posiadający wiele braków uzupełninych nawet bardzo wyrafinowanymi metodami może cechować się zaniżoną wariancją poszczególnych cech oraz tzw. przeuczeniem^[więcej o zjawisku przeuczneia w dalszej części książki].
+- uzupełnianie braków - to procedura polegająca na zastępowaniu braków różnymi technikami. Jej niewątpliwą zaletą jest fakt posiadania kompletnych danych bez konieczności usuwania wierszy. Niestety wiąże się to również z pewnymi wadami. Zbiór posiadający wiele braków uzupełnianych nawet bardzo wyrafinowanymi metodami może cechować się zaniżoną wariancją poszczególnych cech oraz tzw. przeuczeniem^[więcej o zjawisku przeuczenia w dalszej części książki].
 
 1. Uzupełnianie średnią - braki w zakresie danej zmiennej uzupełniamy średnią tej zmiennej przypadków uzupełnionych.
 
@@ -174,7 +174,7 @@ Imputacja danych z zastosowaniem pakietu **mice** wymaga podjęcia kilku decyzji
 6. Określić parametry startowe imputacji (liczbę iteracji, warunek zbieżności).
 7. Określić liczę imputowanych zbiorów.
 
-Ad 1. Wyróżniamy nastepujące rodzaje braków danych:
+Ad 1. Wyróżniamy następujące rodzaje braków danych:
 
 - MCAR (ang. *Missing Completely At Random*) - z definicji to braki, których pojawienie się jest kompletnie losowe. Przykładowo gdy osoba poproszona o wypełnienie wieku w ankiecie będzie rzucać monetą czy wypełnić tą zmienną.
 - MAR - oznacza, że obserwowane wartości i wybrakowane mają inne rozkłady ale da się je oszacować na podstawie danych obserwowanych. Przykładowo ciśnienie tętnicze u osób, które nie wypełniły tej wartości jest wyższe niż u osób, które wpisały swoje ciśnienie. Okazuje się, że osoby starsze z nadciśnieniem nie wypełniały ankiety w tym punkcie.
@@ -281,7 +281,7 @@ tempData <- mice(data,
 summary(tempData)
 ```
 
-Ponieważ, funkcja `mice` domyślnie dokonuje 5 kompletnych imputacji, możmy się przekonać jak bardzo różnią się poszczególne imputacje i zdecydować się na jedną z nich.
+Ponieważ, funkcja `mice` domyślnie dokonuje 5 kompletnych imputacji, możemy się przekonać jak bardzo różnią się poszczególne imputacje i zdecydować się na jedną z nich.
 
 ```{r}
 head(tempData$imp$Ozone)

@@ -1,0 +1,355 @@
+# Drzewa decyzyjne
+
+*Drzewo decyzyjne*^[wyglądem przypomina odwrócone drzewo, stąd nazwa] jest strukturą hierarchiczną przedstawiającą model klasyfikacyjny lub regresyjny. Stosowane są szczególnie często wówczas, gdy funkcyjna postać związku pomiędzy predyktorami a zmienną wynikową jest nieznana lub ciężka do ustalenia.
+Każde drzewo decyzyjne składa się z korzenia (ang. *root*), węzłów (ang. *nodes*) i liści (ang. *leaves*). Korzeniem nazywamy początkowy węzeł drzewa, z którego poprzez podziały (ang. *splits*) powstają kolejne węzły potomne. Końcowe węzły, które nie podlegają podziałom nazywamy liśćmi, a linie łączące węzły nazywamy gałęziami (ang. *branches*).
+
+Jeśli drzewo służy do zadań klasyfikacyjnych, to liście zawierają informację o tym, która klasa w danym ciągu podziałów jest najbardziej prawdopodobna. Natomiast jeśli drzewo jest regresyjne, to liście zawierają warunkowe miary tendencji centralnej (najczęściej średnią) wartości zmiennej wynikowej. Warunek stanowi szereg podziałów doprowadzający do danego węzła terminalnego (liścia). W obu przypadkach (klasyfikacji i regresji) drzewo "dąży" do takiego podziału by kolejne węzły, a co za tym idzie również liście, były ja najbardziej jednorodne ze względu na zmienną wynikową.
+
+
+```{r echo=FALSE, fig.cap = "Przykład działania drzewa regresyjnego. Wykes w lewym górnym rogu pokazuje prawdziwą zależność, wyres po prawej stronie jest ilustracją drzewa decyzyjnego, a wykres w lewym dolnym rogu pokazuje dyskretyzację przestrzeni dokonaną przez drzewo, a za razem sposób jego działania."}
+library(rpart)
+library(rpart.plot)
+# example target function
+rtf <- function(a1, a2) { sin(a1+a2)/(a1+a2) }
+# artificial dataset
+rtdat <- data.frame(a1=floor(runif(300, min=1, max=6)),
+                    a2=floor(runif(300, min=1, max=6)))
+rtdat$f <- rtf(rtdat$a1, rtdat$a2)
+# regression tree
+rtf.rp <- rpart(f~., rtdat)
+# target function predictions
+rtf.p <- function(a1, a2) { predict(rtf.rp, data.frame(a1, a2)) }
+par(cex=0.7, mai=c(0.1,0.1,0.2,0.1))
+par(fig = c(0, 0.48, 0.52, 1))
+a1 <- a2 <- seq(1, 5, 0.1)
+# true f
+persp(a1, a2, outer(a1, a2, rtf), zlab="true f", theta=30, phi=30, col="grey")
+par(fig = c(0, 0.48, 0, 0.48), new = TRUE)
+# predicted f
+persp(a1, a2, outer(a1, a2, rtf.p), zlab="predicted f", theta=30, phi=30, col="grey")
+par(fig = c(0.52, 1, 0, 1), new = TRUE)
+prp(rtf.rp)
+```
+
+## Węzły i gałęzie
+
+Każdy podział rozdziela dziedzinę $X$ na dwa lub więcej podobszarów dziedziny i wówczas każda obserwacja węzła nadrzędnego jest przyporządkowana węzłom potomnym. Każdy odchodzący węzeł potomny jest połączony gałęzią, która to wiąże się ściśle z możliwymi wynikami podziału. Każdy $\mathbf{n}$-ty węzeł można opisać jako podzbiór dziedziny w następujący sposób
+\begin{equation}
+    X_{\mathbf{n}}=\{x\in X|t_1(x)=r_1,t_2(x)=r_2,\ldots,t_k(x)=r_k\},
+\end{equation}
+gdzie $t_1,t_2,\ldots,t_k$ są podziałami, które przeprowadzają $x$ w obszary $r_1, r_2,\ldots, r_k$. Przez
+\begin{equation}
+    S_{\mathbf{n}, t=r}=\{x\in S|t(x)=r\}
+\end{equation}
+rozumiemy, że dokonano takiego ciągu podziałów zbioru $S$, że jego wartości znalazły się w $\mathbf{n}$-tym węźle.
+
+## Rodzaje reguł podziału
+
+Najczęściej występujące reguły podziału w drzewach decyzyjnych są jednowymiarowe, czyli warunek podziału jest generowany na podstawie jednego atrybutu. Istnieją podziały wielowymiarowe ale ze względu na złożoność obliczeniową są rzadziej stosowane.
+
+### Podziały dla atrybutów ze skali nominalnej
+
+Istnieją dwa typy reguł podziału dla skali nominalnej:
+
+- oparte na wartości atrybutu (ang. *value based*) - wówczas funkcja testowa przyjmuje postać $t(x)=a(x)$, czyli podział generują wartości atrybutu;
+- oparte na równości (ang. *equality based*) - gdzie funkcja testowa jest zdefiniowana jako
+\begin{equation}
+    t(x)= \begin{cases}
+        1, &\text{ gdy } a(x)=\nu\\
+        0, & \text{ w przeciwnym przypadku},
+    \end{cases}
+\end{equation}
+gdzie $\nu\in A$ i $A$ jest zbiorem możliwych wartości $a$. W tym przypadku podział jest dychotomiczny, albo obiekt ma wartość atrybutu równą $\nu$, albo go nie ma.
+
+### Podziały dla atrybutów ze skali ciągłej
+
+Reguły podziału stosowane do skali ciągłej, to:
+
+- oparta na nierównościach (ang. *inequality based*) - zdefiniowana jako
+\begin{equation}
+t(x) = \begin{cases}
+    1, &\text{ gdy }a(x)\leq \nu\\
+    0, & \text{w przeciwnym przypadku}
+    \end{cases}
+\end{equation}
+gdzie $\nu\in A$;
+- przedziałowa (ang. *interval based*) - zdefiniowana jako
+\begin{equation}
+    t(x) = \begin{cases}
+        1, &\text{ gdy }a(x) \in I_1\\
+        2, &\text{ gdy }a(x) \in I_2\\
+        \vdots & \\
+        k, &\text{ gdy }a(x) \in I_k\\
+    \end{cases}
+\end{equation}
+gdzie $I_1,I_2,\ldots,I_k\subset A$ stanowią rozłączny podział (przedziałami) przeciwdziedziny $A$.
+
+### Podziały dla atrybutów ze skali porządkowej
+
+Podziały te mogą wykorzystywać oba wcześniej wspomniane typy, w zależności od potrzeb.
+
+## Algorytm budowy drzewa
+
+1. stwórz początkowy węzeł (korzeń) i oznacz go jako *otwarty*;
+2. przypisz wszystkie możliwe rekordy do węzła początkowego;
+3. **dopóki** istnieją otwarte węzły **wykonuj**:
+    - wybierz węzeł $\mathbf{n}$, wyznacz potrzebne statystyki opisowe zmiennej zależnej dla tego węzła i przypisz wartość docelową;
+	- **jeśli** kryterium zatrzymania podziału jest spełnione dla węzła $n$, **to** oznacz go za **zamknięty**;
+	- **w przeciwnym przypadku** wybierz podział $r$ elementów węzła $\mathbf{n}$, i dla każdego podzbioru podziału stwórz węzeł niższego rzędu (potomka) $\mathbf{n}_r$ oraz oznacz go jako *otwarty*;
+	- następnie przypisz wszystkie przypadki generowane podziałem $r$ do odpowiednich węzłów potomków $\mathbf{n}_r$;
+	- oznacza węzeł $\mathbf{n}$ jako *zamknięty*. 
+
+Sposób przypisywania wartości docelowej wiąże się ściśle z rodzajem drzewa. W drzewach regresyjnych chodzi o wyliczenie średniej lub mediany dla obserwacji ujętych w danym węźle. Natomiast w przypadku drzewa klasyfikacyjnego, wyznacza się wartości prawdopodobieństw przynależności obserwacji znajdującej się w danym węźle do poszczególnych klas
+\begin{equation}
+    \P(d|\mathbf{n})=\P(T_\mathbf{n})(d)=\frac{|T_\mathbf{n}^d|}{|T_\mathbf{n}|},
+\end{equation}
+gdzie $T_\mathbf{n}$ oznaczają obserwacje zbioru uczącego znajdujące się w węźle $\mathbf{n}$, a $T_\mathbf{n}^d$ oznacza dodatkowo podzbiór zbioru uczącego w $\mathbf{n}$ węźle, które należą do klasy $d$. Oczywiście klasyfikacja na podstawie otrzymanych prawdopodobieństw w danym węźle jest dokonana przez wybór klasy charakteryzującej się najwyższym prawdopodobieństwem. 
+
+## Kryteria zatrzymania
+
+Kryterium zatrzymania jest warunkiem, który decyduje o tym, że dany węzeł uznajemy za zamknięty i nie dokonujemy dalszego jego podziału. Wyróżniamy następujące kryteria zatrzymania:
+
+- jednorodność węzła - w przypadku drzewa klasyfikacyjnego może zdarzyć się sytuacja, że wszystkie obserwacje węzła będą pochodziły z jednej klasy. Wówczas nie ma sensu dokonywać dalszego podziału węzła;
+- węzeł jest pusty - zbiór przypisanych obserwacji zbioru uczącego do $\mathbf{n}$-tego węzła jest pusty;
+- brak reguł podziału - wszystkie reguły podziału zostały wykorzystane, zatem nie da się stworzyć potomnych węzłów, które charakteryzowałyby się większą homogenicznością;
+
+Warunki ujęte w pierwszych dwóch kryteriach mogą być nieco złagodzone, poprzez zatrzymanie podziałów wówczas, gdy prawdopodobieństwo przynależenia do pewnej klasy przekroczy ustalony próg lub gdy liczebność węzła spadnie poniżej ustalonej wartości.
+
+W literaturze tematu istnieje jeszcze jedno często stosowane kryterium zatrzymania oparte na wielkości drzewa. Węzeł potomny ustala się jako zamknięty, gdy długość ścieżki dojścia do nie go przekroczy ustaloną wartość.
+
+## Reguły podziału
+
+Ważnym elementem algorytmu tworzenia drzewa regresyjnego jest *reguła podziału*. Dobierana jest w taki sposób aby zmaksymalizować zdolności generalizacyjne drzewa. Złożoność drzewa mierzona jest najczęściej przeciętną liczbą podziałów potrzebnych do dotarcia do liścia zaczynając od korzenia. Liście są najczęściej tworzone wówczas gdy dyspersja wartości wynikowej jest stosunkowo mała lub węzeł zawiera w miarę homogeniczne obserwacje ze względu na przynależność do klasy zmiennej wynikowej. W przypadku drzew regresyjnych zmienność na poziomie węzłów jest dobrą miarą służącą do definiowania podziału w węźle. I tak, jeśli pewien podział generuje nam stosunkowo małe dyspersje wartości docelowych w węzłach potomnych, to można ten podział uznać za właściwy. Jeśli $T_n$ oznacza zbiór rekordów należących do węzła $n$, a $T_{n,t=r}$ są podzbiorami generowanymi przez podział $r$ w węzłach potomnych dla $n$, to dyspersję wartości docelowej $f$ będziemy oznaczali następująco
+\begin{equation}\label{dyspersja}
+	 \operatorname{disp}_{T_{n,t=r}}(f).
+\end{equation}
+
+Regułę podziału możemy określać poprzez minimalizację średniej ważonej dyspersji wartości docelowej następującej postaci
+\begin{equation}\label{reg_podz}
+		\operatorname{disp}_n(f|t)=\sum_{r\in R_t}\frac{|T_{n,t=r}|}{|T_n|}\operatorname{disp}_{T_{n,t=r}}(f),
+\end{equation}
+gdzie $|\  |$ oznacza moc zbioru, a $R_t$ zbiór wszystkich możliwych wartości reguły podziału. Czasami wygodniej będzie maksymalizować przyrost dyspersji (lub spadek)
+\begin{equation}\label{przyrost}
+		\bigtriangleup \operatorname{disp}_n(f|t)=\operatorname{disp}_n(f)-\sum_{r\in R_t}\frac{|T_{n,t=r}|}{|T_n|}\operatorname{disp}_{T_{n,t=r}}(f).
+\end{equation}
+
+Miarą heterogeniczności węzłów ze względu na zmienną wynikową (ang. *impurity*) w drzewach klasyfikacyjnych, która pozwala na tworzenie kolejnych podziałów węzła, są najczęściej wskaźnik Gini'ego i entropia [@Breiman1984].
+
+Entropią podzbioru uczącego w węźle $\mathbf{n}$, wyznaczamy wg wzoru
+\begin{equation}
+E_{T_{\mathbf{n}}(c|t)} = \sum_{x\in R_t} \frac{|T_{\mathbf{n}, t=r}|}{|T_{\mathbf{n}}|}E_{T_{\mathbf{n}, t=r}}(c),
+\end{equation}
+gdzie $t$ jest podziałem (kandydatem), $r$ potencjalnym wynikiem podziału $t$, $c$ jest oznaczeniem klasy zmiennej wynikowej, a 
+\begin{equation}
+    E_{T_{\mathbf{n}, t=r}}(c) = \sum_{d\in C}-\P_{T_{\mathbf{n}, t=r}}(c=d)\log\P_{T_{\mathbf{n}, t=r}}(c=d),
+\end{equation}
+przy czym 
+\begin{equation}
+    \P_{T_{\mathbf{n}, t=r}}(c=d)= \P_{T_{\mathbf{n}}}(c=d|t=r).
+\end{equation}
+
+Podobnie definiuje się indeks Gini'ego
+\begin{equation}
+Gi_{T_{\mathbf{n}}(c|t)} = \sum_{x\in R_t} \frac{|T_{\mathbf{n}, t=r}|}{|T_{\mathbf{n}}|}Gi_{T_{\mathbf{n}, t=r}}(c),
+\end{equation}
+gdzie
+\begin{equation}
+    Gi_{T_{\mathbf{n}, t=r}}(c) = \sum_{d\in C}\P_{T_{\mathbf{n}, t=r}}(c=d)\cdot(1-\P_{T_{\mathbf{n}, t=r}}(c=d))= 1-\sum_{d\in C}\P^2_{T_{\mathbf{n}, t=r}}(c=d).
+\end{equation}
+Dla tak zdefiniowanych miar "nieczystości" węzłów, podziału dokonujemy w taki sposób, aby zminimalizować współczynnik Gini'ego lub entropię. Im niższe miary nieczystości, tym bardziej obserwacje znajdujące się w węźle są monokulturą^[prawie wszystkie są w jednej klasie]. Nierzadko korzysta się również z współczynnika przyrostu informacji (ang. *information gain*)
+\begin{equation}
+    \Delta E_{T_{\mathbf{n}, t=r}}(c|t)=E_{T_{\mathbf{n}, t=r}}(c)-E_{T_{\mathbf{n}, t=r}}(c|t).
+\end{equation}
+Istnieje również jego odpowiednik dla indeksu Gini'ego. W obu przypadkach optymalnego podziału szukamy poprzez maksymalizację przyrostu informacji.
+
+## Przycinanie drzewa decyzyjnego
+
+Uczenie drzewa decyzyjnego wiąże się z ryzykiem przeuczenia modelu (podobnie jak to się ma w przypadku innych modeli predykcyjnych). Wcześniej przytoczone reguły zatrzymania (np. głębokość drzewa czy zatrzymanie przy osiągnięciu jednorodności na zadanym poziomie) pomagają kontrolować poziom generalizacji drzewa ale czasami będzie dodatkowo potrzebne przycięcie drzewa, czyli usunięcie pewnych podziałów, a co za tym idzie, również liści (węzłów).
+
+### Przycinanie redukujące błąd
+
+Jedną ze strategii przycinania drzewa jest przycinanie redukujące błąd (ang. *reduced error pruning*). Polega ono na porównaniu błędów (najczęściej używana jest miara odsetka błędnych klasyfikacji lub MSE) liścia $\mathbf{l}$ i węzła do którego drzewo przycinamy $\mathbf{n}$ na całkiem nowym zbiorze uczącym $R$. Niech $e_R(\mathbf{l})$ i $e_R(\mathbf{n})$ oznaczają odpowiednio błędy na zbiorze $R$ liścia i węzła. Wówczas jeśli zachodzi warunek
+\begin{equation}
+    e_R(\mathbf{l})\leq e_R(\mathbf{n}), 
+\end{equation}
+to zaleca się zastąpić węzeł $\mathbf{n}$ liściem $\mathbf{l}$, czyli uczynić węzeł $\mathbf{n}$ węzłem terminalnym.
+
+### Przycinanie minimalizujące błąd
+
+Przycinanie minimalizujące błąd opiera się na spostrzeżeniu, że błąd drzewa przyciętego charakteryzuje się zbyt pesymistyczną oceną i dlatego wymaga korekty. Węzeł drzewa klasyfikacyjnego $\mathbf{n}$ zastępujemy liściem $\mathbf{l}$, jeśli
+\begin{equation}
+    \hat{e}_T(\mathbf{l})\leq \hat{e}_T(\mathbf{n}),
+\end{equation}
+gdzie
+\begin{equation}
+    \hat{e}_T(\mathbf{n})=\sum_{\mathbf{n}'\in N(\mathbf{n})}\frac{|T_{\mathbf{n}'}|}{|T_\mathbf{n}|}\hat{e}_T(\mathbf{n}'),
+\end{equation}
+a $N(\mathbf{n})$ jest zbiorem wszystkich możliwych węzłów potomnych węzła $\mathbf{n}$ i \begin{equation}
+    \hat{e}_T(\mathbf{l})=1-\frac{|\{x\in T_\mathbf{l}|c(x)=d_{\mathbf{l}}\}|+mp}{|T_\mathbf{l}|+m},
+\end{equation}
+gdzie $p$ jest prawdopodobieństwem przynależności do klasy $d_{\mathbf{l}}$ ustalona na podstawie zewnętrznej wiedzy (gdy jej nie posiadamy przyjmujemy $p=1/|C|$).
+
+W przypadku drzewa regresyjnego znajdujemy wiele analogii, ponieważ jeśli dla pewnego zbioru rekordów $T$ spełniony jest warunek
+\begin{equation}\label{kryterium1}
+	\operatorname{mse}_T(\mathbf{l})\leq\operatorname{mse}_T(\mathbf{n}),
+\end{equation}
+gdzie $\mathbf{l}$ i $\mathbf{n}$ oznaczają odpowiednio liść i węzeł, to wówczas zastępujemy węzeł $\mathbf{n}$ przez liść $\mathbf{l}$.
+
+Estymatory wyznaczone na podstawie niewielkiej próby, mogą być obarczone znaczącym błędem. Wyliczanie błędu średnio-kwadratowego dla podzbioru nowych wartości może się charakteryzować takim obciążeniem. Dlatego stosuje się statystyki opisowe z poprawką, której pochodzenie może mieć trzy źródła: wiedza merytoryczna na temat szukanej wartości, założeń modelu lub na podstawie wyliczeń opartych o cały zbiór wartości.
+
+Skorygowany estymator błędu średnio-kwadratowego ma następującą postać
+\begin{equation}\label{mse}
+		\widehat{\operatorname{mse}}_T(\mathbf{l})=\frac{\sum_{x\in T}(f(x)-m_{\mathbf{l},m,m_0}(f))^2+mS_0^2}{|T_\mathbf{l}|+m},
+\end{equation}
+gdzie
+\begin{equation}\label{poprawka}
+		m_{\mathbf{l},m,m_0}(f)=\frac{\sum_{x\in T_\mathbf{l}}f(x)+mm_0}{|T_\mathbf{l}|+m},
+\end{equation}
+a $m_0$ i $S_0^2$ są średnią i wariancją wyznaczonymi na całej próbie uczącej.
+Błąd średnio-kwadratowy węzła $\mathbf{n}$ ma postać
+\begin{equation}\label{propagacja}
+		\widehat{\operatorname{mse}}_T(\mathbf{n})=\sum_{\mathbf{n}'\in N(\mathbf{n})}\frac{|T_{\mathbf{n}'}|}{|T_\mathbf{n}|}\widehat{\operatorname{mse}}_T(\mathbf{n}').
+\end{equation}
+Wówczas kryterium podcięcia można zapisać w następujący sposób
+\begin{equation}\label{kryterium2}
+		\widehat{\operatorname{mse}}_T(\mathbf{l}) \leq \widehat{\operatorname{mse}}_T(\mathbf{n})
+\end{equation}
+
+### Przycinanie ze względu na współczynnik złożoności drzewa
+
+Przycinanie ze względu na współczynnik złożoności drzewa (ang. *cost-complexity pruning*) polega na wprowadzeniu "kary" za zwiększoną złożoność drzewa. Drzewa klasyfikacyjne przycinamy gdy spełniony jest warunek 
+\begin{equation}
+    e_T(\mathbf{l})\leq e_T(\mathbf{n})+\alpha C(\mathbf{n}),
+\end{equation}
+gdzie $C(\mathbf{n})$ oznacza złożoność drzewa mierzoną liczbą liści, a $\alpha$ parametrem wagi kary za złożoność drzewa.
+
+Wspomniane kryterium przycięcia dla drzew regresyjnych bazuje na względnym błędzie średnio-kwadratowym (ang. *relative square error*), czyli 
+\begin{equation}\label{rse}
+		\widehat{\operatorname{rse}}_T(\mathbf{n})=\frac{|T|\widehat{\operatorname{mse}}_T(\mathbf{n})}{(|T|-1)S^2_T(f)},
+\end{equation}
+gdzie $T$ oznacza podzbiór $X$, $S^2_T$ wariancję na zbiorze $T$.
+Wówczas kryterium podcięcia wygląda następująco
+\begin{equation}\label{kryterium3}
+	\widehat{\operatorname{rse}}_T(\mathbf{l})\leq \widehat{\operatorname{rse}}_T(\mathbf{n})+\alpha C(\mathbf{n}).
+\end{equation}
+
+## Obsługa braków danych
+
+Drzewa decyzyjne wyjątkowo dobrze radzą sobie z obsługa zbiorów z brakami. Stosowane są głównie dwie strategie:
+
+- udziałów obserwacji (ang. *fractional instances*) - rozważane są wszystkie możliwe podziały dla brakującej obserwacji i przypisywana jest im odpowiednia waga lub prawdopodobieństwo, w oparciu o zaobserwowany rozkład znanych obserwacji. Te same wagi są stosowane do predykcji wartości na podstawie drzewa z brakami danych.
+- podziałów zastępczych (ang. *surrogate splits*) - jeśli wynik podziału nie może być ustalony dla obserwacji z brakami, to używany jest podział zastępczy (pierwszy), jeśli i ten nie może zostać ustalony, to stosuje się kolejny. Kolejne podziały zastępcze są generowane tak, aby wynik podziału możliwie najbardziej przypominał podział właściwy.
+
+## Zalety i wady
+
+### Zalety
+
+- łatwe w interpretacji;
+- nie wymagają żmudnego przygotowania danych (brak standaryzacji, wprowadzania zmiennych binarnych, dopuszcza występowanie braków danych);
+- działa na obu typach zmiennych - jakościowych i ilościowych;
+- dopuszcza nieliniowość związku między zmienną wynikową a predyktorami;
+- odporny na odstępstwa od założeń;
+- pozwala na obsługę dużych zbiorów danych.
+
+### Wady
+
+- brak jawnej postaci zależności;
+- zależność struktury drzewa od użytego algorytmu;
+- przegrywa jakością predykcji z innymi metodami nadzorowanego uczenia maszynowego.
+
+## Przykład
+
+Przykładem zastosowania drzew decyzyjnych będzie klasyfikacja irysów na podstawie długości i szerokości kielicha i płatka. 
+
+```{r message=F, warning=F}
+library(tidyverse) 
+library(rpart) # pakiet do tworzenia drzew typu CART
+library(rpart.plot) # pakiet do rysowania drzew
+```
+
+Każde zadanie ucznia maszynowego zaczynamy od czyszczenia danych i odpowiedniego ich przygotowania ale w tym przypadku skupimy się jedynie na budowie, optymalizacji i ewaluacji modelu.
+
+### Podział zbioru na próbę uczącą i testową
+
+```{r}
+set.seed(44)
+dt.train <- iris %>% 
+    sample_frac(size = 0.7)
+dt.test <- setdiff(iris, dt.train)
+str(dt.train)
+str(dt.test)
+```
+
+### Budowa drzewa
+
+Budowy drzewa dokonujemy za pomocą funkcji `rpart` pakietu **rpart** [@R-rpart] stosując zapis formuły zależności. Drzewo zostanie zbudowane z uwzględnieniem kilku kryteriów zatrzymania:
+
+- minimalna liczebność węzła, który może zostać podzielony to 10 - ze względu na małą liczebność zbioru uczącego;
+- minimalna liczebność liścia to 5 - aby nie dopuścić do przeuczenia modelu;
+- maksymalna głębokość drzewa to 4 - aby nie dopuścić do przeuczenia modelu.
+
+```{r}
+mod.rpart <- rpart(Species~., data = dt.train, 
+                   control = rpart.control(minsplit = 10,
+                                           minbucket = 5,
+                                           maxdepth = 4))
+summary(mod.rpart)
+```
+
+```{r fig.cap="Obraz drzewa klasyfikacyjnego."}
+rpart.plot(mod.rpart)
+```
+
+Powyższy wykres przedstawia strukturę drzewa klasyfikacyjnego. Kolorami są oznaczone klasy, które w danym węźle dominują. Nasycenie barwy decyduje o sile tej dominacji. W każdym węźle podana jest klasa, do której najprawdopodobniej należą jego obserwacje. Ponadto podane są proporcje przynależności do klas zmiennej wynikowej oraz procent obserwacji zbioru uczącego należących do danego węzła. Pod każdym węzłem podana jest reguła podziału.
+
+### Przycinanie drzewa
+
+Zanim przystąpimy do przycinania drzewa należy sprawdzić, jakie są zdolności generalizacyjne modelu. Oceny tej dokonujemy najczęściej sprawdzając macierz klasyfikacji.
+
+```{r}
+pred.prob <- predict(mod.rpart, 
+                     newdata = dt.test)
+pred.prob[10:20,]
+pred.class <- predict(mod.rpart, 
+                      newdata = dt.test,
+                      type = "class")
+pred.class
+tab <- table(predykcja = pred.class, obserwacja = dt.test$Species)
+tab
+```
+
+Jak widać z powyższej tabeli, model całkiem dobrze radzi sobie z poprawną klasyfikacją obserwacji do odpowiednich kategorii. Tylko jedna obserwacja została błędnie zaklasyfikowana. 
+
+W dalszej kolejności sprawdzimy, czy nie jest konieczne przycięcie drzewa. Jednym z kryteriów przycinania drzewa jest przycinanie ze względu na złożoność drzewa. W tym przypadku jest wyrażony parametrem `cp`. Istnieje powszechnie stosowana reguła jednego odchylenia standardowego, która mówi, że drzewo należy przyciąć wówczas, gdy błąd oszacowany na podstawie sprawdzianu krzyżowego (`xerror`), pierwszy raz zejdzie poniżej poziomu wyznaczonego przez najniższą wartość błędu powiększonego o odchylenie standardowe tego błędu (`xstd`). Na podstawie poniższej tabeli można ustalić, że poziomem odcięcia jest wartość $0.10294+0.037589=0.140529$. Pierwszy raz błąd przyjmuje wartość mniejszą od $0.140529$ po drugim podziale (`nsplit=2`). Temu poziomowi odpowiada `cp` o wartości $0.029412$ i to jest złożoność drzewa, którą powinniśmy przyjąć do przycięcia drzewa.
+
+```{r fig.cap="Na wykresie błędów punkt odcięcia zaznaczony jest linią przerywaną"}
+printcp(mod.rpart)
+plotcp(mod.rpart)
+```
+
+Przycięte drzewo wygląda następująco:
+
+```{r fig.cap="Drzewo klasyfikacyjne po przycięciu"}
+mod.rpart2 <- prune(mod.rpart, cp = 0.029412)
+summary(mod.rpart2)
+rpart.plot(mod.rpart2)
+```
+
+### Ocena dopasowania modelu
+
+Na koniec budowy modelu należy sprawdzić jego jakość na zbiorze testowym.
+
+```{r}
+pred.class2 <- predict(mod.rpart2,
+                       newdata = dt.test,
+                       type = "class")
+tab2 <- table(predykcja = pred.class2, obserwacja = dt.test$Species)
+tab2
+```
+
+Mimo przycięcia drzewa, klasyfikacja pozostaje na niezmienionym poziomie. Odsetek poprawnych klasyfikacji możemy oszacować za pomocą
+
+```{r}
+round(sum(diag(tab2))/sum(tab2)*100,1)
+```
+

@@ -25,11 +25,11 @@ output:
 
 # Wstęp {-}
 
-```{r include=FALSE}
+```{r eval=FALSE, include=FALSE}
 # automatically create a bib database for R packages
-# knitr::write_bib(c(
-#   .packages(), 'bookdown', 'rmarkdown'
-# ), 'packages.bib')
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'rmarkdown'
+), 'packages.bib')
 ```
 
 ```{r setup, include=FALSE}
