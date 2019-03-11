@@ -17,9 +17,11 @@ Każdy element dziedziny $x\in X$ nazywamy obserwacją. Obserwacją nazywać bę
 ### Atrybuty obserwacji
 
 Każdy obiekt z dziedziny $x\in X$ można opisać zestawem cech (atrybutów), które w notacji matematycznej oznaczymy przez $a:X\to A$, gdzie $A$ jest przestrzenią wartości atrybutów. Każda obserwacja $x$ posiadająca $k$ cech da się wyrazić wektorowo jako $(a_1(x), a_2(x), \ldots, a_k(x))$. Dla większości algorytmów uczenia maszynowego wyróżnia się trzy typy atrybutów:
+
 - *nominalne* - posiadające skończoną liczbę stanów, które posiadają porządku;
 - *porządkowe* - posiadające skończoną liczbę stanów z zachowaniem porządku;
 - *ciągłe* - przyjmujące wartości numeryczne.
+
 Często jeden z atrybutów spełnia specjalną rolę, ponieważ stanowi realizację cechy, którą traktujemy jako wyjściową (ang. *target value attribute*). W tym przypadku powiemy o **nadzorowanym uczeniu maszynowym**. Jeśli zmiennej wyjściowej nie ma dziedzinie, to mówimy o **nienadzorowanym uczeniu maszynowym**.
 
 ### Zbiór uczący

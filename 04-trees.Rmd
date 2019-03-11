@@ -101,7 +101,7 @@ Podziały te mogą wykorzystywać oba wcześniej wspomniane typy, w zależności
 
 Sposób przypisywania wartości docelowej wiąże się ściśle z rodzajem drzewa. W drzewach regresyjnych chodzi o wyliczenie średniej lub mediany dla obserwacji ujętych w danym węźle. Natomiast w przypadku drzewa klasyfikacyjnego, wyznacza się wartości prawdopodobieństw przynależności obserwacji znajdującej się w danym węźle do poszczególnych klas
 \begin{equation}
-    \P(d|\mathbf{n})=\P(T_\mathbf{n})(d)=\frac{|T_\mathbf{n}^d|}{|T_\mathbf{n}|},
+    \P(d|\mathbf{n})=\P_{T_\mathbf{n}}(d)=\frac{|T_\mathbf{n}^d|}{|T_\mathbf{n}|},
 \end{equation}
 gdzie $T_\mathbf{n}$ oznaczają obserwacje zbioru uczącego znajdujące się w węźle $\mathbf{n}$, a $T_\mathbf{n}^d$ oznacza dodatkowo podzbiór zbioru uczącego w $\mathbf{n}$ węźle, które należą do klasy $d$. Oczywiście klasyfikacja na podstawie otrzymanych prawdopodobieństw w danym węźle jest dokonana przez wybór klasy charakteryzującej się najwyższym prawdopodobieństwem. 
 
@@ -137,7 +137,7 @@ Miarą heterogeniczności węzłów ze względu na zmienną wynikową (ang. *imp
 
 Entropią podzbioru uczącego w węźle $\mathbf{n}$, wyznaczamy wg wzoru
 \begin{equation}
-E_{T_{\mathbf{n}}(c|t)} = \sum_{x\in R_t} \frac{|T_{\mathbf{n}, t=r}|}{|T_{\mathbf{n}}|}E_{T_{\mathbf{n}, t=r}}(c),
+E_{T_{\mathbf{n}}}(c|t) = \sum_{x\in R_t} \frac{|T_{\mathbf{n}, t=r}|}{|T_{\mathbf{n}}|}E_{T_{\mathbf{n}, t=r}}(c),
 \end{equation}
 gdzie $t$ jest podziałem (kandydatem), $r$ potencjalnym wynikiem podziału $t$, $c$ jest oznaczeniem klasy zmiennej wynikowej, a 
 \begin{equation}
@@ -150,7 +150,7 @@ przy czym
 
 Podobnie definiuje się indeks Gini'ego
 \begin{equation}
-Gi_{T_{\mathbf{n}}(c|t)} = \sum_{x\in R_t} \frac{|T_{\mathbf{n}, t=r}|}{|T_{\mathbf{n}}|}Gi_{T_{\mathbf{n}, t=r}}(c),
+Gi_{T_{\mathbf{n}}}(c|t) = \sum_{x\in R_t} \frac{|T_{\mathbf{n}, t=r}|}{|T_{\mathbf{n}}|}Gi_{T_{\mathbf{n}, t=r}}(c),
 \end{equation}
 gdzie
 \begin{equation}
@@ -158,7 +158,7 @@ gdzie
 \end{equation}
 Dla tak zdefiniowanych miar "nieczystości" węzłów, podziału dokonujemy w taki sposób, aby zminimalizować współczynnik Gini'ego lub entropię. Im niższe miary nieczystości, tym bardziej obserwacje znajdujące się w węźle są monokulturą^[prawie wszystkie są w jednej klasie]. Nierzadko korzysta się również z współczynnika przyrostu informacji (ang. *information gain*)
 \begin{equation}
-    \Delta E_{T_{\mathbf{n}, t=r}}(c|t)=E_{T_{\mathbf{n}, t=r}}(c)-E_{T_{\mathbf{n}, t=r}}(c|t).
+    \Delta E_{T_{\mathbf{n}}}(c|t)=E_{T_{\mathbf{n}}}(c)-E_{T_{\mathbf{n}}}(c|t).
 \end{equation}
 Istnieje również jego odpowiednik dla indeksu Gini'ego. W obu przypadkach optymalnego podziału szukamy poprzez maksymalizację przyrostu informacji.
 
@@ -168,11 +168,11 @@ Uczenie drzewa decyzyjnego wiąże się z ryzykiem przeuczenia modelu (podobnie 
 
 ### Przycinanie redukujące błąd
 
-Jedną ze strategii przycinania drzewa jest przycinanie redukujące błąd (ang. *reduced error pruning*). Polega ono na porównaniu błędów (najczęściej używana jest miara odsetka błędnych klasyfikacji lub MSE) liścia $\mathbf{l}$ i węzła do którego drzewo przycinamy $\mathbf{n}$ na całkiem nowym zbiorze uczącym $R$. Niech $e_R(\mathbf{l})$ i $e_R(\mathbf{n})$ oznaczają odpowiednio błędy na zbiorze $R$ liścia i węzła. Wówczas jeśli zachodzi warunek
+Jedną ze strategii przycinania drzewa jest przycinanie redukujące błąd (ang. *reduced error pruning*). Polega ono na porównaniu błędów (najczęściej używana jest miara odsetka błędnych klasyfikacji lub MSE) liścia $\mathbf{l}$ i węzła do którego drzewo przycinamy $\mathbf{n}$ na całkiem nowym zbiorze uczącym $R$. Niech $e_R(\mathbf{l})$ i $e_R(\mathbf{n})$ oznaczają odpowiednio błędy na zbiorze $R$ liścia i węzła. Przez błąd węzła rozumiemy błąd pod-drzewa o korzeniu $\mathbf{n}$. Wówczas jeśli zachodzi warunek
 \begin{equation}
     e_R(\mathbf{l})\leq e_R(\mathbf{n}), 
 \end{equation}
-to zaleca się zastąpić węzeł $\mathbf{n}$ liściem $\mathbf{l}$, czyli uczynić węzeł $\mathbf{n}$ węzłem terminalnym.
+to zaleca się zastąpić węzeł $\mathbf{n}$ liściem $\mathbf{l}$.
 
 ### Przycinanie minimalizujące błąd
 
