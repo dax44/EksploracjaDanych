@@ -240,7 +240,7 @@ Zalecenia doboru zmiennych są następujące:
 
 Ad 4-7. Decyzje podejmowane w tych punktach zależą istotnie od analizowanego zbioru i będą przedmiotem oddzielnych analiz w kontekście rozważanych zbiorów i zadań.
 
-## Przykład
+## Przykład {#przyk21}
 
 Dokonamy imputacji zbioru `airquality` z wykorzystaniem pakietów **mice** i **VIM** [@R-VIM]
 

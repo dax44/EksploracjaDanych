@@ -257,7 +257,7 @@ Drzewa decyzyjne wyjątkowo dobrze radzą sobie z obsługa zbiorów z brakami. S
 - zależność struktury drzewa od użytego algorytmu;
 - przegrywa jakością predykcji z innymi metodami nadzorowanego uczenia maszynowego.
 
-## Przykład
+## Przykład {#przyk41}
 
 Przykładem zastosowania drzew decyzyjnych będzie klasyfikacja irysów na podstawie długości i szerokości kielicha i płatka. 
 
@@ -351,5 +351,99 @@ Mimo przycięcia drzewa, klasyfikacja pozostaje na niezmienionym poziomie. Odset
 
 ```{r}
 round(sum(diag(tab2))/sum(tab2)*100,1)
+```
+
+## Inne algorytmy budowy drzew decyzyjnych implementowane w **R**
+
+Oprócz najbardziej znanego algorytmu CART implementowanego w postaci funkcji pakietu **rpart**, istnieją również inne algorytmy, które znalzały swoje implementacje w R. Są to:
+
+- *CHAID*^[Chi-square automatic interaction detection] - algorytm przeznaczony do budowy drzew klafyfikacyjnych, gdzie zarówno zmienna wynikowa, jak i zmienne niezależne muszą być ze skali jakościowej. Główną różnicą w stosunku do drzew typu CART jest sposób budowy podziałów, oparty na teście niezależności $\chi^2$ Pearsona. Wyboru reguły podziału dokonuje się poprzez testowanie niezależności zmiennej niezależnej z predyktorami. Reguła o największej wartości statystyki $\chi^2$ jest stosowana w pierwszej kolejności. Implementacja tego algorytmu znajduje się w pakiecie **CHAID**^[brak w oficjalnej dystrybucji CRAN] (funkcja do tworzenia drzewa o tej samej nazwie `chaid`) [@R-CHAID].
+- *Ctree*^[Conditional Inference Trees] - algorytm zbliżony zasadą dzialania do CHAID, ponieważ również wykorzystuje testowanie do wyboru reguły podziału. Różni się jednak tym, że może być stosowany do zmiennych dowolnego typu. Implementację R-ową można znaleźć w pakietach **party** [@R-party] lub **partykit** [@R-partykit] - funkcją do tworzenia modelu jest `ctree`.
+- *C4.5* - algorytm stworzony przez @quinlan1993 w oparciu, o również jego autorstwa, algorytm ID3. W dużym uproszczeniu, dobór reguł podziału odbywa się na podstawie przyrostu informacji (patrz [Reguły podziału]). W przeciwieństwie do pierwotnego algorytmu ID3, C4.5 nie raczej nie przeucza drzew. Implementacja R-owa znajduje się w pakiecie **RWeka** [@R-Rweka] - funkcja do budowy drzewa to `J48`.
+- *C5.0* - kolejny algorytm autorstwa @R-C50 jest usprawnieniem algorytmu C4.5, generującym mniejsze drzewa automatycznie przycinane na podstawie złożności drzewa. Jest szybszy od poprzednika i pozwala na zastosowanie metody *boosting*^[budowa klasyfikatora w oparciu o proces iteracyjny, w którym kolejne w kolejnych iteracjach budowane są proste drzewa i przypisywane są im wagi - im gorszy klasyfikator, tym większa waga - po to aby nauczyć drzewo klasyfikować "trudne" przypadki]. Implementacja R-owa znajduje się w pakiecie *C50*, a funkcja do budowy drzewa to `C5.0`.
+
+## Przykład {#przyk42}
+
+W celu porównania wyników klasyfikacji na podstawie drzew decyzyjnych o różnych algorytmach, zostaną nauczone modele w oparciu o funkcje `ctree`, `J48` i `C5.0` dla tego samego zestawu danych co w [przykładzie wcześniejszym](#przyk41).
+
+### `ctree`
+
+Na początek ustalamy parametry ograniczające rozrozt drzewa podobne jak w poprzednim przykładzie.
+
+```{r message=FALSE, warning=FALSE}
+library(partykit)
+tree2 <- ctree(Species~., data = dt.train,
+               control = ctree_control(minsplit = 10,
+                                       minbucket = 5,
+                                       maxdepth = 4))
+tree2
+```
+
+```{r ctree, fig.cap="Wykres drzewa decyzyjnego zbudowanego metodą ctree", fig.height=8, fig.width=12}
+plot(tree2)
+```
+
+Wydaje się, że drzewo nie jest optymalne, ponieważ w węźle 6 obserwacje z grup `versicolor` i `virginica` są nieco pomieszane. Ostateczne oceny dokonujemy na podstawie próby testowej.
+
+```{r}
+pred2 <- predict(tree2, newdata = dt.test)
+tab <- table(predykcja = pred2, obserwacja = dt.test$Species)
+tab
+```
+
+Dopiero ocena jakości klasyfikacji na podstawe próby testowej pokazuje, że model zbudowany za pomocą `ctree` daje podobną precyzję jak `rpart` przycięty.
+
+### `J48`
+
+W tym przypadku model sam poszukuje optymalnego rozwiazania przycinając się automatycznie.
+
+```{r message=FALSE, warning=FALSE}
+library(RWeka)
+tree3 <- J48(Species~., data = dt.train)
+tree3
+```
+
+```{r J48, fig.cap="Wykres drzewa decyzyjnego zbudowanego metodą J48", fig.height=8, fig.width=12}
+plot(tree3)
+```
+
+Drzewo jest nieco bardziej rozbudowane niż `tree2` i `mod.rpart2`.
+
+```{r}
+summary(tree3)
+```
+
+Podsumowanie dopasowania drzewa na próbie uczącej jest bardzo dobre, bo poprawnych klasyfikacji jest ponad 98%. Oceny dopasowania i tak dokonujemy na zbiorze testowym.
+
+```{r}
+pred3 <- predict(tree3, newdata = dt.test)
+tab <- table(predykcja = pred3, obserwacja = dt.test$Species)
+tab
+```
+
+Otrzymujemy identyczną macierz klasyfikacji jak w poprzednich przypadkach.
+
+### `C50`
+
+Tym razem również nie trzeba ustawiać parametrów drzewa, ponieważ algorytm działa tak aby zapobiec rozrostowi drzewa przy jednoczesnej wysokiej poprawności klasyfikacji.
+
+```{r message=FALSE, warning=FALSE}
+library(C50)
+tree4 <- C5.0(Species~., data = dt.train)
+summary(tree4)
+```
+
+Otrzymujemy identyczne drzewo jak w przypadku zastosowania algorytmu `ctree`.
+
+```{r C50, fig.cap="Wykres drzewa decyzyjnego zbudowanego metodą C5.0", fig.width=12}
+plot(tree4)
+```
+
+Dla pewności przeprowadzimy sprawdzenie na zbiorze testowym.
+
+```{r}
+pred4 <- predict(tree4, newdata = dt.test)
+tab <- table(predykcja = pred4, obserwacja = dt.test$Species)
+tab
 ```
 
