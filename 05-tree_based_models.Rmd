@@ -1,8 +1,3 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
 # Pochodne drzew decyzyjnych
 
 ```{r include=FALSE}
@@ -12,7 +7,7 @@ library(tidyverse)
 
 Przykład zastosowania drzew decyzyjnych na zbiorze `iris` w poprzednich [przykładach](#przyk41) może skłaniać do przypuszczenia, że drzewa decyzyjne zawsze dobrze radzą sobie z predykcją wartości wynikowej. Niestety w przykładach nieco bardziej skomplikowanych, gdzie chociażby klasy zmiennej wynikowej nie są tak wyraźnie separowalne, drzewa decyzjne wypadają gorzej w prównaniu z innymi modelami nadzorowanego uczenia maszynowego.
 
-I tak u podstaw metod bazujących na prostych drzewach decyzyjnych stał pomysł, że skoro jedno drzewo nie ma wystrczających własności predykcyjnych, to może zastosowanie wielu drzew połączonych w pewien sposób poprawi je. Tak powstały metody *bagging*, *random forest* i *boosting*^[hyba tylko dla drógiej metody istniej dobre polskie tłumaczenie nazwy - las losowy]. 
+I tak u podstaw metod bazujących na prostych drzewach decyzyjnych stał pomysł, że skoro jedno drzewo nie ma wystrczających własności predykcyjnych, to może zastosowanie wielu drzew połączonych w pewien sposób poprawi je. Tak powstały metody *bagging*, *random forest* i *boosting*^[hyba tylko dla drógiej metody istniej dobre polskie tłumaczenie nazwy - las losowy]. Należy zaznaczyć, że metody zanjdują swoje zastosowanie również w innych modelach nadzorowanego ucznienia maszynowego.
 
 ## Bagging
 
@@ -44,7 +39,7 @@ Faktycznie uczenie modelu metodą bagging odbywa się średnio na 2/3 obserwacji
 
 Niewątpliwą zaletą drzew decyzyjnych była ich łatwa interpretacja. W przypadku metody bagging jest ona znacznie utrudniona, ponieważ jej wynik składa się z agregacji wielu drzew. Można natomiast ocenić ważność predyktorów (ang. *variable importance*). I tak, przez obserwację spadku $RSS$ dla baggingu regresyjnego przy zastosowaniu danego predyktora w podziałach drzewa i uśrednieniu wyniku otrzymamy wskaźnik ważności predyktora dużo lepszy niż dla pojedynczego drzewa. W przypadku baggingu klasyfikacyjnego w miejsce $RSS$ stosujemy indeks Gini'ego.
 
-Implementacja R-owa metody bagging znajduje się w pakiecie **ipred**, a funkcja do budowy modelu nazywa się `bagging` [@R-ipred]. Można również stosować funkcję `randomForest` pakietu **randomForest** [@R-las] - powody takiego działania wyjaśnią się w rodziale [Lasy losowe].
+Implementacja R-owa metody bagging znajduje się w pakiecie **ipred**, a funkcja do budowy modelu nazywa się `bagging` [@R-ipred]. Można również stosować funkcję `randomForest` pakietu **randomForest** [@R-las] - powody takiego działania wyjaśnią się w podrodziale [Lasy losowe].
 
 ### Przykład {#przyk51}
 
@@ -120,7 +115,7 @@ W porównaniu do ważności zmiennych dla pojedynczego drzewa widać pewne rożn
 
 ## Lasy losowe
 
-Lasy losowe są uogólnieniem metody bagging, polegającą na losowaniu dla każdego drzewa wchodzącego w skład lasu $m$ predyktorów spośród $p$ dostępnych, a następnie budowaniu drzew z wykorzystaniem tylko tych predyktorów. Dzięki temu za każdy razem drzewo jest budowane w oparciu o nowy zestaw cech (najczęściej przyjmujemy $m=\sqrt{p}$). W przypadku modeli bagging za każdym razem najsilniejszy predyktor wchodził w skład zbioru uczacego, a co za tym idzie również uczestniczył w tworzeniu reguł podziału. Wówczas wiele drzew zawierało reguły stosujące dany atrubut, a wtedy predykcje otrzymywane za pomocą drzew były skorelowane. Dlatego nawet duża liczba prób bootstrapowych nie zapewniała poprawy precyzji.
+Lasy losowe są uogólnieniem metody bagging, polegającą na losowaniu dla każdego drzewa wchodzącego w skład lasu $m$ predyktorów spośród $p$ dostępnych, a następnie budowaniu drzew z wykorzystaniem tylko tych predyktorów [@ho1995]. Dzięki temu za każdy razem drzewo jest budowane w oparciu o nowy zestaw cech (najczęściej przyjmujemy $m=\sqrt{p}$). W przypadku modeli bagging za każdym razem najsilniejszy predyktor wchodził w skład zbioru uczacego, a co za tym idzie również uczestniczył w tworzeniu reguł podziału. Wówczas wiele drzew zawierało reguły stosujące dany atrubut, a wtedy predykcje otrzymywane za pomocą drzew były skorelowane. Dlatego nawet duża liczba prób bootstrapowych nie zapewniała poprawy precyzji. Implementacja tej metody znajduje się w pakiecie **randomForest**.
 
 ### Przykład {#przyk52}
 
@@ -146,3 +141,54 @@ varImpPlot(boston.rf)
 
 ## Boosting
 
+Rozważania na temat metody *boosting* zaczeły się od pytań postawionych w publikacji @Kearns1989, czy da się na podstawie na podstawie zbioru słabych modeli stworzyć jeden dobry? Odpowiedzi pozytywnej na nie udzielili, najpierw @Schapire1990, a potem @breiman1998. W metodzie boosting nie stosuje się prób bootstrapowych ale odpowiednio modyfikuje się drzewo wyjściowe w kolejnych krokach na tym samym zbiorze uczącym. Algorytm dla drzewa regresyjnego jest następujący:
+
+1. Ustal $\hat{f}(x)=0$ i $r_i=y_i$ dla każdego $i$ w zbiorze uczącym.
+2. Dla $b=1,2,\ldots, B$ powtarzaj:
+   a) naucz drzewo $\hat{f}^b$ o $d$ regułach podziału (czyli $d+1$ liściach) na zbiorze $(X_i, r_i),
+   b) zakutalizuj drzewo do nowej "skurczonej" wersji 
+   \begin{equation}
+    \hat{f}(x)\leftarrow \hat{f}(x)+\lambda\hat{h}^b(x),
+   \end{equation}
+   c) zaktualizuj reszty 
+   \begin{equation}
+    r_i\leftarrow r_i-\lambda\hat{f}^b(x_i).
+   \end{equation}
+3. Wyznacz boosted model
+\begin{equation}
+  \hat{f}(x) = \sum_{b=1}^B\lambda\hat{f}^b(x)
+\end{equation}
+
+Uczenie drzew klasyfikacyjnego metoda boosting przebiega w podobny sposób. Wynik uczenia drzew metodą boosting zależy od trzech paramtrów:
+
+1. Liczby drzew $B$. W przeciwieństwie do metody bagging i lasów losowych, zbyt duże $B$ może doprowadzić do przeuczenia modelu. $B$ ustala się najczęściej na podstawie walidacji krzyżowej.
+2. Parametru "kurczenia" (ang. *shrinkage*) $\lambda$. Kontroluje on szybkość uczenia się kolejnych drzew. Typowe wartości $\lambda$ to 0.01 lub 0.001. Bardzo małe $\lambda$ może wymagać dobrania większego $B$, aby zapewnić dobrą jakość predykcyjną modelu. 
+3. Liczby podziałów w drzewach $d$, która decyduje o złożoności drzewa. Bywa, że nawet $d=1$ daje dobre rezultaty, ponieważ model wówczas uczy się powoli.
+
+Implementację metody boosting można znaleźć w pakiecie **gbm** [@R-gbm]
+
+
+Metodę boosting zastosujemy do zadania predykcji ceny mieszkań na przedmieściach Bostonu. Dobór parametrów modelu będzie arbitralny, więc niekoniecznie model będzie najlepiej dopasowany.
+
+```{r}
+library(gbm)
+boston.boost <- gbm(medv~., data = boston.train,
+                    distribution = "gaussian", 
+                    n.trees = 5000,
+                    interaction.depth = 2,
+                    shrinkage = 0.01)
+boston.boost
+```
+
+```{r}
+summary(boston.boost)
+```
+
+Predykcja na podstawie metody boosting
+
+```{r}
+boston.pred4 <- predict(boston.boost, newdata = boston.test, n.trees = 5000)
+rmse(boston.pred4, boston.test$medv)
+```
+
+$RMSE$ jest w tym przypadku mniejsze niż w lasach losowych ale nieco większe niż w metodzie bagging. Wszsystkie metody wzmacnianych drzew dają wyniki lepsze niż pojedyncze drzewa.
