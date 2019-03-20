@@ -38,7 +38,7 @@ Model to narzędzie pozyskiwania wiedzy na podstawie zbioru uczącego. Nauczony 
 
 ### Jakość dopasowania modelu
 
-Do oceny jakości dopasowania modelu wykorzystuje się, w zależności od zadania, wiele współczynników (np. dla zadań regresyjnych są to błąd średnio-kwadratowy - ang. *Mean Square Error* a dla zadań klasyfikacyjnych - trafność  - ang. *Accuracy*). Możemy mówić dwóch rodzajach dopasowania modeli:
+Do oceny jakości dopasowania modelu wykorzystuje się, w zależności od zadania, wiele współczynników (np. dla zadań regresyjnych są to błąd średnio-kwadratowy - ang. *Mean Square Error*, a dla zadań klasyfikacyjnych - trafność  - ang. *Accuracy*). Możemy mówić dwóch rodzajach dopasowania modeli:
 
 - poziom dopasowania na zbiorze uczącym
 - poziom dopasowania na zbiorze testowym (oczywiście z punktu widzenia utylitarności modelu ten współczynnik jest ważniejszy).

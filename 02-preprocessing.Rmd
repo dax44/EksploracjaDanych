@@ -16,7 +16,7 @@ names(test_df) <- make.names(names(test_df))
 test_df
 ```
 
-Efekt końcowy choć skuteczny to nie jest zadowalający. Czyszczenia nazw zmiennych można też dokonać stosując funkcję `clean_names` pakietu **janitor** [@R-janitor]. Pozwala on również na usuwanie pustych wierszy i kolumn, znajdowanie zduplikowanych rekordów, itp.
+Efekt końcowy choć skuteczny, to nie jest zadowalający. Czyszczenia nazw zmiennych można też dokonać stosując funkcję `clean_names` pakietu **janitor** [@R-janitor]. Pozwala on również na usuwanie pustych wierszy i kolumn, znajdowanie zduplikowanych rekordów, itp.
 
 ```{r clean_names}
 library(janitor)

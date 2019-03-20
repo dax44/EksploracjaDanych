@@ -1,0 +1,66 @@
+# Klasyfikatory liniowe
+
+Obszerną rodzinę klasyfikatorów stanowią modele liniowe (ang. *linear classification models*). Klasyfikacji w tej rodzinie technik dokonuje się na podstawie modeli funkcji kombinacji liniowej predyktorów. Jest to ujęcie parametryczne, w którym klasyfikacji nowej wartości dokonujemy na podstawie atrybutów obserwacji i wektora parametrów. Uczenie na podstawie zestawu treningowego polega na oszacowaniu paramtrów modelu. W odróżnieniu od metod nieparametrycznych postać modelu tym razem jest znana. Każdy klasyfikator liniowy skład się z funkcji wewnętrzenj (ang. *inner representation function*) i funkcji zewnętrzenej (ang. *outer representation function*).
+Pierwsza jest funkcją rzeczywistą paramterów modelu i wartości atrybutów obserwacji
+\begin{equation}
+    g(x) = F(\mathbf{a}(x),\mathbf{w})=\sum_{i=0}^pw_ia_i(x)=\mathbf{w}\circ \mathbf{a}(x),
+\end{equation}
+przyjmując, że $a_0(x)=1$.
+
+Funkcja zewnętrzna przyporządkowuje binarnie klasy na podstawie wartości funkcji wewenętrznej. Istnieją dwa główne typy tych klasyfikacji:
+
+- brzegowa - przyjmujemy, że funkcje wewnętrzne tworzą granice zbiorów obserwacji różnych klas,
+- probabilistyczna - bazująca na tym, że funkcje wewnętrzne mogą pośrednio wkazywać prawdopodobieństwo przynależności do danej klasy.
+
+Pierwsza dzieli przestrzeń obserwacji za pomocą hiperpłaszczyzn na obszary jednorodne pod względem przynależności do klas. Druga jest próbą parametrycznej reprezentacji prawdopodobieństw przynależności do klas. Klasyfikacji na podstawie prawdopodobieństw można dokonać na różne sposoby, stosując:
+
+- największe prawdopodobieństwo,
+- funkcję najmniejszego kosztu błędnej klasyfikacji,
+- krzywych ROC (ang. *Receiver Operating Characteristic* - o tym później).
+
+Podejście brzegowe lub probabilistyczne prowadzi najczęściej do dwóch typów reprezentacji funkcji zewnętrzenej:
+
+- reprezentacji progowej (ang. *threshold representation*) - najczęściej przy podejściu brzegowym,
+- reprezentacji logistycznej (ang. *logit representation*) - przy podejściu probabilistycznym.
+
+## Reprezentacja progowa
+
+W przypadku klasyfikacji dwustanowej, dziedzina jest dzielona na dwa regiony (pozytywny i negatywny) poprzez porównanie funkcji zewnętrzenej z wartością progową. Bez straty ogólności można sprawić, że będzie to wartość 0
+\begin{equation}
+    h(x)=H(g(x))= \begin{cases}
+        1, &\text{ jeśli } g(x)\geq 0\\
+        0, &\text{ w przeciwnym przypadku.}
+    \end{cases}
+\end{equation}
+Czasami używa się parametryzacji $\{-1,1\}$.
+Przez porównianie $g(x)$ z 0 definiuje się hiperpłaszczyznę w $p$ wymiarowej przestrzeni, która rozdziela dziedzinę na regiony pozytywne i negatywne. W tym ujęciu mówimy o liniowej separowalności obserwacji różnych klas, jeśli istnieje hiperpłaszczyzna je rozdzielająca.
+
+## Reprezentacja logitowa
+
+Najbardziej popularną reprezentacją parametryczną stosowaną w klasyfikacji jest reprezentacja logitowa
+\begin{equation}
+    \P(y=1|x)=\frac{e^{g(x)}}{e^{g(x)}+1}.
+\end{equation}
+Wówczas $g(x)$ nie reprezentuje bezpośrednio $\P(y=1|x)$ ale jego logit
+\begin{equation}
+    g(x)=logit(\P(y=1|x)),
+\end{equation}
+gdzie $logit(p)=\ln\frac{p}{1-p}$. Dlatego właściwa postać reprezentacji jest następująca
+\begin{equation}
+    \P(y=1|x)=logit^{-1}(g(x)).
+\end{equation}
+W ten sposób reprezentacja logitowa jest równoważna reprezentacji progowej, ponieważ
+\begin{equation}
+    g(x)=\ln\frac{\P(y=1|x)}{1-\P(y=1|x)}=\ln\frac{\P(y=1|x)}{\P(y=0|x)}>0.
+\end{equation}
+Jednak zaletą reprezentacji logitowej, w porównaniu do progowej, jest to, że można wyznaczyć prawdopodobieństwa przynależności do obu klas. W przypadku klasyfikacji wielostanowej uczymy tyle funkcji $h$ ile jest klas. 
+
+## Wady klasyfikatorów liniowych
+
+- tylko w przypadku prostych funkcji wewnętrznych jesteśmy w stanie ocenić wpływ poszczególnych predykorów na klasyfikację,
+- jakość predykcji zależy od doboru funkcji wewnętrzenej (liniowa w ścisłym sensie jest najczęsciej niewystarczająca),
+- nie jest w stanie klasyfikować poprawnie stanów (nie jest liniowo separowalna) w zagadnieniach typu XOR.
+
+
+
+

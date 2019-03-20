@@ -1,0 +1,171 @@
+# Klasyfikatory bayesowskie
+
+Całą gamę klasyfikatorów opartych na twierdzeniu Bayesa nazywać będziemy bayesowskimi.
+\begin{equation}\label{bayes}
+		P(A|B)=\frac{P(A)P(B|A)}{P(B)},
+\end{equation}
+gdzie $P(B)>0$. 
+	
+Bayesowskie reguły podejmowania decyzji dały podstawy takich metod jak:
+
+- liniowa analiza dyskryminacyjna;
+- kwadratowa analiza dyskryminacyjna;
+
+W ustaleniu klasyfikatora bayesowskiego będzie nam przyświecała cały czas ta sama reguła: *jeśli znam wartości cech charakteryzujących badane obiekty oraz klasy do których należą (w próbie uczącej), to na ich podstawie mogę wyznaczyć miary prawdopodobieństw a posteriori, które pomogą mi w ustaleniu klasy do której należy nowy testowy element.*
+
+W dalszej części będziemy przyjmowali następujące oznaczenia:
+
+- $T$ - zbiór danych uczących (treningowych),
+- $T^j$ -  zbiór danych uczących dla których przyjęliśmy decyzję o przynależności do $j$-tej klasy,
+- $T^j_{a_i=v}$ - zbiór danych uczących o wartości atrybutu $a_i$ równej $v$ i klasy $j$-tej,
+- $\mathbb{H}$ - przestrzeń hipotez,
+- $P(h|a_1=v_1, a_2=v_2,\ldots,a_p=v_p)$ - prawdopodobieństwo a posteriori, że prawdziwa jest hipoteza $h\in \mathbb{H}$, jeśli znamy atrybuty obiektu,
+- $P(h)$ - prawdopodobieństwo a priori zajścia hipotezy $h\in \mathbb{H}$,
+- $c$ - prawdziwy stan obiektu.
+
+## Klasyfikator maximum a posteriori (MAP)
+
+Na podstawie wiedzy o atrybutach obiektu $x$ podejmujemy decyzję o klasyfikacji tego obiektu zgodnie z hipotezą $h_{MAP}\in \mathbb{H}$, która przyjmuje postać
+\begin{align}\label{MAP}
+		h_{MAP}=&\operatorname{arg}\max_{h\in \mathbb{H}}P(h|a_1=v_1, a_2=v_2,\ldots,a_p=v_p)\\
+			=& \operatorname{arg}\max_{h\in \mathbb{H}}P(a_1=v_1, a_2=v_2,\ldots,a_p=v_p|h)\cdot P(h),
+\end{align}
+gdzie ostatnia równość wynika z twierdzenia Bayesa oraz faktu, że dla konkretnego obiektu $x$ wielkości atrybutów nie zależą od postawionej hipotezy.
+
+## Klasyfikator największej warogodności (ML)
+
+Na podstawie wiedzy o atrybutach obiektu $x$ podejmujemy decyzję o klasyfikacji tego obiektu zgodnie z hipotezą $h_{ML}\in \mathbb{H}$, która przyjmuje postać
+\begin{equation}\label{ML}
+		h_{ML}=\operatorname{arg}\max_{h\in \mathbb{H}}P(a_1=v_1, a_2=v_2,\ldots,a_p=v_p|h).
+\end{equation}
+
+```{remark}
+Obie wspomniane metody wymagają znajomości prawdopodobieństwa $P(a_1=v_1,a_2=v_2,\ldots,a_p=v_p|h)$, ale różnią się podejściem do wiedzy o prawdopodobieństwach a priori. W metodzie MAP brana pod uwagę jest wiedza o prawdopodobieństwie przynależności do poszczególnych klas, a w ML nie. Dla klasyfikacji, w których prawdopodobieństwa przynależności do klas są takie same, klasyfikatory MAP i ML są równoważne.
+```
+
+## Naiwny klasyfikator Bayesa (NB)^[ang. *Naive Bayes Classifier*]
+
+Największy problem w wyznaczeniu klasyfikatorów MAP i ML stanowi wyznaczenie rozkładu łącznego $P(a_1=v_1, a_2=v_2,\ldots,a_p=v_p|h)$. W naiwnym klasyfikatorze Bayesa zakłada się niezależność warunkową poszczególnych atrybutów względem klasy do której ma należeń wg hipotezy obiekt. Założenie to często nie jest spełnione i stąd nazwa przymiotnik "naiwny".
+	
+Definicja naiwnego klasyfikatora bayesowskiego różni się od klasyfikatora MAP tylko podejściem do prawdopodobieństwa a posteriori.
+\begin{equation}\label{naiwny_bayes}
+		h_{NB}=\operatorname{arg}\max_{h_j\in \mathbb{H}}P(h_j)\prod_{i=1}^{p}P(a_i=v_i|h_j),
+\end{equation}
+gdzie $h_j$ oznacza hipotezę (decyzję), że badany obiekt należy do $j$-tej klasy.
+
+Oczywiście zarówno prawdopodobieństwo a priori jak i a posteriori są wyznaczane na podstawie próby, i tak prawdopodobieństwo a priori wynosi
+\begin{equation}\label{apriori}
+		P(h_j)=P_T(h_j)=\frac{|T^j|}{|T|}, 
+\end{equation}
+gdzie $|A|$ oznacza moc zbioru $A$.
+	
+Natomiast prawdopodobieństwo a posteriori dla $i$-tego atrybutu wynosi
+\begin{equation}\label{aposteriori}
+		P(a_i=v_i|h_j)=P_{T^j}(a_i=v_i)=\frac{|T^j_{a_i=v_i}|}{|T^j|}.
+\end{equation}
+Na mocy powyższego możemy zauważyć, że jeżeli założenie o warunkowej niezależności jest spełnione, to klasyfikatory NB i MAP są równoważne.
+
+Chcąc przypisać klasę nowemu obiektowi powstaje problem praktyczny, polegający na tym, że dla pewnych konfiguracji atrybutów nie ma odpowiedników w nauczonym modelu. Powodem takiego stanu rzeczy jest fakt, że takie kombinacje nie wystąpiły w próbie uczącej.
+	
+Istnieją dwa sposoby predykcji w takiej sytuacji:
+
+1. \begin{equation}\label{pred1}
+			P(a_i=v_i|h_j)=
+			\begin{cases}
+				\frac{|T^j_{a_i=v_i}|}{|T^j|}, & T^j_{a_i=v_i}\neq \emptyset\\
+				\epsilon, & \text{w przeciwnym przypadku.}
+			\end{cases}
+    \end{equation}
+W tym przypadku przyjmuje się, że $\epsilon \ll 1/|T_j|$.
+2. Drugi sposób wykorzystuje estymację z poprawką
+\begin{equation}\label{pred2}
+		P(a_i=v_i|h_j)=\frac{|T^j_{a_i=v_i}|+mp}{|T^j|+mp},
+\end{equation}
+gdzie $p$ oznacza prawdopodobieństwo a priori przyjęcia przez atrybut $a$ wartości $v$ (najczęściej $p=1/|A|$, $A$ - zbiór wszystkich możliwych wartości atrybutu $a$), $m$ - waga (najczęściej $m=|A|$).
+
+W przypadku gdy atrybuty są mierzone na skali ciągłej najczęściej stosuje się dyskretyzację ich do zmiennych ze skali przedziałowej. Inna metoda stosowana w przypadku ciągłych atrybutów, to użycie gęstości $g_i^j$ o rozkładzie normalnym w miejsce $P(a_i=v_i|h_j)$. Przy czym do obliczenia parametrów rozkładu stosujemy wzory
+\begin{equation}\label{sred}
+		m_i^j=\frac{1}{|T^j|}\sum_{x\in T^j}a_i(x),
+\end{equation}
+oraz
+\begin{equation}\label{odch}
+		(s_i^j)^2=\frac{1}{|T^j|-1}\sum_{x\in T^j}(a_i(x)-m_i^j)^2.
+\end{equation}
+
+Obsługa braków danych przez naiwny klasyfikator Bayesa jest dość prosta i opiera się na liczeniu prawdopodobieństw a posteriori wyłącznie dla obiektów, których wartości atrybutów są znane. Dlatego prawdopodobieństwa warunkowe liczy się wg wzoru
+\begin{equation}\label{pr_war}
+		P(a_i=v_i|h_j)=\frac{|T^j_{a_i=v_i}|}{|T^j|-|T^j_{a_i=NA}|}.
+\end{equation}
+Jeśli brakujące dane nie niosą w sobie istotnych informacji dotyczących klasyfikacji obiektów, to naiwny klasyfikator Bayesa będzie działał poprawnie.
+
+Naiwny klasyfikator Bayesa jest implementowany w pakietach **e1071** [@R-e1071] i **klaR** [@R-klaR].
+
+```{example}
+Przeprowadzimy klasyfikację dla zbioru `Titanic`. W przypadku funkcji z pakietu `e1071` nie potrzeba zamieniać tabeli na przypadki. W pakiecie `klaR` istnieje inna funkcja budująca klasyfikator Bayesa `NaiveBayes`, ale w tym przypadku jeśli zbiór jest w formie tabeli, to należy go zamienić na ramkę danych z oddzielnymi przypadkami.
+```
+
+```{r}
+library(e1071)
+Titanic
+nb <- naiveBayes(Survived ~ ., data = Titanic)
+nb$apriori
+```
+
+Poniższe tabele zawierają warunkowe prawdopodobieństwa przynależności do poszczólnych klas.
+
+```{r}
+nb$tables
+```
+
+```{r}
+dane <- as.data.frame(Titanic)
+pred <- predict(nb, dane)
+pred
+tab <- table(pred, dane$Survived)
+tab
+sum(diag(prop.table(tab)))
+```
+
+Naiwny klasyfikator spisał się bardzo słabo, ponieważ klasyfikacja na poziomie 0.5 jest taka jak przy rzucie monetą.
+
+```{example}
+Przeprowadzimy klasyfikację gatunków irysów na podstawie szerokości i długości kielicha i płatka.
+```
+
+```{r}
+library(klaR)
+set.seed(2019)
+uczaca <- sample(1:nrow(iris), 2*nrow(iris)/3)
+pr.ucz <- iris[uczaca,]
+pr.test <- iris[-uczaca,]
+nb2 <- NaiveBayes(Species~., data = pr.ucz)
+nb2$apriori
+```
+
+Prawdopodobieństwa a priori zostały oszacowane na podstawie próby uczącej. Poniższe tabele zawierają średnie i odchylenia standardowe zmiennych w poszczególnych klasach.
+
+```{r}
+nb2$tables
+```
+
+```{r}
+pred <- predict(nb2, newdata = pr.test)
+tab <- table(pred$class, pr.test$Species)
+tab
+sum(diag(prop.table(tab)))
+```
+
+Klasyfikacja na podstawie modelu jest badzo do dobra (96%).
+
+
+## Zalety i wady
+
+- Zalety:
+    - prostota konstrukcji i prosty algorytm;
+	- jeśli jest spełnione założenie warunkowej niezależności, to ten klasyfikator działa szybciej i czasem lepiej niż inne metody klasyfikacji;
+	- nie potrzebuje dużych zbiorów danych do estymacji parametrów;
+- Wady:
+    - często nie spełnione założenie o warunkowej niezależności powoduje obciążenie wyników;
+	- brak możliwości wprowadzania interakcji efektów kilku zmiennych;
+	- potrzebuje założenia normalności warunkowych gęstości w przypadku ciągłych atrybutów;
+	- często istnieją lepsze klasyfikatory.

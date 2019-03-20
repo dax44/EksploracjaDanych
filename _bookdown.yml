@@ -1,5 +1,20 @@
 book_filename: "EksploracjaDanych"
 delete_merged_file: true
 language:
+  label:
+    fig: 'Rysunek '
+    tab: 'Tabela '
+    eq: 'Równanie '
+    thm: 'Twierdzenie '
+    lem: 'Lemma '
+    cor: 'Wniosek '
+    prp: 'Propozycja '
+    cnj: 'Przypuszczenie '
+    def: 'Definicja '
+    exm: 'Przykład '
+    exr: 'Ćwiczenie '
+    proof: 'Dowód. '
+    remark: 'Uwaga. '
+    solution: 'Rozwiązanie. '
   ui:
     chapter_name: ""

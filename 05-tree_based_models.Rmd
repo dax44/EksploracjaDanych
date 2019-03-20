@@ -5,18 +5,18 @@ library(tidyverse)
 ```
 
 
-Przykład zastosowania drzew decyzyjnych na zbiorze `iris` w poprzednich [przykładach](#przyk41) może skłaniać do przypuszczenia, że drzewa decyzyjne zawsze dobrze radzą sobie z predykcją wartości wynikowej. Niestety w przykładach nieco bardziej skomplikowanych, gdzie chociażby klasy zmiennej wynikowej nie są tak wyraźnie separowalne, drzewa decyzjne wypadają gorzej w prównaniu z innymi modelami nadzorowanego uczenia maszynowego.
+Przykład zastosowania drzew decyzyjnych na zbiorze `iris` w poprzednich [przykładach](#przyk41) może skłaniać do przypuszczenia, że drzewa decyzyjne zawsze dobrze radzą sobie z predykcją wartości wynikowej. Niestety w przykładach nieco bardziej skomplikowanych, gdzie chociażby klasy zmiennej wynikowej nie są tak wyraźnie separowalne, drzewa decyzyjne wypadają gorzej w porównaniu z innymi modelami nadzorowanego uczenia maszynowego.
 
-I tak u podstaw metod bazujących na prostych drzewach decyzyjnych stał pomysł, że skoro jedno drzewo nie ma wystrczających własności predykcyjnych, to może zastosowanie wielu drzew połączonych w pewien sposób poprawi je. Tak powstały metody *bagging*, *random forest* i *boosting*^[hyba tylko dla drógiej metody istniej dobre polskie tłumaczenie nazwy - las losowy]. Należy zaznaczyć, że metody zanjdują swoje zastosowanie również w innych modelach nadzorowanego ucznienia maszynowego.
+I tak u podstaw metod bazujących na prostych drzewach decyzyjnych stał pomysł, że skoro jedno drzewo nie ma wystarczających własności predykcyjnych, to może zastosowanie wielu drzew połączonych w pewien sposób poprawi je. Tak powstały metody *bagging*, *random forest* i *boosting*^[chyba tylko dla drugiej metody istniej dobre polskie tłumaczenie nazwy - las losowy]. Należy zaznaczyć, że metody znajdują swoje zastosowanie również w innych modelach nadzorowanego uczenia maszynowego.
 
 ## Bagging
 
-Technika ta zostala wprowadzona przez @Breiman1996 i ma na celu zmniejszenie wariancji modelu pojedynczego drzewa. Podobnie jak technika *bootstrap*, w której statystyki są wyliczane na wielu próbach pobranych z tego samego rozkładu (próby), w metodzie bagging losuje się wiele prób ze zbioru uczącego (najczęściej poprzez wielokrotne losowanie próby o rozmiarze zbioru uczącego ze zwracaniem), a następnie dla każdej próby bootstrapowej buduje się drzewo. W ten sposób otrzymujemy $B$ drzew decyzyjnych $\hat{f}^1(x), \hat{f}^2(x),\ldots, \hat{f}^B(x)$. Na koniec poprzez uśrednienie otrzymujemy model charakteryzujący się większą precyzją
+Technika ta została wprowadzona przez @Breiman1996 i ma na celu zmniejszenie wariancji modelu pojedynczego drzewa. Podobnie jak technika *bootstrap*, w której statystyki są wyliczane na wielu próbach pobranych z tego samego rozkładu (próby), w metodzie bagging losuje się wiele prób ze zbioru uczącego (najczęściej poprzez wielokrotne losowanie próby o rozmiarze zbioru uczącego ze zwracaniem), a następnie dla każdej próby bootstrapowej buduje się drzewo. W ten sposób otrzymujemy $B$ drzew decyzyjnych $\hat{f}^1(x), \hat{f}^2(x),\ldots, \hat{f}^B(x)$. Na koniec poprzez uśrednienie otrzymujemy model charakteryzujący się większą precyzją
 \begin{equation}
     \hat{f}_{bag}(x)=\frac1B\sum_{b=1}^B\hat{f}^b(x).
 \end{equation}
 
-Ponieważ podczas budowy drzew na podstawie prób bootstrapowych nie kontrolujemy złożoności, to w rezultacie każde z drzew może charakteryzować się dużą wariancją. Poprzez uśrednianie wyników pojedynczych drzew otrzymujemy mniejsze obciążenie ale również przy dostatecznie dużej liczbie prób ($B$ często liczy się w setkach, czy tysiącach) zmniejszamy wariancję "średniej" predykcji z drzew. Oczywiście metodę tą trzeba dostosować do zadań klasyfikacyjnych, ponieważ nie istnieje średnia klasyfikacji z wielu drzew. W miejsce śreniej stosuje się modę, czyli wartość dominującą.
+Ponieważ podczas budowy drzew na podstawie prób bootstrapowych nie kontrolujemy złożoności, to w rezultacie każde z drzew może charakteryzować się dużą wariancją. Poprzez uśrednianie wyników pojedynczych drzew otrzymujemy mniejsze obciążenie ale również przy dostatecznie dużej liczbie prób ($B$ często liczy się w setkach, czy tysiącach) zmniejszamy wariancję "średniej" predykcji z drzew. Oczywiście metodę tą trzeba dostosować do zadań klasyfikacyjnych, ponieważ nie istnieje średnia klasyfikacji z wielu drzew. W miejsce średniej stosuje się modę, czyli wartość dominującą.
 
 Przyjrzyjmy się jak maszyna losuje obserwacje ze zwracaniem
 
@@ -39,11 +39,11 @@ Faktycznie uczenie modelu metodą bagging odbywa się średnio na 2/3 obserwacji
 
 Niewątpliwą zaletą drzew decyzyjnych była ich łatwa interpretacja. W przypadku metody bagging jest ona znacznie utrudniona, ponieważ jej wynik składa się z agregacji wielu drzew. Można natomiast ocenić ważność predyktorów (ang. *variable importance*). I tak, przez obserwację spadku $RSS$ dla baggingu regresyjnego przy zastosowaniu danego predyktora w podziałach drzewa i uśrednieniu wyniku otrzymamy wskaźnik ważności predyktora dużo lepszy niż dla pojedynczego drzewa. W przypadku baggingu klasyfikacyjnego w miejsce $RSS$ stosujemy indeks Gini'ego.
 
-Implementacja R-owa metody bagging znajduje się w pakiecie **ipred**, a funkcja do budowy modelu nazywa się `bagging` [@R-ipred]. Można również stosować funkcję `randomForest` pakietu **randomForest** [@R-las] - powody takiego działania wyjaśnią się w podrodziale [Lasy losowe].
+Implementacja R-owa metody bagging znajduje się w pakiecie **ipred**, a funkcja do budowy modelu nazywa się `bagging` [@R-ipred]. Można również stosować funkcję `randomForest` pakietu **randomForest** [@R-las] - powody takiego działania wyjaśnią się w podrozdziale [Lasy losowe].
 
 ### Przykład {#przyk51}
 
-Tym razem cel zadania jest regresyjny i polega na ustaleniu miary tendencji centralnej ceny mieszkań w Bostonie na podstwie zmiennych umieszczonych w zbiorze `Boston` pakietu **MASS** [@R-MASS]. Zmienną zależną będzie mediana cen mieszkań na przedmieściach Bostonu (`medv`).
+Tym razem cel zadania jest regresyjny i polega na ustaleniu miary tendencji centralnej ceny mieszkań w Bostonie na podstawie zmiennych umieszczonych w zbiorze `Boston` pakietu **MASS** [@R-MASS]. Zmienną zależną będzie mediana cen mieszkań na przedmieściach Bostonu (`medv`).
 
 ```{r message=F, warning=F}
 library(MASS)
@@ -103,7 +103,7 @@ boston.pred2 <- predict(boston.bag, newdata = boston.test)
 rmse(boston.pred2, boston.test$medv)
 ```
 
-Zatem predykcja na podstwie modelu bagging jest nico lepsza niż z pojedynczego drzewa. Dodatkowo możemy ocenić ważność zmiennych użytych w budowie drzew.
+Zatem predykcja na podstawie modelu bagging jest nico lepsza niż z pojedynczego drzewa. Dodatkowo możemy ocenić ważność zmiennych użytych w budowie drzew.
 
 ```{r fig.cap="Wykres ważności predyktorów"}
 varImpPlot(boston.bag)
@@ -111,11 +111,11 @@ importance(boston.bag)
 x$variable.importance
 ```
 
-W porównaniu do ważności zmiennych dla pojedynczego drzewa widać pewne rożnice.
+W porównaniu do ważności zmiennych dla pojedynczego drzewa widać pewne różnice.
 
 ## Lasy losowe
 
-Lasy losowe są uogólnieniem metody bagging, polegającą na losowaniu dla każdego drzewa wchodzącego w skład lasu $m$ predyktorów spośród $p$ dostępnych, a następnie budowaniu drzew z wykorzystaniem tylko tych predyktorów [@ho1995]. Dzięki temu za każdy razem drzewo jest budowane w oparciu o nowy zestaw cech (najczęściej przyjmujemy $m=\sqrt{p}$). W przypadku modeli bagging za każdym razem najsilniejszy predyktor wchodził w skład zbioru uczacego, a co za tym idzie również uczestniczył w tworzeniu reguł podziału. Wówczas wiele drzew zawierało reguły stosujące dany atrubut, a wtedy predykcje otrzymywane za pomocą drzew były skorelowane. Dlatego nawet duża liczba prób bootstrapowych nie zapewniała poprawy precyzji. Implementacja tej metody znajduje się w pakiecie **randomForest**.
+Lasy losowe są uogólnieniem metody bagging, polegającą na losowaniu dla każdego drzewa wchodzącego w skład lasu $m$ predyktorów spośród $p$ dostępnych, a następnie budowaniu drzew z wykorzystaniem tylko tych predyktorów [@ho1995]. Dzięki temu za każdy razem drzewo jest budowane w oparciu o nowy zestaw cech (najczęściej przyjmujemy $m=\sqrt{p}$). W przypadku modeli bagging za każdym razem najsilniejszy predyktor wchodził w skład zbioru uczącego, a co za tym idzie również uczestniczył w tworzeniu reguł podziału. Wówczas wiele drzew zawierało reguły stosujące dany atrybut, a wtedy predykcje otrzymywane za pomocą drzew były skorelowane. Dlatego nawet duża liczba prób bootstrapowych nie zapewniała poprawy precyzji. Implementacja tej metody znajduje się w pakiecie **randomForest**.
 
 ### Przykład {#przyk52}
 
@@ -126,7 +126,7 @@ boston.rf <- randomForest(medv~., data = boston.train)
 boston.rf
 ```
 
-Porownanie MSE na próbach uczących pomiędzy lasem losowym i modelem bagging wypada nieco na korzyść bagging. 
+Porównanie MSE na próbach uczących pomiędzy lasem losowym i modelem bagging wypada nieco na korzyść bagging. 
 
 ```{r}
 boston.pred3 <- predict(boston.rf, newdata = boston.test)
@@ -141,12 +141,12 @@ varImpPlot(boston.rf)
 
 ## Boosting
 
-Rozważania na temat metody *boosting* zaczeły się od pytań postawionych w publikacji @Kearns1989, czy da się na podstawie na podstawie zbioru słabych modeli stworzyć jeden dobry? Odpowiedzi pozytywnej na nie udzielili, najpierw @Schapire1990, a potem @breiman1998. W metodzie boosting nie stosuje się prób bootstrapowych ale odpowiednio modyfikuje się drzewo wyjściowe w kolejnych krokach na tym samym zbiorze uczącym. Algorytm dla drzewa regresyjnego jest następujący:
+Rozważania na temat metody *boosting* zaczęły się od pytań postawionych w publikacji @Kearns1989, czy da się na podstawie na podstawie zbioru słabych modeli stworzyć jeden dobry? Odpowiedzi pozytywnej na nie udzielili, najpierw @Schapire1990, a potem @breiman1998. W metodzie boosting nie stosuje się prób bootstrapowych ale odpowiednio modyfikuje się drzewo wyjściowe w kolejnych krokach na tym samym zbiorze uczącym. Algorytm dla drzewa regresyjnego jest następujący:
 
 1. Ustal $\hat{f}(x)=0$ i $r_i=y_i$ dla każdego $i$ w zbiorze uczącym.
 2. Dla $b=1,2,\ldots, B$ powtarzaj:
-   a) naucz drzewo $\hat{f}^b$ o $d$ regułach podziału (czyli $d+1$ liściach) na zbiorze $(X_i, r_i),
-   b) zakutalizuj drzewo do nowej "skurczonej" wersji 
+   a) naucz drzewo $\hat{f}^b$ o $d$ regułach podziału (czyli $d+1$ liściach) na zbiorze $(X_i, r_i)$,
+   b) zaktualizuj drzewo do nowej "skurczonej" wersji 
    \begin{equation}
     \hat{f}(x)\leftarrow \hat{f}(x)+\lambda\hat{h}^b(x),
    \end{equation}
@@ -159,7 +159,7 @@ Rozważania na temat metody *boosting* zaczeły się od pytań postawionych w pu
   \hat{f}(x) = \sum_{b=1}^B\lambda\hat{f}^b(x)
 \end{equation}
 
-Uczenie drzew klasyfikacyjnego metoda boosting przebiega w podobny sposób. Wynik uczenia drzew metodą boosting zależy od trzech paramtrów:
+Uczenie drzew klasyfikacyjnego metoda boosting przebiega w podobny sposób. Wynik uczenia drzew metodą boosting zależy od trzech parametrów:
 
 1. Liczby drzew $B$. W przeciwieństwie do metody bagging i lasów losowych, zbyt duże $B$ może doprowadzić do przeuczenia modelu. $B$ ustala się najczęściej na podstawie walidacji krzyżowej.
 2. Parametru "kurczenia" (ang. *shrinkage*) $\lambda$. Kontroluje on szybkość uczenia się kolejnych drzew. Typowe wartości $\lambda$ to 0.01 lub 0.001. Bardzo małe $\lambda$ może wymagać dobrania większego $B$, aby zapewnić dobrą jakość predykcyjną modelu. 
@@ -191,4 +191,4 @@ boston.pred4 <- predict(boston.boost, newdata = boston.test, n.trees = 5000)
 rmse(boston.pred4, boston.test$medv)
 ```
 
-$RMSE$ jest w tym przypadku mniejsze niż w lasach losowych ale nieco większe niż w metodzie bagging. Wszsystkie metody wzmacnianych drzew dają wyniki lepsze niż pojedyncze drzewa.
+$RMSE$ jest w tym przypadku mniejsze niż w lasach losowych ale nieco większe niż w metodzie bagging. Wszystkie metody wzmacnianych drzew dają wyniki lepsze niż pojedyncze drzewa.

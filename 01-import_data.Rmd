@@ -34,7 +34,7 @@ dane4 <- read_excel("data/dane1.xlsx", na = c("BD", "-"))
 dane4
 ```
 
-Istniej oczywiście jeszcze wiele innych fomatów danych, charakterystycznych dla programów, w których są traktowane jako domyślne.^[do ich wczytywania stosujemy funkcje pakietu `foreign`] W szczególny sposób należy zwrócić uwagę na pliki o rozszerzeniu `RData` lub `rda`^[oznaczają to samo] oraz pliki `rds`. Pliki `rda` służą do przechowywania obiektów programu `R`. Mogą to być pliki danych ale również obiekty graficzne (typu wyniki funkcji `ggplot`), modele (np. wynik funkcji `lm()`), zdefiniowane funkcje i wszystkie inne obiekty, które da się zapisać w środowisku `R`. Ponadto pliki `rda` pozawalają na zapisanie wilu obiektów w jednym pliku. Pliki o rozszerzeniu `rds` mają podobną funkcję z tym, że pozwalają na przechowywanie tylko jednego obiektu.
+Istniej oczywiście jeszcze wiele innych fomatów danych, charakterystycznych dla programów, w których są traktowane jako domyślne.^[do ich wczytywania stosujemy funkcje pakietu `foreign`] W szczególny sposób należy zwrócić uwagę na pliki o rozszerzeniu `RData` lub `rda`^[oznaczają to samo] oraz pliki `rds`. Pliki `rda` służą do przechowywania obiektów programu `R`. Mogą to być pliki danych ale również obiekty graficzne (typu wyniki funkcji `ggplot`), modele (np. wynik funkcji `lm()`), zdefiniowane funkcje i wszystkie inne obiekty, które da się zapisać w środowisku `R`. Ponadto pliki `rda` pozawalają na zapisanie wielu obiektów w jednym pliku. Pliki o rozszerzeniu `rds` mają podobną funkcję z tym, że pozwalają na przechowywanie tylko jednego obiektu.
 
 ```{r RData}
 # wszystkie wczytane wcześniej pliki zapisuje w jednym pliku
@@ -61,7 +61,7 @@ nowe_dane <- readRDS("data/dane4.rds")
 nowe_dane
 ```
 
-Oprócz wielu zalet takiego sposobu importu i eksportu danych jest jedna poważna wada, pliki te można odczytać jedynie za pomocą `R`. Osobiście polecam stosować do importu i eksportu danych plików w takich formatach, które mogą przeczytać wszyscy. Jak dotąd widać do importu różnych formatów danych potrzebujemy różnych funkcji, czasami nawet z różnych pakietów. Istnieje rozwiązanie tego poroblemu `r emo::ji("happy")`
+Oprócz wielu zalet takiego sposobu importu i eksportu danych jest jedna poważna wada, pliki te można odczytać jedynie za pomocą `R`. Osobiście polecam stosować do importu i eksportu danych plików w takich formatach, które mogą przeczytać wszyscy. Jak dotąd widać do importu różnych formatów danych potrzebujemy różnych funkcji, czasami nawet z różnych pakietów. Istnieje rozwiązanie tej niedogodności `r emo::ji("happy")`
 
 ```{r rio_import}
 library(rio)
@@ -117,7 +117,7 @@ Lista możliwości jaką daje nam pakiet `rio` [@R-rio] jest niemal nieograniczo
 
 ## Przykład {#przyk1}
 
-Poniższa ilustracja przedstawia fragment pliku danych `Analysis.txt` zawierającego pewne błędy, które należy naprawić na etapie importu danych. Po pierwsze brakuje w nim nazw zmiennych^[choć nie widać tego na rysunku]. Poszczególne kolumny nazywają się następująco: `season`, `size`, `speed`, `mxPH`, `mnO2`, `Cl`, `NO3`, `NH4`, `oPO4`, `PO4`, `Chla`, `a1`, `a2`, `a3`, `a4`, `a5`, `a6`, `a7`. Naszym zadaniem jest import tego pliku z jednoczesną obsługą braków^[braki danych są zakodowane przez XXXXXXX] oraz nadaniem nagłówków kolumn. Plik `Analisis.txt` jest umieszczony w kagalogu `data/`. Z racji, że plik dotyczy glonów, to dane zapiszemy pod nazwą `algae`.
+Poniższa ilustracja przedstawia fragment pliku danych `Analysis.txt` zawierającego pewne błędy, które należy naprawić na etapie importu danych. Po pierwsze brakuje w nim nazw zmiennych (choć nie widać tego na rysunku). Poszczególne kolumny nazywają się następująco: `season`, `size`, `speed`, `mxPH`, `mnO2`, `Cl`, `NO3`, `NH4`, `oPO4`, `PO4`, `Chla`, `a1`, `a2`, `a3`, `a4`, `a5`, `a6`, `a7`. Naszym zadaniem jest import tego pliku z jednoczesną obsługą braków (braki danych są zakodowane przez `XXXXXXX`) oraz nadaniem nagłówków kolumn. Plik `Analisis.txt` jest umieszczony w kagalogu `data/`. Z racji, że plik dotyczy glonów, to dane zapiszemy pod nazwą `algae`.
 
 ```{r foto, echo=FALSE, fig.cap="Fragment pliku danych Analisis.txt"}
 include_graphics("images/analalysi_foto.png", dpi = 100)
