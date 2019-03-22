@@ -6,7 +6,7 @@ language:
     tab: 'Tabela '
     eq: 'Równanie '
     thm: 'Twierdzenie '
-    lem: 'Lemma '
+    lem: 'Lemat '
     cor: 'Wniosek '
     prp: 'Propozycja '
     cnj: 'Przypuszczenie '

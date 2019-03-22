@@ -257,7 +257,10 @@ Drzewa decyzyjne wyjątkowo dobrze radzą sobie z obsługa zbiorów z brakami. S
 - zależność struktury drzewa od użytego algorytmu;
 - przegrywa jakością predykcji z innymi metodami nadzorowanego uczenia maszynowego.
 
-## Przykład {#przyk41}
+```{example, przyk41}
+Przykładem zastosowania drzew decyzyjnych będzie klasyfikacja irysów na podstawie długości i szerokości kielicha i płatka.
+```
+
 
 Przykładem zastosowania drzew decyzyjnych będzie klasyfikacja irysów na podstawie długości i szerokości kielicha i płatka. 
 
@@ -269,7 +272,7 @@ library(rpart.plot) # pakiet do rysowania drzew
 
 Każde zadanie ucznia maszynowego zaczynamy od czyszczenia danych i odpowiedniego ich przygotowania ale w tym przypadku skupimy się jedynie na budowie, optymalizacji i ewaluacji modelu.
 
-### Podział zbioru na próbę uczącą i testową
+**Podział zbioru na próbę uczącą i testową**
 
 ```{r}
 set.seed(44)
@@ -280,7 +283,7 @@ str(dt.train)
 str(dt.test)
 ```
 
-### Budowa drzewa
+**Budowa drzewa**
 
 Budowy drzewa dokonujemy za pomocą funkcji `rpart` pakietu **rpart** [@R-rpart] stosując zapis formuły zależności. Drzewo zostanie zbudowane z uwzględnieniem kilku kryteriów zatrzymania:
 
@@ -302,7 +305,7 @@ rpart.plot(mod.rpart)
 
 Powyższy wykres przedstawia strukturę drzewa klasyfikacyjnego. Kolorami są oznaczone klasy, które w danym węźle dominują. Nasycenie barwy decyduje o sile tej dominacji. W każdym węźle podana jest klasa, do której najprawdopodobniej należą jego obserwacje. Ponadto podane są proporcje przynależności do klas zmiennej wynikowej oraz procent obserwacji zbioru uczącego należących do danego węzła. Pod każdym węzłem podana jest reguła podziału.
 
-### Przycinanie drzewa
+**Przycinanie drzewa**
 
 Zanim przystąpimy do przycinania drzewa należy sprawdzić, jakie są zdolności generalizacyjne modelu. Oceny tej dokonujemy najczęściej sprawdzając macierz klasyfikacji.
 
@@ -335,7 +338,7 @@ summary(mod.rpart2)
 rpart.plot(mod.rpart2)
 ```
 
-### Ocena dopasowania modelu
+**Ocena dopasowania modelu**
 
 Na koniec budowy modelu należy sprawdzić jego jakość na zbiorze testowym.
 
@@ -362,11 +365,11 @@ Oprócz najbardziej znanego algorytmu CART implementowanego w postaci funkcji pa
 - *C4.5* - algorytm stworzony przez @quinlan1993 w oparciu, o również jego autorstwa, algorytm ID3. Służy jedynie do zadań klasyfikacyjnych. W dużym uproszczeniu, dobór reguł podziału odbywa się na podstawie przyrostu informacji (patrz [Reguły podziału]). W przeciwieństwie do pierwotnego algorytmu ID3, C4.5 nie raczej nie przeucza drzew. Implementacja R-owa znajduje się w pakiecie **RWeka** [@R-Rweka] - funkcja do budowy drzewa to `J48`.
 - *C5.0* - kolejny algorytm autorstwa @R-C50 jest usprawnieniem algorytmu C4.5, generującym mniejsze drzewa automatycznie przycinane na podstawie złożności drzewa. Służy jedynie do zadań klasyfikacyjnych. Jest szybszy od poprzednika i pozwala na zastosowanie metody *boosting*^[budowa klasyfikatora w oparciu o proces iteracyjny, w którym kolejne w kolejnych iteracjach budowane są proste drzewa i przypisywane są im wagi - im gorszy klasyfikator, tym większa waga - po to aby nauczyć drzewo klasyfikować "trudne" przypadki]. Implementacja R-owa znajduje się w pakiecie *C50*, a funkcja do budowy drzewa to `C5.0`.
 
-## Przykład {#przyk42}
+```{example, przyk42}
+W celu porównania wyników klasyfikacji na podstawie drzew decyzyjnych o różnych algorytmach, zostaną nauczone modele w oparciu o funkcje `ctree`, `J48` i `C5.0` dla tego samego zestawu danych co w przykładzie wcześniejszym \@ref(exm:przyk41).
+```
 
-W celu porównania wyników klasyfikacji na podstawie drzew decyzyjnych o różnych algorytmach, zostaną nauczone modele w oparciu o funkcje `ctree`, `J48` i `C5.0` dla tego samego zestawu danych co w [przykładzie wcześniejszym](#przyk41).
-
-### `ctree`
+- **Drzewo `ctree`**
 
 Na początek ustalamy parametry ograniczające rozrozt drzewa podobne jak w poprzednim przykładzie.
 
@@ -393,7 +396,7 @@ tab
 
 Dopiero ocena jakości klasyfikacji na podstawe próby testowej pokazuje, że model zbudowany za pomocą `ctree` daje podobną precyzję jak `rpart` przycięty.
 
-### `J48`
+- **Drzewo `J48`**
 
 W tym przypadku model sam poszukuje optymalnego rozwiazania przycinając się automatycznie.
 
@@ -423,7 +426,7 @@ tab
 
 Otrzymujemy identyczną macierz klasyfikacji jak w poprzednich przypadkach.
 
-### `C50`
+- **Drzewo `C50`**
 
 Tym razem również nie trzeba ustawiać parametrów drzewa, ponieważ algorytm działa tak aby zapobiec rozrostowi drzewa przy jednoczesnej wysokiej poprawności klasyfikacji.
 

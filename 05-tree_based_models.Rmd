@@ -41,9 +41,10 @@ Niewątpliwą zaletą drzew decyzyjnych była ich łatwa interpretacja. W przypa
 
 Implementacja R-owa metody bagging znajduje się w pakiecie **ipred**, a funkcja do budowy modelu nazywa się `bagging` [@R-ipred]. Można również stosować funkcję `randomForest` pakietu **randomForest** [@R-las] - powody takiego działania wyjaśnią się w podrozdziale [Lasy losowe].
 
-### Przykład {#przyk51}
-
+```{example, przyk51}
 Tym razem cel zadania jest regresyjny i polega na ustaleniu miary tendencji centralnej ceny mieszkań w Bostonie na podstawie zmiennych umieszczonych w zbiorze `Boston` pakietu **MASS** [@R-MASS]. Zmienną zależną będzie mediana cen mieszkań na przedmieściach Bostonu (`medv`).
+```
+
 
 ```{r message=F, warning=F}
 library(MASS)
@@ -117,9 +118,11 @@ W porównaniu do ważności zmiennych dla pojedynczego drzewa widać pewne róż
 
 Lasy losowe są uogólnieniem metody bagging, polegającą na losowaniu dla każdego drzewa wchodzącego w skład lasu $m$ predyktorów spośród $p$ dostępnych, a następnie budowaniu drzew z wykorzystaniem tylko tych predyktorów [@ho1995]. Dzięki temu za każdy razem drzewo jest budowane w oparciu o nowy zestaw cech (najczęściej przyjmujemy $m=\sqrt{p}$). W przypadku modeli bagging za każdym razem najsilniejszy predyktor wchodził w skład zbioru uczącego, a co za tym idzie również uczestniczył w tworzeniu reguł podziału. Wówczas wiele drzew zawierało reguły stosujące dany atrybut, a wtedy predykcje otrzymywane za pomocą drzew były skorelowane. Dlatego nawet duża liczba prób bootstrapowych nie zapewniała poprawy precyzji. Implementacja tej metody znajduje się w pakiecie **randomForest**.
 
-### Przykład {#przyk52}
 
-Kontynuując poprzedni [przykład](#przyk51) możemy zbudować las losowy aby przekonać się czy nastąpi poprawa predykcji zmiennej wynikowej.
+```{example, przyk52}
+Kontynuując poprzedni przykład \@ref(exm:przyk51) możemy zbudować las losowy aby przekonać się czy nastąpi poprawa predykcji zmiennej wynikowej.
+```
+
 
 ```{r}
 boston.rf <- randomForest(medv~., data = boston.train)
@@ -167,8 +170,11 @@ Uczenie drzew klasyfikacyjnego metoda boosting przebiega w podobny sposób. Wyni
 
 Implementację metody boosting można znaleźć w pakiecie **gbm** [@R-gbm]
 
-
+```{example, przyk53}
 Metodę boosting zastosujemy do zadania predykcji ceny mieszkań na przedmieściach Bostonu. Dobór parametrów modelu będzie arbitralny, więc niekoniecznie model będzie najlepiej dopasowany.
+```
+
+
 
 ```{r}
 library(gbm)

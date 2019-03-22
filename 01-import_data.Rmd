@@ -115,9 +115,10 @@ Lista możliwości jaką daje nam pakiet `rio` [@R-rio] jest niemal nieograniczo
 - Clipboard import (on Windows and Mac OS), using read.table with row.names = FALSE
 - Google Sheets, as Comma-separated data (.csv)
 
-## Przykład {#przyk1}
 
+```{example, przyk1}
 Poniższa ilustracja przedstawia fragment pliku danych `Analysis.txt` zawierającego pewne błędy, które należy naprawić na etapie importu danych. Po pierwsze brakuje w nim nazw zmiennych (choć nie widać tego na rysunku). Poszczególne kolumny nazywają się następująco: `season`, `size`, `speed`, `mxPH`, `mnO2`, `Cl`, `NO3`, `NH4`, `oPO4`, `PO4`, `Chla`, `a1`, `a2`, `a3`, `a4`, `a5`, `a6`, `a7`. Naszym zadaniem jest import tego pliku z jednoczesną obsługą braków (braki danych są zakodowane przez `XXXXXXX`) oraz nadaniem nagłówków kolumn. Plik `Analisis.txt` jest umieszczony w kagalogu `data/`. Z racji, że plik dotyczy glonów, to dane zapiszemy pod nazwą `algae`.
+```
 
 ```{r foto, echo=FALSE, fig.cap="Fragment pliku danych Analisis.txt"}
 include_graphics("images/analalysi_foto.png", dpi = 100)

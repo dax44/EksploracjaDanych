@@ -1,7 +1,5 @@
 # Przygotowanie danych
 
-## Korekta zbioru danych
-
 Dane, które importujemy z zewnętrznego źródła najczęściej nie spełniają formatów obowiązujących w **R**. Często zmienne zawierają niedopuszczalne znaki szczególne, odstępy w nazwach, powtórzone nazwy kolumn, nazwy zmiennych zaczynające się od liczby, czy puste wiersze lub kolumny. Przed przystąpieniem do analizy zbioru należy rozważyć ewentualne poprawki nazw zmiennych, czy usunięcie pustych kolumn i wierszy. Niektórych czynności można dokonać już na etapie importu danych, stosując pewne pakiety oraz nowe funkcjonalności środowiska **RStudio**. W większości przypadków uchroni nas to od żmudnego przekształcania typów zmiennych. Oczywiście wszystkie te czynności czyszczenia danych można również dokonać już po imporcie danych, za pomocą odpowiednich komend **R**.
 
 ```{r test_df}
@@ -31,7 +29,7 @@ x
 x %>% remove_empty("rows")
 ```
 
-### Identyfikacja braków danych
+## Identyfikacja braków danych
 
 Zanim usuniemy jakiekolwiek braki w zbiorze, powinniśmy je najpierw zidentyfikować, określić ich charakter, a dopiero potem ewentualnie podjąć decyzję o uzupełnianiu braków. 
 
@@ -107,7 +105,7 @@ library(mice)
 md.pattern(algae)
 ```
 
-### Zastępowanie braków danych
+## Zastępowanie braków danych
 
 Zastępowanie braków danych (zwane także *imputacją danych*) jest kolejnym etapem procesu przygotowania danych do analiz. Nie można jednak wyróżnić uniwersalnego sposobu zastępowania braków dla wszystkich możliwych sytuacji. Wśród statystyków panuje przekonanie, że w przypadku wystąpienia braków danych można zastosować trzy strategie:
 
@@ -240,9 +238,11 @@ Zalecenia doboru zmiennych są następujące:
 
 Ad 4-7. Decyzje podejmowane w tych punktach zależą istotnie od analizowanego zbioru i będą przedmiotem oddzielnych analiz w kontekście rozważanych zbiorów i zadań.
 
-## Przykład {#przyk21}
 
+```{example, przyk21}
 Dokonamy imputacji zbioru `airquality` z wykorzystaniem pakietów **mice** i **VIM** [@R-VIM]
+```
+
 
 ```{r}
 data <- airquality
