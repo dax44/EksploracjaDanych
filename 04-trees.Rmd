@@ -133,7 +133,7 @@ gdzie $|\  |$ oznacza moc zbioru, a $R_t$ zbiór wszystkich możliwych wartości
 		\bigtriangleup \operatorname{disp}_n(f|t)=\operatorname{disp}_n(f)-\sum_{r\in R_t}\frac{|T_{n,t=r}|}{|T_n|}\operatorname{disp}_{T_{n,t=r}}(f).
 \end{equation}
 
-Miarą heterogeniczności węzłów ze względu na zmienną wynikową (ang. *impurity*) w drzewach klasyfikacyjnych, która pozwala na tworzenie kolejnych podziałów węzła, są najczęściej wskaźnik Gini'ego i entropia [@Breiman1984].
+Miarą heterogeniczności węzłów ze względu na zmienną wynikową (ang. *impurity*) w drzewach klasyfikacyjnych, która pozwala na tworzenie kolejnych podziałów węzła, są najczęściej wskaźnik Gini'ego i entropia [@breiman1998].
 
 Entropią podzbioru uczącego w węźle $\mathbf{n}$, wyznaczamy wg wzoru
 \begin{equation}

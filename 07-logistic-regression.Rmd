@@ -1,0 +1,104 @@
+# Regresja logistyczna
+
+## Model
+
+Regresja logisticzna (ang. *logistic regression*) jest techniką z rodziny klasyfikatorów liniowych z reprezentacją logistyczną, a formalnie należy do rodziny ugogólnionych modeli liniowych (GLM). Stosowana jest wówczas, gdy zmienna wynikowa posiada dwa stany (sukces i porażka), kodowane najczęściej za pomocą 1 i 0. W tej metodzie modelowane jest warunkowe prawdopobieństwo sukcesu za pomocą kombinacji liniowej predyktorów $X$. 
+
+Ogólna postać modelu 
+\begin{align}
+    Y\sim &B(1, p)\\
+    p(X)=&\E(Y|X)=\frac{\exp(\beta X)}{1+\exp(\beta X)},
+\end{align}
+gdzie $B(1,p)$ jest rozkładem dwumianowym o prawdopodobieństwie sukcesu $p$, a $\beta X$ oznacza kombinację liniową parametrów modelu i wartości zmiennych niezależnych, przyjmując, że $x_0=1$. Jako funkcji łączącej (czyli opisującej zwiazek między kombinacją liniową predyktorów i prawdopodobieństwem sukcesu) użyto *logitu*. Pozwala on na wygodną interpretację wyników w terminach szans.
+
+Szansą (ang. *odds*) nazywamy stosunek prawdopodobieństwa sukcesu do prawdopodobieństwa porażki
+\begin{equation}
+    o = \frac{p}{1-p}.
+\end{equation}
+
+Ponieważ będziemy przyjmowali, że $p\in (0,1)$, to $o\in (0,\infty)$, a jej logartym należy do przedziału $(-\infty, \infty)$.
+
+Zatem logarytm szansy jest kombinacją liniową predyktorów
+\begin{equation}
+    \log\left[\frac{p(X)}{1-p(X)}\right]=\beta_0+\beta_1x_1+\ldots+\beta_kx_k.
+\end{equation}
+
+## Estymacja parametrów modelu
+
+Estymacji parametrów modelu logistycznego dokonujemy za pomocą metody największej wiarogodności. Funkcja wiarogodności w tym przypadku przyjmuje postać
+\begin{equation}
+    L(X_1,\ldots,X_n,\beta)=\prod_{i=1}^{n}p(X_i)^Y_i[1-p(X_i)]^(1-Y_i),
+\end{equation}
+gdzie wektor $\beta$ jest uwikłany w funkcji $p(X_i)$. Maksymalizacji dokonujemy raczej po nałożeniu na funkcję wiarogodności logarytmu, bo to ułatwia szukanie ekstremum.
+\begin{equation}
+    \log L(X_1,\ldots,X_n,\beta) = \sum_{i=1}^n(Y_i\log p(X_i)+(1-Y_i)\log(1-p(X_i))).
+\end{equation}
+
+## Interpretacja
+
+Interpretacja (lat. *ceteris paribus* - "inne takie samo") poszczególnych parametrów modelu jest następująca:
+
+- jeśli $b_i>0$ - to zmienna $x_i$ ma wpływ stymulujący pojawienie się sukcesu,
+- jeśli $b_i<0$ - to zmienna $x_i$ ma wpływ ograniczający pojawienie się sukcesu,
+- jeśli $b_i=0$ - to zmienna $x_i$ nie ma wpływu na pojawienie się sukcesu.
+
+Iloraz szans (ang. *odds ratio*) stosuje się w przypadku porównywania dwóch klas obserwacji. Jest on jak sama nazwa wskazuje ilorazem szans zajścia sukcesu w obu klasach
+\begin{equation}
+    OR = \frac{p_1}{1-p_1}\frac{1-p_2}{p_2},
+\end{equation}
+gdzie $p_i$ oznacza zajście sukcesu w $i$-tej klasie.
+
+Interpretujemy go nastepująco:
+
+- jeśli $OR>1$ - to w pierwszej grupie zajście sukcesu jest bardziej prawdopodobne,
+- jeśli $OR<1$ - to w drugiej grupie zajście sukcesu jest bardziej prawdopodobne,
+- jeśli $OR=1$ - to w obu grupach zajście sukcesu jest jednakowo prawdopodobne.
+
+```{example, logit}
+Jako ilustrację działania regresji logistycznej użyjemy modelu dla danych ze zbioru `Default` pakietu `ISLR`.
+```
+
+```{r}
+library(ISLR)
+head(Default)
+```
+
+Zmienną zależną jest `default`, a pozostałe są predyktorami. najpierw dokonamy podziału próby na ucząca i testową, a następnie zbudujemy model.
+
+```{r}
+set.seed(2019)
+ind <- sample(1:nrow(Default), size = 2/3*nrow(Default))
+dt.ucz <- Default[ind,]
+dt.test <- Default[-ind,]
+mod.logit <- glm(default~., dt.ucz, family = binomial("logit"))
+summary(mod.logit)
+```
+
+Tylko `income` nie ma żadnego wpływu na prawdopodobieństwo stanu `Yes` zmiennej `default`. Zmienna `balance` wpływa stymulująco na prawdopodobieństwo pojawienia się sukcesu. Natomiast jeśli badania osoba jest studentem (`studentYes`), to ma wpływ ograniczający na pojawienie się sukcesu. Chcąc porównać dwie grupy obserwacji, przykładowo studentów z niestudentami, możemy wykorzystać iloraz szans.
+
+```{r}
+exp(cbind(OR = coef(mod.logit), confint(mod.logit))) %>% 
+    kable(digits = 4)
+```
+
+Z powyższej tabeli wynika, że bycie studentem zmniejsza szanse na `Yes` w zmiennej `default` o około 40% (w stosunku do niestudentów). Natomiast wzrost zmiennej `balance` przy zachowaniu pozostałych zmiennych na tym samym poziomie skutkuje wzrostem szans na `Yes` o około 0.6%.
+
+Chcąc przeprowadzić predykcję na podstwie modelu dla ustalonych wartości cech (np. `student = Yes`, `balance = $1000` i `income = $40000`) postępujemy następująco
+
+```{r}
+dt.new <- data.frame(student = "Yes", balance = 1000, income = 40000)
+predict(mod.logit, newdata = dt.new, type = "response")
+```
+
+Otrzymany wynik jest oszacowanym prawdopodobieństwem warunkowym wystąpienia sukcesu (`default = Yes`). Widać zatem, że poziomy badanych cech sprzyjają raczej porażce.
+
+Jeśli chcemy sprawdzić jakość klasyfikacji na zbiorze testowym, to musimy ustalić na jakim poziomie prawdopodobieństwa będziemy uznawać obserwację za sukces. W zależności od tego, na predykcji jakiego stanu zależy nam bardziej możemy różnie dobierać ten próg (bez żadnych dodatkowych przesłanek najczęściej jest to 0.5).
+
+```{r}
+pred <- predict(mod.logit, newdata = dt.test, type = "response")
+pred.class <- ifelse(pred > 0.5, "Yes", "No")
+(tab <- table(pred.class, dt.test$default))
+(acc <- sum(diag(prop.table(tab))))
+```
+
+Klasyfikacja na poziomie 97% wskazuje na dobre dopasowanie modelu.

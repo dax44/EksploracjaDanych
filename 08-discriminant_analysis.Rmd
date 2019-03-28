@@ -1,0 +1,226 @@
+# Analiza dyskryminacyjna
+
+Analiza dyskryminacyjna (ang. *discriminant analysis*) jest grupą technik dyskryminacji obserwacji względem przynależności do klas. Część z nich należy do klasyfikatorów liniowych (choć nie zawsze w ścisłym sensie). Za autorów tej metody uważa się  Fisher'a -@fisher1936 i Welch'a -@welch1939. Kazdy z nich prezentował nieco inne podejscie do tematu klasyfikacji. Welch poszukiwał klasyfikacji minimalizującej prawdopodobieństwo błędnej klasyfikacji, znane jako [klasyfikatory bayesowskie](#bayes). Podejście Fisher'a skupiało się raczej na porównaniu zmienności miedzygrupowej do zmienności wewnątrzgrupowej. Wychodząc z założenia, że iloraz tych wariancji powinien być stosunkowo duży przy różnych klasach, jeśli do ich opisu użyjemy odpowiednich zmiennych niezależnych. W istocie chodzi o znalezienie takiego wektora, w kierunku którego wspomniany iloraz wariancji jest największy.
+
+## Liniowa analiza dyskryminacyjna Fisher'a
+
+### Dwie kategorie zmiennj grupującej 
+
+Niech $\boldsymbol D$ będzie zbiorem zawierającym $n$ punktów $\{\boldsymbol x_i, y_i\}$, gdzie $\boldsymbol x_i\in \mathbb{R}^d$, a $y_i\in \{c_1,\ldots,c_k\}$. Niech $\boldsymbol D_i$ oznacza podzbiór punktów zbioru $\boldsymbol D$, które należą do klasy $c_i$, czyli $\boldsymbol D_i=\{\boldsymbol x_i|y_i=c_i\}$ i niech $|\boldsymbol D_i|=n_i$. Na początek załóżmy, że $\boldsymbol D$ składa się tylko z $\boldsymbol D_1$ i $\boldsymbol D_2$. 
+
+Niech $\boldsymbol w$ będzie wektorem jednostkowym ($\boldsymbol w'\boldsymbol w=1$), wówczas rzut ortogonalny punku $\boldsymbol x_i$ na wektor $\boldsymbol w$ można zapisać następująco
+\begin{equation}
+    \tilde{\boldsymbol x}_i=\left(\frac{\boldsymbol w'\boldsymbol x_i}{\boldsymbol w'\boldsymbol w}\right)\boldsymbol w=(\boldsymbol w'\boldsymbol x_i)\boldsymbol w = a_i\boldsymbol w,
+\end{equation}
+gdzie $a_i$ jest współrzędną punktu $\tilde{\boldsymbol x}_i$ w kierunku wektora $\boldsymbol w$, czyli 
+\begin{equation}
+    a_i=\boldsymbol w'\boldsymbol x_i.
+\end{equation}
+Zatem $(a_1,\ldots,a_n)$ reprezentują odwzorowanie $\mathbb{R}^d$ w $\mathbb{R}$, czyli z $d$-wymiarowej przestrzeni w przestrzeń generowaną przez $\boldsymbol w$. 
+
+```{r rzut, echo=FALSE, fig.cap="Rzut ortogonalny punktów w kierunku wektora $\\boldsymbol w$", fig.align='center'}
+knitr::include_graphics("images/rzut.png", dpi = 100)
+```
+
+Każdy punkt należy do pewnej klasy, dlatego możemy wyliczyć
+\begin{align}
+    \boldsymbol m_1=&\frac{1}{n_1}\sum_{ \boldsymbol x_i\in \boldsymbol D_1}a_i=\\
+    =&\frac{1}{n_1}\sum_{ \boldsymbol x_i\in \boldsymbol D_1} \boldsymbol w' \boldsymbol x_i=\\
+    =& \boldsymbol w'\left(\frac{1}{n_1}\sum_{ \boldsymbol x_i\in \boldsymbol D_1} \boldsymbol x_i \right)=\\
+    =& \boldsymbol w' \boldsymbol{\mu}_1,
+    (\#eq:m)
+\end{align}
+gdzie $\boldsymbol \mu_1$ jest wektorem średnich punktów z $\boldsymbol D_1$. W podobny sposób można policzyć $m_2 = \boldsymbol w' \boldsymbol \mu_2$. Oznacza to, że średnia projekcji jest projekcją średnich.
+
+Rozsądnym wydaje się teraz poszukać takiego wektora, aby $|m_1-m_2|$ była maksymalnie duża przy zachowaniu niezbyt dużej zmienności wewnątrz grup. Dlatego kryterium Fisher'a przyjmuje postać
+\begin{equation}
+    \max_{ \boldsymbol w}J(\boldsymbol w)=\frac{(m_1-M_2)^2}{ss_1^2+ss_2^2},
+    (\#eq:condFisher)
+\end{equation}
+gdzie $ss_j^2=\sum_{ \boldsymbol x_i\in \boldsymbol D_j}(a_i-m_j)^2=n_j\sigma_j^2.$$
+
+Zauważmy, że licznik w \@ref(eq:condFisher) da się zapisać jako
+\begin{align}
+    (m_1-m_2)^2=& ( \boldsymbol w'( \boldsymbol \mu_1- \boldsymbol \mu_2))^2=\\
+    =& \boldsymbol w'((\boldsymbol \mu_1- \boldsymbol \mu_2)(\boldsymbol \mu_1- \boldsymbol \mu_2)') \boldsymbol w=\\
+    =& \boldsymbol w' \boldsymbol B \boldsymbol w
+\end{align}
+gdzie $\boldsymbol B=(\boldsymbol \mu_1- \boldsymbol \mu_2)(\boldsymbol \mu_1- \boldsymbol \mu_2)'$ jest macierzą $d\times d$.
+
+Ponadto 
+\begin{align}
+    ss_j^2=&\sum_{ \boldsymbol x_i\in \boldsymbol D_j}(a_i-m_j)^2=\\
+    =&\sum_{ \boldsymbol x_i\in \boldsymbol D_j}( \boldsymbol w' \boldsymbol x_i- \boldsymbol w' \boldsymbol\mu_j)^2=\\
+    =& \sum_{ \boldsymbol x_i\in \boldsymbol D_j}( \boldsymbol{w}'( \boldsymbol{x}_i- \boldsymbol{\mu}_j))^2=\\
+    =& \boldsymbol{w}'\left(\sum_{ \boldsymbol x_i\in \boldsymbol D_j}(\boldsymbol{x}_i-\boldsymbol \mu_j)(\boldsymbol x_i- \boldsymbol \mu_j)'\right) \boldsymbol{w}=\\
+    =& \boldsymbol{w}' \boldsymbol{S}_j \boldsymbol{w},
+    (\#eq:Sj)
+\end{align}
+gdzie $\boldsymbol{S}_j=n_j \boldsymbol{\Sigma}_j$.
+Zatem mianowinik \@ref(eq:condFisher) możemy zapisać jako
+\begin{equation}
+    ss_1^2+ss_2^2= \boldsymbol{w}'(\boldsymbol{S}_1+ \boldsymbol{S}_2) \boldsymbol{w}= \boldsymbol{w}' \boldsymbol{S} \boldsymbol{w},
+\end{equation}
+gdzie $\boldsymbol{S}=\boldsymbol{S}_1+\boldsymbol{S}_2$.
+Ostatecznie warunek Fisher'a przyjmuje postać
+\begin{equation}
+    \max_{ \boldsymbol{w}}J( \boldsymbol{w})=\frac{ \boldsymbol{w}' \boldsymbol{B} \boldsymbol{w}}{ \boldsymbol{w}' \boldsymbol{S} \boldsymbol{w}}.
+    (\#eq:condFisher2)
+\end{equation}
+
+Różniczkując \@ref(eq:condFisher2) po $\boldsymbol{w}$ otrzymamy warunek
+\begin{equation}
+    \boldsymbol{B} \boldsymbol{w} = \lambda \boldsymbol{S} \boldsymbol{w},
+    (\#eq:condFisher3)
+\end{equation}
+gdzie $\lambda=J(\boldsymbol{w})$. Maksimum \@ref(eq:condFisher3) jest osiągane dla wektora $\boldsymbol{w}$ równego wektrowi własnemu odpowiadającemu największej wartości własnej macierzy $\boldsymbol{S}$. Jeśli $\boldsymbol{S}$ nie jest osobliwa, to rozwiązanie \@ref(eq:condFisher3) można przedstawić bez wykorzystania wartości i wektorów własnych.
+
+Poniważ $\boldsymbol{B}=\left((\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\right)\boldsymbol{w}$ jest macierzą $d \times d$ rzędu 1, to $\boldsymbol{B}\boldsymbol{w}$ jest punktem na kierunku wyznaczonym przez wektor $\boldsymbol{\mu}_1-\boldsymbol{\mu}_2$, bo
+\begin{align}
+    \boldsymbol{B}\boldsymbol{w}=& \left((\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\right)\boldsymbol{w}=\\
+    =&(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)\left((\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\right)\boldsymbol{w}=\\
+    =& b(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2),
+\end{align}
+gdzie $b = (\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\boldsymbol{w}$ jest skalarem.
+
+Wówczas \@ref(eq:condFisher3) zapiszemy jako
+\begin{gather}
+    b(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2) = \lambda\boldsymbol{S}\boldsymbol{w}\\
+    \boldsymbol{w}= \frac{b}{\lambda}\boldsymbol{S}^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)
+\end{gather}
+
+A ponieważ $b/\lambda$ jest liczbą, to kierunek najlepszej dyskryminacji grup wyznacza wektor
+\begin{equation}
+    \boldsymbol{w}=\boldsymbol{S}^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2).
+\end{equation}
+
+```{r rzut2, echo=FALSE, fig.align='center', fig.cap="Rzut ortogonalny w kierunku wektora $\\boldsymbol{w}$, będącego najlepiej dyskryminującym obie grupy obserwacji"}
+knitr::include_graphics("images/rzut2.JPG", dpi = 100)
+```
+
+### $k$-kategorii zmiennej grupującej
+
+Uogólnieniem tej teorii na przypadek $k$ klas jest uwzględnienie $k-1$ funkcji dyskryminacyjnych. Zmienność wewnątrzgrupowa przyjmuje wówczas postać
+\begin{equation}
+    \boldsymbol{S}_W=\sum_{i=1}^k\boldsymbol{S}_i,
+\end{equation}
+gdzie $\boldsymbol{S}$ jest zdefiniowane jak w \@ref(eq:Sj).
+Niech średnia i rozrzut globalny będą dane wzorami
+\begin{equation}
+    \boldsymbol{m}=\frac{1}{n}\sum_{i=1}^kn_i\boldsymbol{m}_i,
+\end{equation}
+\begin{equation}
+    \boldsymbol{S}_T=\sum_{j=1}^k\sum_{\boldsymbol{x}\in D_j}(\boldsymbol{x}-\boldsymbol{m})(\boldsymbol{x}-\boldsymbol{m})'
+\end{equation}
+gdzie $\boldsymbol{m}_i$ jest określone jak w \@ref(eq:m). Wtedy zmienność międzygrupową możemy wyrazić jako
+\begin{equation}
+    \boldsymbol{S}_B=\sum_{i=1}^kn_i(\boldsymbol{m}_i-\boldsymbol{m})(\boldsymbol{m}_i-\boldsymbol{m})',
+\end{equation}
+bo $\boldsymbol{S}_T=\boldsymbol{S}_W+\boldsymbol{S}_B.$
+Określamy projekcję $d$-wymiarowej przestrzeni na $k-1$-wymiarową przestrzeń za pomocą $k-1$ funkcji dyskryminacyjnych postaci
+\begin{equation}
+    \boldsymbol{a}_j=\boldsymbol{w}_j'\boldsymbol{x}, \quad j=1,\ldots,k-1.
+\end{equation}
+Połączone wszystkie $k-1$ rzutów możemy zapisać jako
+\begin{equation}
+    \boldsymbol{a}=\boldsymbol{W}'\boldsymbol{x}.
+\end{equation}
+
+W nowej przestrzeni $k-1$-wymirowej możemy zdefiniować
+\begin{equation}
+    \tilde{\boldsymbol{m}}=\frac{1}{n}\sum_{i=1}^kn_i\tilde{\boldsymbol{m}}_i,
+\end{equation}
+gdzie $\tilde{\boldsymbol{m}}_i= \frac{1}{n_i}\sum_{\boldsymbol{a}\in A_i}\boldsymbol{a}$, a $A_i$ jest projekcją obiektów z $i$-tej klasy w kierunku wektora $\boldsymbol{W}$.
+Dalej możemy zdefiniować zmienności miedzy- i wewnątrzgrupowe dla obiektów przekształconych przez $\boldsymbol{W}$
+\begin{align}
+    \tilde{\boldsymbol{S}}_W=&\sum_{i=1}^k\sum_{\boldsymbol{a}\in A_i}(\boldsymbol{a}-\tilde{\boldsymbol{m}})(\boldsymbol{a}-\tilde{\boldsymbol{m}})'\\
+    \tilde{\boldsymbol{S}}_B=&\sum_{i=1}^kn_i(\tilde{\boldsymbol{m}}_i-\tilde{\boldsymbol{m}})(\tilde{\boldsymbol{m}}_i-\tilde{\boldsymbol{m}})'.
+\end{align}
+Łatwo można zatem pokazać, że
+\begin{align}
+    \tilde{\boldsymbol{S}}_W = & \boldsymbol{W}'\boldsymbol{S}_W\boldsymbol{W}\\
+    \tilde{\boldsymbol{S}}_B = & \boldsymbol{W}'\boldsymbol{S}_B\boldsymbol{W}.
+\end{align}
+Ostatecznie warunek \@ref(eq:condFisher) w $k$-wymiarowym ujęciu można przedstawić jako
+\begin{equation}
+    \max_{\boldsymbol{W}}J(\boldsymbol{W})=\frac{\tilde{\boldsymbol{S}}_W}{\tilde{\boldsymbol{S}}_B}=\frac{\boldsymbol{W}'\boldsymbol{S}_W\boldsymbol{W}}{\boldsymbol{W}'\boldsymbol{S}_B\boldsymbol{W}}.
+\end{equation}
+Maksimum można znaleźć poprzez rozwiązanie równania charakterystycznego \begin{equation}
+    |\boldsymbol{S}_B-\lambda_i\boldsymbol{S}_W|=0
+\end{equation}
+dla każdego $i$.
+
+```{example}
+Dla danych ze zbioru `iris` przeprowadzimy analizę dyskryminacji. Implementację metody LDA znajdziemy w pakiecie `MASS` w postaci funkcji `lda`.
+```
+
+Zaczynamy od standaryzacji zmiennych i podziału próby na uczącą i tesetową.
+
+```{r}
+library(MASS)
+library(tidyverse)
+iris.std <- iris %>% 
+    mutate_if(is.numeric, scale)
+set.seed(2019)
+ind <- sample(nrow(iris.std), size = 100)
+dt.ucz <- iris.std[ind,]
+dt.test <- iris.std[-ind,]
+```
+
+Budowa modelu
+
+```{r}
+mod.lda <- lda(Species~., data = dt.ucz)
+mod.lda$prior
+```
+
+Prawdopodobieństwa *a priori* przynależności do klas przyjęto na podstawie próby uczącej.
+
+```{r}
+mod.lda$means
+```
+
+
+W części `means` wyświetlone są średnie poszczególnych zmiennych niezależnych w podziale na grupy. Dzięki temu można określić położenia środków ciężkości poszczególnych klas w oryginalnej przestrzeni.
+
+```{r}
+mod.lda$scaling
+```
+
+Powyższa tabel zawiera współrzędne wektrów wyznaczających funkcje dyskryminacyjne. Na ich podstawie możemy określić, która z nich wpływa najmocniej na tworzenie się nowej przestrzeni.
+
+Obiekt `svd` przechowuje pierwiastki z $\lambda_i$, dlatego podnosząc je do kwadratu i dzieląc przez ich sumę otrzymamy udział poszczególnych zmiennych w dyskryminacji przypadków. Jak widać pierwsza funkcja dyskryminacyjna w zupełności by wystarczyła.
+
+```{r}
+mod.lda$svd^2/sum(mod.lda$svd^2)
+```
+
+Klasyfikacja na podstawie modelu
+
+```{r}
+pred.lda <- predict(mod.lda, dt.test)
+```
+Wynik predykcji przechowuje trzy rodzaje obiektów:
+
+- klasy, które przypisał obiektom model (`class`);
+- prawdopodobieństwa *a posteriori* przynależności do klas na podstawie modelu (`posterior`);
+- współrzędne w nowej przestrzeni LD1, LD2 (`x`).
+
+Sprawdzenie jakości klasyfikacji
+
+```{r}
+tab <- table(pred = pred.lda$class, obs = dt.test$Species)
+tab
+sum(diag(prop.table(tab)))
+```
+
+Jak widać z powyższej tabeli model dobrze sobie radzi z klasyfikacją obiektów. Odsetek poprawnych klasyfikacji wynosi 98%.
+
+```{r, fig.align='center', fig.cap="Klasyfikacja w przestrzeni LD1, LD2 na podstawie modelu mod.lda"}
+cbind.data.frame(obs = dt.test$Species,
+                 pred.lda$x, 
+                 pred = pred.lda$class) %>% 
+    ggplot(aes(x = LD1, y = LD2))+
+    geom_point(aes(color = pred, shape = obs))
+```
+

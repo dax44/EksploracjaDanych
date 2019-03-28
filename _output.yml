@@ -3,12 +3,26 @@ bookdown::gitbook:
     in_header: mathjax-symbols.html
   css: style.css
   config:
+    sharing:
+      facebook: yes
+      twitter: yes
+      google: no
+      linkedin: no
+      weibo: no
+      instapaper: no
+      vk: no
+      all: ['facebook', 'google', 'twitter', 'linkedin', 'weibo', 'instapaper']
+    toolbar:
+      position: fixed
     toc:
+      collapse: subsection
+      scroll_highlight: yes
       before: |
         <li><a href="./">Eksploracja Danych</a></li>
       after: |
         <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
     download: ["pdf", "epub"]
+    search: yes
 bookdown::pdf_book:
   includes:
     in_header: preamble.tex

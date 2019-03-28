@@ -11,7 +11,7 @@ I tak u podstaw metod bazujących na prostych drzewach decyzyjnych stał pomysł
 
 ## Bagging
 
-Technika ta została wprowadzona przez @Breiman1996 i ma na celu zmniejszenie wariancji modelu pojedynczego drzewa. Podobnie jak technika *bootstrap*, w której statystyki są wyliczane na wielu próbach pobranych z tego samego rozkładu (próby), w metodzie bagging losuje się wiele prób ze zbioru uczącego (najczęściej poprzez wielokrotne losowanie próby o rozmiarze zbioru uczącego ze zwracaniem), a następnie dla każdej próby bootstrapowej buduje się drzewo. W ten sposób otrzymujemy $B$ drzew decyzyjnych $\hat{f}^1(x), \hat{f}^2(x),\ldots, \hat{f}^B(x)$. Na koniec poprzez uśrednienie otrzymujemy model charakteryzujący się większą precyzją
+Technika ta została wprowadzona przez @breiman1996 i ma na celu zmniejszenie wariancji modelu pojedynczego drzewa. Podobnie jak technika *bootstrap*, w której statystyki są wyliczane na wielu próbach pobranych z tego samego rozkładu (próby), w metodzie bagging losuje się wiele prób ze zbioru uczącego (najczęściej poprzez wielokrotne losowanie próby o rozmiarze zbioru uczącego ze zwracaniem), a następnie dla każdej próby bootstrapowej buduje się drzewo. W ten sposób otrzymujemy $B$ drzew decyzyjnych $\hat{f}^1(x), \hat{f}^2(x),\ldots, \hat{f}^B(x)$. Na koniec poprzez uśrednienie otrzymujemy model charakteryzujący się większą precyzją
 \begin{equation}
     \hat{f}_{bag}(x)=\frac1B\sum_{b=1}^B\hat{f}^b(x).
 \end{equation}
@@ -144,7 +144,7 @@ varImpPlot(boston.rf)
 
 ## Boosting
 
-Rozważania na temat metody *boosting* zaczęły się od pytań postawionych w publikacji @Kearns1989, czy da się na podstawie na podstawie zbioru słabych modeli stworzyć jeden dobry? Odpowiedzi pozytywnej na nie udzielili, najpierw @Schapire1990, a potem @breiman1998. W metodzie boosting nie stosuje się prób bootstrapowych ale odpowiednio modyfikuje się drzewo wyjściowe w kolejnych krokach na tym samym zbiorze uczącym. Algorytm dla drzewa regresyjnego jest następujący:
+Rozważania na temat metody *boosting* zaczęły się od pytań postawionych w publikacji @kearns1989, czy da się na podstawie na podstawie zbioru słabych modeli stworzyć jeden dobry? Odpowiedzi pozytywnej na nie udzielili, najpierw @schapire1990, a potem @breiman1998. W metodzie boosting nie stosuje się prób bootstrapowych ale odpowiednio modyfikuje się drzewo wyjściowe w kolejnych krokach na tym samym zbiorze uczącym. Algorytm dla drzewa regresyjnego jest następujący:
 
 1. Ustal $\hat{f}(x)=0$ i $r_i=y_i$ dla każdego $i$ w zbiorze uczącym.
 2. Dla $b=1,2,\ldots, B$ powtarzaj:

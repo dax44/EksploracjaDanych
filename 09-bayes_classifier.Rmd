@@ -1,5 +1,5 @@
-# Klasyfikatory bayesowskie
-
+# Klasyfikatory bayesowskie {#bayes}
+ 
 Całą gamę klasyfikatorów opartych na twierdzeniu Bayesa nazywać będziemy bayesowskimi.
 \begin{equation}\label{bayes}
 		P(A|B)=\frac{P(A)P(B|A)}{P(B)},
@@ -43,7 +43,7 @@ Na podstawie wiedzy o atrybutach obiektu $x$ podejmujemy decyzję o klasyfikacji
 Obie wspomniane metody wymagają znajomości prawdopodobieństwa $P(a_1=v_1,a_2=v_2,\ldots,a_p=v_p|h)$, ale różnią się podejściem do wiedzy o prawdopodobieństwach a priori. W metodzie MAP brana pod uwagę jest wiedza o prawdopodobieństwie przynależności do poszczególnych klas, a w ML nie. Dla klasyfikacji, w których prawdopodobieństwa przynależności do klas są takie same, klasyfikatory MAP i ML są równoważne.
 ```
 
-## Naiwny klasyfikator Bayesa (NB)^[ang. *Naive Bayes Classifier*]
+## Naiwny klasyfikator Bayesa (NB)^[ang. *Naive Bayes Classifier*] 
 
 Największy problem w wyznaczeniu klasyfikatorów MAP i ML stanowi wyznaczenie rozkładu łącznego $P(a_1=v_1, a_2=v_2,\ldots,a_p=v_p|h)$. W naiwnym klasyfikatorze Bayesa zakłada się niezależność warunkową poszczególnych atrybutów względem klasy do której ma należeń wg hipotezy obiekt. Założenie to często nie jest spełnione i stąd nazwa przymiotnik "naiwny".
 	
