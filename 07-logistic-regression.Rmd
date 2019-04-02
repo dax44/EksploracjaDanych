@@ -1,5 +1,11 @@
 # Regresja logistyczna
 
+```{r include=FALSE}
+library(tidyverse)
+library(knitr)
+```
+
+
 ## Model
 
 Regresja logisticzna (ang. *logistic regression*) jest techniką z rodziny klasyfikatorów liniowych z reprezentacją logistyczną, a formalnie należy do rodziny ugogólnionych modeli liniowych (GLM). Stosowana jest wówczas, gdy zmienna wynikowa posiada dwa stany (sukces i porażka), kodowane najczęściej za pomocą 1 i 0. W tej metodzie modelowane jest warunkowe prawdopobieństwo sukcesu za pomocą kombinacji liniowej predyktorów $X$. 
@@ -27,7 +33,7 @@ Zatem logarytm szansy jest kombinacją liniową predyktorów
 
 Estymacji parametrów modelu logistycznego dokonujemy za pomocą metody największej wiarogodności. Funkcja wiarogodności w tym przypadku przyjmuje postać
 \begin{equation}
-    L(X_1,\ldots,X_n,\beta)=\prod_{i=1}^{n}p(X_i)^Y_i[1-p(X_i)]^(1-Y_i),
+    L(X_1,\ldots,X_n,\beta)=\prod_{i=1}^{n}p(X_i)^Y_i[1-p(X_i)]^{1-Y_i},
 \end{equation}
 gdzie wektor $\beta$ jest uwikłany w funkcji $p(X_i)$. Maksymalizacji dokonujemy raczej po nałożeniu na funkcję wiarogodności logarytmu, bo to ułatwia szukanie ekstremum.
 \begin{equation}
@@ -74,7 +80,7 @@ mod.logit <- glm(default~., dt.ucz, family = binomial("logit"))
 summary(mod.logit)
 ```
 
-Tylko `income` nie ma żadnego wpływu na prawdopodobieństwo stanu `Yes` zmiennej `default`. Zmienna `balance` wpływa stymulująco na prawdopodobieństwo pojawienia się sukcesu. Natomiast jeśli badania osoba jest studentem (`studentYes`), to ma wpływ ograniczający na pojawienie się sukcesu. Chcąc porównać dwie grupy obserwacji, przykładowo studentów z niestudentami, możemy wykorzystać iloraz szans.
+Tylko `income` nie ma żadnego wpływu na prawdopodobieństwo stanu `Yes` zmiennej `default`. Zmienna `balance` wpływa stymulująco na prawdopodobieństwo pojawienia się sukcesu. Natomiast jeśli badana osoba jest studentem (`studentYes`), to ma wpływ ograniczający na pojawienie się sukcesu. Chcąc porównać dwie grupy obserwacji, przykładowo studentów z niestudentami, możemy wykorzystać iloraz szans.
 
 ```{r}
 exp(cbind(OR = coef(mod.logit), confint(mod.logit))) %>% 
@@ -92,7 +98,7 @@ predict(mod.logit, newdata = dt.new, type = "response")
 
 Otrzymany wynik jest oszacowanym prawdopodobieństwem warunkowym wystąpienia sukcesu (`default = Yes`). Widać zatem, że poziomy badanych cech sprzyjają raczej porażce.
 
-Jeśli chcemy sprawdzić jakość klasyfikacji na zbiorze testowym, to musimy ustalić na jakim poziomie prawdopodobieństwa będziemy uznawać obserwację za sukces. W zależności od tego, na predykcji jakiego stanu zależy nam bardziej możemy różnie dobierać ten próg (bez żadnych dodatkowych przesłanek najczęściej jest to 0.5).
+Jeśli chcemy sprawdzić jakość klasyfikacji na zbiorze testowym, to musimy ustalić na jakim poziomie prawdopodobieństwa będziemy uznawać obserwację za sukces. W zależności od tego, na predykcji jakiego stanu zależy nam bardziej, możemy różnie dobierać ten próg (bez żadnych dodatkowych przesłanek najczęściej jest to 0.5).
 
 ```{r}
 pred <- predict(mod.logit, newdata = dt.test, type = "response")
