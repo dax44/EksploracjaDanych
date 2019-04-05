@@ -151,7 +151,7 @@ Rozważania na temat metody *boosting* zaczęły się od pytań postawionych w p
    a) naucz drzewo $\hat{f}^b$ o $d$ regułach podziału (czyli $d+1$ liściach) na zbiorze $(X_i, r_i)$,
    b) zaktualizuj drzewo do nowej "skurczonej" wersji 
    \begin{equation}
-    \hat{f}(x)\leftarrow \hat{f}(x)+\lambda\hat{h}^b(x),
+    \hat{f}(x)\leftarrow \hat{f}(x)+\lambda\hat{f}^b(x),
    \end{equation}
    c) zaktualizuj reszty 
    \begin{equation}

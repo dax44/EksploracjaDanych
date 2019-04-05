@@ -1,6 +1,6 @@
 # Analiza dyskryminacyjna {#LDA}
 
-Analiza dyskryminacyjna (ang. *discriminant analysis*) jest grupą technik dyskryminacji obserwacji względem przynależności do klas. Część z nich należy do klasyfikatorów liniowych (choć nie zawsze w ścisłym sensie). Za autorów tej metody uważa się  Fisher'a -@fisher1936 i Welch'a -@welch1939. Kazdy z nich prezentował nieco inne podejscie do tematu klasyfikacji. Welch poszukiwał klasyfikacji minimalizującej prawdopodobieństwo błędnej klasyfikacji, znane jako [klasyfikatory bayesowskie](#bayes). Podejście Fisher'a skupiało się raczej na porównaniu zmienności miedzygrupowej do zmienności wewnątrzgrupowej. Wychodząc z założenia, że iloraz tych wariancji powinien być stosunkowo duży przy różnych klasach, jeśli do ich opisu użyjemy odpowiednich zmiennych niezależnych. W istocie chodzi o znalezienie takiego wektora, w kierunku którego wspomniany iloraz wariancji jest największy.
+Analiza dyskryminacyjna (ang. *discriminant analysis*) jest grupą technik dyskryminacji obserwacji względem przynależności do klas. Część z nich należy do klasyfikatorów liniowych (choć nie zawsze w ścisłym sensie). Za autorów tej metody uważa się  Fisher'a -@fisher1936 i Welch'a -@welch1939. Każdy z nich prezentował nieco inne podejście do tematu klasyfikacji. Welch poszukiwał klasyfikacji minimalizującej prawdopodobieństwo błędnej klasyfikacji, znane jako [klasyfikatory bayesowskie](#bayes). Podejście Fisher'a skupiało się raczej na porównaniu zmienności międzygrupowej do zmienności wewnątrzgrupowej. Wychodząc z założenia, że iloraz tych wariancji powinien być stosunkowo duży przy różnych klasach, jeśli do ich opisu użyjemy odpowiednich zmiennych niezależnych. W istocie chodzi o znalezienie takiego wektora, w kierunku którego wspomniany iloraz wariancji jest największy.
 
 ## Liniowa analiza dyskryminacyjna Fisher'a
 
@@ -57,7 +57,7 @@ Ponadto
     (\#eq:Sj)
 \end{align}
 gdzie $\boldsymbol{S}_j=n_j \boldsymbol{\Sigma}_j$.
-Zatem mianowinik \@ref(eq:condFisher) możemy zapisać jako
+Zatem mianownik \@ref(eq:condFisher) możemy zapisać jako
 \begin{equation}
     ss_1^2+ss_2^2= \boldsymbol{w}'(\boldsymbol{S}_1+ \boldsymbol{S}_2) \boldsymbol{w}= \boldsymbol{w}' \boldsymbol{S} \boldsymbol{w},
 \end{equation}
@@ -73,7 +73,7 @@ Różniczkując \@ref(eq:condFisher2) po $\boldsymbol{w}$ otrzymamy warunek
     \boldsymbol{B} \boldsymbol{w} = \lambda \boldsymbol{S} \boldsymbol{w},
     (\#eq:condFisher3)
 \end{equation}
-gdzie $\lambda=J(\boldsymbol{w})$. Maksimum \@ref(eq:condFisher3) jest osiągane dla wektora $\boldsymbol{w}$ równego wektrowi własnemu odpowiadającemu największej wartości własnej równania charkterystycznego $|\boldsymbol{B}-\lambda\boldsymbol{S}|=0$. Jeśli $\boldsymbol{S}$ nie jest osobliwa, to rozwiązanie \@ref(eq:condFisher3) otrzymujemy przez znalezienie największej wartości własnej macierzy $\boldsymbol{B}\boldsymbol{S}^{-1}$ lub bez wykorzystania wartości i wektorów własnych.
+gdzie $\lambda=J(\boldsymbol{w})$. Maksimum \@ref(eq:condFisher3) jest osiągane dla wektora $\boldsymbol{w}$ równego wektorowi własnemu odpowiadającemu największej wartości własnej równania charakterystycznego $|\boldsymbol{B}-\lambda\boldsymbol{S}|=0$. Jeśli $\boldsymbol{S}$ nie jest osobliwa, to rozwiązanie \@ref(eq:condFisher3) otrzymujemy przez znalezienie największej wartości własnej macierzy $\boldsymbol{B}\boldsymbol{S}^{-1}$ lub bez wykorzystania wartości i wektorów własnych.
 
 Ponieważ $\boldsymbol{B}=\left((\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\right)\boldsymbol{w}$ jest macierzą $d \times d$ rzędu 1, to $\boldsymbol{B}\boldsymbol{w}$ jest punktem na kierunku wyznaczonym przez wektor $\boldsymbol{\mu}_1-\boldsymbol{\mu}_2$, bo
 \begin{align}
@@ -187,7 +187,7 @@ W części `means` wyświetlone są średnie poszczególnych zmiennych niezależ
 mod.lda$scaling
 ```
 
-Powyższa tabela zawiera współrzędne wektrów wyznaczających funkcje dyskryminacyjne. Na ich podstawie możemy określić, która z nich wpływa najmocniej na tworzenie się nowej przestrzeni.
+Powyższa tabela zawiera współrzędne wektorów wyznaczających funkcje dyskryminacyjne. Na ich podstawie możemy określić, która z nich wpływa najmocniej na tworzenie się nowej przestrzeni.
 
 Obiekt `svd` przechowuje pierwiastki z $\lambda_i$, dlatego podnosząc je do kwadratu i dzieląc przez ich sumę otrzymamy udział poszczególnych zmiennych w dyskryminacji przypadków. Jak widać pierwsza funkcja dyskryminacyjna w zupełności by wystarczyła.
 
@@ -231,7 +231,7 @@ Jak wspomniano na wstępie (patrz rozdział \@ref(LDA)), podejście prezentowane
     f(\boldsymbol{x}) = \frac{1}{(2\pi)^{d/2}|\boldsymbol{\Sigma}|^{1/2}}\exp\left[-\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu})'\boldsymbol{\Sigma}(\boldsymbol{x}-\boldsymbol{\mu})\right],
     (\#eq:mnv)
 \end{equation}
-gdzie $\boldsymbol{\mu}$ jest wektorem średnich $\boldsymbol{x}$, a $\boldsymbol{\Sigma}$ jest macierzą kowaniancji $\boldsymbol{x}$. 
+gdzie $\boldsymbol{\mu}$ jest wektorem średnich $\boldsymbol{x}$, a $\boldsymbol{\Sigma}$ jest macierzą kowariancji $\boldsymbol{x}$. 
 
 ```{remark, whitening}
 Liniowa kombinacja zmiennych losowych o normalnym rozkładzie łącznym ma również rozkład łączny normalny. W szczególności, jeśli $A$ jest macierzą wymiaru $d\times k$ i $\boldsymbol{y} = A'\boldsymbol{x}$, to $f(\boldsymbol{y})\sim N(A'\boldsymbol{\mu}, A'\boldsymbol{\Sigma}A)$. Odpowiednia forma macierzy przekształcenia $A_w$, sprawia, że zmienne po transformacji charakteryzują się rozkładem normalnym łącznym o wariancji określonej przez $I$. Jeśli $\boldsymbol{\Phi}$ jest macierzą, której kolumny są ortonormalnymi wektorami własnymi macierzy $\boldsymbol{\Sigma}$, a $\boldsymbol{\Lambda}$ macierzą diagonalną wartości własnych, to transformacja $A_w=\boldsymbol{\Phi}\boldsymbol{\Lambda}^{-1}$ przekształca $\boldsymbol{x}$ w $\boldsymbol{y}\sim N(A_w'\boldsymbol{\mu}, I)$.
@@ -253,7 +253,7 @@ W podejściu polegającym na minimalizacji prawdopodobieństwa błędnej klasyfi
     g_i(\boldsymbol{x})=\P(c_i|\boldsymbol{x}),
 \end{equation}
 czyli jako prawdopodobieństwo a posteriori.
-Wszystkie trzy poniższe postaci funkcji dyskrymincyjnych są dopuszczalne i równoważne ze względu na rezutlat grupowania
+Wszystkie trzy poniższe postaci funkcji dyskryminacyjnych są dopuszczalne i równoważne ze względu na rezultat grupowania
 \begin{align}
     g_i(\boldsymbol{x})=&\P(c_i|\boldsymbol{x})=\frac{\P(\boldsymbol{x}|c_i)\P(c_i)}{\sum_{i=1}^k\P(\boldsymbol{x}|c_i)\P(c_i)},\\
     g_i(\boldsymbol{x})=&\P(\boldsymbol{x}|c_i)\P(c_i),\\
@@ -265,9 +265,9 @@ W przypadku gdy $\boldsymbol{x}|c_i\sim N(\boldsymbol{\mu}_i, \boldsymbol{\Sigma
     g_i(\boldsymbol{x})=-\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_i)'\boldsymbol{\Sigma}_i^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_i)-\frac{d}{2}\log(2\pi)-\frac{1}{2}\log|\boldsymbol{\Sigma}_i|+\log\P(c_i).
 \end{equation}
 
-W kolejnych podrozdziałach preanalizujemy trzy możliwe formy macierzy kowariancji.
+W kolejnych podrozdziałach przeanalizujemy trzy możliwe formy macierzy kowariancji.
 
-### Przypadek gdy $\boldsymbol{\Sigma}_i=I$ {#przypI}
+### Przypadek gdy $\boldsymbol{\Sigma}_i=\sigma^2I$ {#przypI}
 
 To najprostszy przypadek, zakładający niezależność zmiennych wchodzących w skład $\boldsymbol x$, których wariancje są stałe $\sigma^2$.
 Wówczas $g_i$ przyjmuje postać
@@ -302,7 +302,7 @@ gdzie
 \end{equation}
 oraz 
 \begin{equation}
-    \boldsymbol x_0 = \frac112(\boldsymbol \mu_i+\mu_j)-\frac{\sigma^2}{||\boldsymbol \mu_i-\boldsymbol \mu_j||^2}\log\frac{\P(c_i)}{\P(c_j)}(\boldsymbol \mu_i-\boldsymbol \mu_j).
+    \boldsymbol x_0 = \frac12(\boldsymbol \mu_i+\boldsymbol\mu_j)-\frac{\sigma^2}{||\boldsymbol \mu_i-\boldsymbol \mu_j||^2}\log\frac{\P(c_i)}{\P(c_j)}(\boldsymbol \mu_i-\boldsymbol \mu_j).
 \end{equation}
 
 Równanie \@ref(eq:row89) określa hiperpłaszczyznę przechodzącą przez $\boldsymbol x_0$ i prostopadłą do $\boldsymbol w$.
@@ -319,7 +319,7 @@ W tym przypadku funkcje dyskryminacyjne przyjmują postać
     g_i(\boldsymbol x)=\frac12(\boldsymbol x-\boldsymbol \mu_i)'\boldsymbol\Sigma^{-1}(\boldsymbol x-\boldsymbol \mu_i)+\log\P(c_i).
     (\#eq:row810)
 \end{equation}
-Jeśli $\P(c_i)$ są identyczne dla wszystkich klas, to można je pominąć we wzorze \@ref(eq:row810). Metryka euklidesowa ze wzoru \@ref(eq:row88) została zastąpiona przez odległość Mahalonobis'a. Podobnie ja w przypadku gdy $\boldsymbol \Sigma_i=I$, tak i teraz można uprościć \@ref(eq:row810) przez rozpisanie formy kwadratowej, aby otrzymać, że
+Jeśli $\P(c_i)$ są identyczne dla wszystkich klas, to można je pominąć we wzorze \@ref(eq:row810). Metryka euklidesowa ze wzoru \@ref(eq:row88) została zastąpiona przez odległość Mahalonobis'a. Podobnie ja w przypadku gdy $\boldsymbol \Sigma_i=\sigma^2I$, tak i teraz można uprościć \@ref(eq:row810) przez rozpisanie formy kwadratowej, aby otrzymać, że
 \begin{equation}
     g_i(\boldsymbol x)=\boldsymbol w_i'\boldsymbol x+w_{i0},
 \end{equation}
@@ -336,7 +336,7 @@ gdzie
 \end{equation}
 oraz 
 \begin{equation}
-    \boldsymbol x_0 = \frac12(\boldsymbol \mu_i+\mu_j)-\frac{\log[ \P(c_i)/\P(c_j)]}{(\boldsymbol x-\boldsymbol \mu_i)'\boldsymbol\Sigma^{-1}(\boldsymbol x-\boldsymbol \mu_i)}(\boldsymbol \mu_i-\boldsymbol \mu_j).
+    \boldsymbol x_0 = \frac12(\boldsymbol \mu_i+\boldsymbol\mu_j)-\frac{\log[ \P(c_i)/\P(c_j)]}{(\boldsymbol x-\boldsymbol \mu_i)'\boldsymbol\Sigma^{-1}(\boldsymbol x-\boldsymbol \mu_i)}(\boldsymbol \mu_i-\boldsymbol \mu_j).
 \end{equation}
 Tym razem $\boldsymbol{w}=\Sigma^{-1}(\boldsymbol \mu_i-\boldsymbol \mu_j)$ nie jest wektorem w kierunku $\boldsymbol \mu_i-\boldsymbol \mu_j$, więc hiperpłaszczyzna rozdzielająca obiekty różnych klas nie jest prostopadła do wektora $\boldsymbol \mu_i-\boldsymbol \mu_j$ ale przecina go w połowie (w punkcie $\boldsymbol x_0$).
 
@@ -376,7 +376,7 @@ dt.ucz <- Smarket %>%
     mutate_if(is.numeric, scale) %>% 
     sample_frac(size = 2/3) 
 dt.test <- Smarket[-as.numeric(rownames(dt.ucz)),]
-mod.qda <- qda(Direction~Lag1+Lag2, data = Smarket)
+mod.qda <- qda(Direction~Lag1+Lag2, data = dt.ucz)
 mod.qda
 ```
 
@@ -398,11 +398,11 @@ partimat(Direction ~ Lag1+Lag2,
          col.wrong='red')
 ```
 
-## Analiza dyskryminacyjna częściowych najmniejszych kwadratów
+## Analiza dyskryminacyjna metodą częściowych najmniejszych kwadratów
 
-Analiza dyskryminacyjna częściowych najmniejszych kwadratów (ang. *Partial Least Squares Discriminant Analysis*) jest wykorzystywana szczególnie w sytuacjach gdy zestaw predyktorów zwiera zmienne silnie ze sobą skorelowane. Jak wiadomo z wcześniejszych rozważań, metody dyskryminacji obserwacji są mało odporne na nadmiarowość zmiennych niezależnych. Stąd powstał pomysł zastosowania połączenia LDA z PLS (Partial Least Squares), której celem jest redukcja wymiaru przestrzeni jednocześnie maksymalizując korelację zmiennych niezależnych ze zmienną wynikową. 
+Analiza dyskryminacyjna metodą częściowych najmniejszych kwadratów (ang. *Partial Least Squares Discriminant Analysis*) jest wykorzystywana szczególnie w sytuacjach gdy zestaw predyktorów zwiera zmienne silnie ze sobą skorelowane. Jak wiadomo z wcześniejszych rozważań, metody dyskryminacji obserwacji są mało odporne na nadmiarowość zmiennych niezależnych. Stąd powstał pomysł zastosowania połączenia LDA z PLS (Partial Least Squares), której celem jest redukcja wymiaru przestrzeni jednocześnie maksymalizując korelację zmiennych niezależnych ze zmienną wynikową. 
 
-Parametrem, który jest kontrolowany podczas budowy modelu jest liczba ukrytych zmiennych. Metoda PLSDA ma kilka implementacji w R, ale najbradziej znana jest funkcja `plsda` z pakietu `caret` [@kuhn]. 
+Parametrem, który jest kontrolowany podczas budowy modelu jest liczba ukrytych zmiennych. Metoda PLSDA ma kilka implementacji w R, ale najbardziej znana jest funkcja `plsda` z pakietu `caret` [@kuhn]. 
 
 ```{example, plsda}
 Kontynując poprzedni przykład przeprowadzimy klasyfikacje ruchu waloru korzystając z metody PLSDA. W przeciwieństwie do poprzednich funkcji `plsda` potrzebuje przekazania zbioru predyktorów i wektora zmiennej wynikowej oddzielnie, a nie za pomocą formuły. Doboru liczby zmiennych latentnych dokonamy arbitralnie.
@@ -433,11 +433,11 @@ cor(dt.ucz[,2:6])
 
 ## Regularyzowana analiza dyskryminacyjna
 
-Regularyzowana analiza dyskrymiancyjna (ang. *Regularized Discriminant Analysis*) powstała jako technika równoważąca zalety i waday LDA i QDA. Ze względu na zdolności generalizacyjne model LDA jest lepszy od QDA (mniejsza wariancja modelu), ale jednocześnie QDA ma bardziej elastyczną postać hiperpowierzchni brzegowych rozdzielających obiekty różnych klas. Dlatego Friedman -@friedman1989 wprowadził technikę będącą kompromisem pomiędzy LDA i QDA poprzez odpowiednie określenie macierzy kowariancji
+Regularyzowana analiza dyskryminacyjna (ang. *Regularized Discriminant Analysis*) powstała jako technika równoważąca zalety i wady LDA i QDA. Ze względu na zdolności generalizacyjne model LDA jest lepszy od QDA (mniejsza wariancja modelu), ale jednocześnie QDA ma bardziej elastyczną postać hiperpowierzchni brzegowych rozdzielających obiekty różnych klas. Dlatego Friedman -@friedman1989 wprowadził technikę będącą kompromisem pomiędzy LDA i QDA poprzez odpowiednie określenie macierzy kowariancji
 \begin{equation}
     \tilde{\boldsymbol \Sigma}_i(\lambda) = \lambda\boldsymbol\Sigma_i + (1-\lambda)\boldsymbol\Sigma,
 \end{equation}
-gdzie $\boldsymbol \Sigma_i$ jest macierzą kowariancji dla $i$-tej klasy, a $\boldsymbol \Sigma$ jest uśrednioną macierzą kowariancji wszystkich klas. Zatem odpowiedni dobór parametru $\lambda$ decyduje czy poszukujemy modelu prostrzego ($\lambda = 0$ odpowiada LDA), czy bardziej elastycznego ($\lambda=1$ oznacza QDA).
+gdzie $\boldsymbol \Sigma_i$ jest macierzą kowariancji dla $i$-tej klasy, a $\boldsymbol \Sigma$ jest uśrednioną macierzą kowariancji wszystkich klas. Zatem odpowiedni dobór parametru $\lambda$ decyduje czy poszukujemy modelu prostszego ($\lambda = 0$ odpowiada LDA), czy bardziej elastycznego ($\lambda=1$ oznacza QDA).
 
 Dodatkowo metoda RDA pozwala na elastyczny wybór pomiędzy postaciami macierzy kowariancji wspólnej dla wszystkich klas $\boldsymbol\Sigma$. Może ona być macierzą jednostkową, jak w przypadku \@ref(przypI), co oznacza niezależność predyktorów modelu, może też być jak w przypadku \@ref(przypSig), gdzie dopuszcza się korelacje między predyktorami. Dokonuje się tego przez odpowiedni dobór parametru $\gamma$
 \begin{equation}
@@ -454,7 +454,7 @@ mod.rda <- rda(Direction~Lag1+Lag2+Lag3+Lag4+Lag5, dt.ucz)
 mod.rda
 ```
 
-Model zostal oszacowany z parametrami wyznaczonymi na podstawie sparawdzianu krzyżowego zastosowanego w funkcji `rda`.
+Model został oszacowany z parametrami wyznaczonymi na podstawie sprawdzianu krzyżowego zastosowanego w funkcji `rda`.
 
 ```{r}
 pred.rda <- predict(mod.rda, dt.test)
@@ -462,11 +462,11 @@ pred.rda <- predict(mod.rda, dt.test)
 sum(diag(prop.table(tab)))
 ```
 
-Jakość klasyfiakcji jest na zbliżonym poziomie jak przy poprzednich metodach.
+Jakość klasyfikacji jest na zbliżonym poziomie jak przy poprzednich metodach.
 
 ## Analiza dyskryminacyjna mieszana
 
-Liniowa analiza dyskryminacyjna zakładała, że średnie (centroidy) w klasach są różne ale macierz kowariancji wszystkich klas jest jednakowa. Analiza dykryminacyjna mieszana (ang. *Mixture Discriminant Analysis*) prezentuje jeszcze inne podejście ponieważ zakłada, że każda klasa może być charakteryzowana przez wiele wielowymiarowych rozkładów normalnych, których centroidy mogą się róznić, ale macierze kowariancji nie.
+Liniowa analiza dyskryminacyjna zakładała, że średnie (centroidy) w klasach są różne ale macierz kowariancji wszystkich klas jest jednakowa. Analiza dyskryminacyjna mieszana (ang. *Mixture Discriminant Analysis*) prezentuje jeszcze inne podejście ponieważ zakłada, że każda klasa może być charakteryzowana przez wiele wielowymiarowych rozkładów normalnych, których centroidy mogą się różnic, ale macierze kowariancji nie.
 
 Wówczas rozkład dla danej klasy jest mieszaniną rozkładów składowych, a funkcja dyskryminacyjna dla $i$-tej klasy przyjmuje postać
 \begin{equation}
@@ -494,7 +494,7 @@ Kolejny raz model dyskryminacyjny charakteryzuje się podobną jakością klasyf
 
 ## Elastyczna analiza dyskryminacyjna
 
-Zupełnie inne podejście w stosunku do wcześniejszych rozwiązań, przezentuje elastyczna analiza dyskryminacyjna (ang. *Flexible Discriminant Analysis*) . Kodując klasy wynikowe jako zmienne dychotomiczne (dla każdej klasy jest odrębna zmienna wynikowa) dla każdej z nich budowanych jest $k$ modeli regresji. Mogą to być modele regresji penalizowanej, jak regresja grzebietowa lub LASSO, modele regresji wielomianowej albo modele regresji sklejanej (MARS), o których będzie mowa w dalszej części tego opracowania.
+Zupełnie inne podejście w stosunku do wcześniejszych rozwiązań, prezentuje elastyczna analiza dyskryminacyjna (ang. *Flexible Discriminant Analysis*) . Kodując klasy wynikowe jako zmienne dychotomiczne (dla każdej klasy jest odrębna zmienna wynikowa) dla każdej z nich budowanych jest $k$ modeli regresji. Mogą to być modele regresji penalizowanej, jak regresja grzbietowa lub LASSO, modele regresji wielomianowej albo modele regresji sklejanej (MARS), o których będzie mowa w dalszej części tego opracowania.
 
 Przykładowo, jeśli modelem bazowym jest MARS, to funkcja dyskryminacyjna $i$-tej klasy może być postaci
 \begin{equation}

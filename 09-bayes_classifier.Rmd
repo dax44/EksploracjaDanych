@@ -32,7 +32,7 @@ Na podstawie wiedzy o atrybutach obiektu $x$ podejmujemy decyzję o klasyfikacji
 \end{align}
 gdzie ostatnia równość wynika z twierdzenia Bayesa oraz faktu, że dla konkretnego obiektu $x$ wielkości atrybutów nie zależą od postawionej hipotezy.
 
-## Klasyfikator największej warogodności (ML)
+## Klasyfikator największej wiarogodności (ML)
 
 Na podstawie wiedzy o atrybutach obiektu $x$ podejmujemy decyzję o klasyfikacji tego obiektu zgodnie z hipotezą $h_{ML}\in \mathbb{H}$, która przyjmuje postać
 \begin{equation}\label{ML}
@@ -111,7 +111,7 @@ nb <- naiveBayes(Survived ~ ., data = Titanic)
 nb$apriori
 ```
 
-Poniższe tabele zawierają warunkowe prawdopodobieństwa przynależności do poszczólnych klas.
+Poniższe tabele zawierają warunkowe prawdopodobieństwa przynależności do poszczególnych klas.
 
 ```{r}
 nb$tables
@@ -155,7 +155,7 @@ tab
 sum(diag(prop.table(tab)))
 ```
 
-Klasyfikacja na podstawie modelu jest badzo do dobra (96%).
+Klasyfikacja na podstawie modelu jest bardzo dobra (96%).
 
 
 ## Zalety i wady

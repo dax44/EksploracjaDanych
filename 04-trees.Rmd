@@ -358,12 +358,12 @@ round(sum(diag(tab2))/sum(tab2)*100,1)
 
 ## Inne algorytmy budowy drzew decyzyjnych implementowane w **R**
 
-Oprócz najbardziej znanego algorytmu CART implementowanego w postaci funkcji pakietu **rpart**, istnieją również inne algorytmy, które znalzały swoje implementacje w R. Są to:
+Oprócz najbardziej znanego algorytmu CART implementowanego w postaci funkcji pakietu **rpart**, istnieją również inne algorytmy, które znalazły swoje implementacje w R. Są to:
 
-- *CHAID*^[Chi-square automatic interaction detection] - algorytm przeznaczony do budowy drzew klafyfikacyjnych, gdzie zarówno zmienna wynikowa, jak i zmienne niezależne muszą być ze skali jakościowej. Główną różnicą w stosunku do drzew typu CART jest sposób budowy podziałów, oparty na teście niezależności $\chi^2$ Pearsona. Wyboru reguły podziału dokonuje się poprzez testowanie niezależności zmiennej niezależnej z predyktorami. Reguła o największej wartości statystyki $\chi^2$ jest stosowana w pierwszej kolejności. Implementacja tego algorytmu znajduje się w pakiecie **CHAID**^[brak w oficjalnej dystrybucji CRAN] (funkcja do tworzenia drzewa o tej samej nazwie `chaid`) [@R-CHAID].
-- *Ctree*^[Conditional Inference Trees] - algorytm zbliżony zasadą dzialania do CHAID, ponieważ również wykorzystuje testowanie do wyboru reguły podziału. Różni się jednak tym, że może być stosowany do zmiennych dowolnego typu oraz tym, że może być zarowno drzewem klasyfikacyjnym jak i regresyjnym. Implementację R-ową można znaleźć w pakietach **party** [@R-party] lub **partykit** [@R-partykit] - funkcją do tworzenia modelu jest `ctree`.
+- *CHAID*^[Chi-square automatic interaction detection] - algorytm przeznaczony do budowy drzew klasyfikacyjnych, gdzie zarówno zmienna wynikowa, jak i zmienne niezależne muszą być ze skali jakościowej. Główną różnicą w stosunku do drzew typu CART jest sposób budowy podziałów, oparty na teście niezależności $\chi^2$ Pearsona. Wyboru reguły podziału dokonuje się poprzez testowanie niezależności zmiennej niezależnej z predyktorami. Reguła o największej wartości statystyki $\chi^2$ jest stosowana w pierwszej kolejności. Implementacja tego algorytmu znajduje się w pakiecie **CHAID**^[brak w oficjalnej dystrybucji CRAN] (funkcja do tworzenia drzewa o tej samej nazwie `chaid`) [@R-CHAID].
+- *Ctree*^[Conditional Inference Trees] - algorytm zbliżony zasadą działania do CHAID, ponieważ również wykorzystuje testowanie do wyboru reguły podziału. Różni się jednak tym, że może być stosowany do zmiennych dowolnego typu oraz tym, że może być zarówno drzewem klasyfikacyjnym jak i regresyjnym. Implementację R-ową można znaleźć w pakietach **party** [@R-party] lub **partykit** [@R-partykit] - funkcją do tworzenia modelu jest `ctree`.
 - *C4.5* - algorytm stworzony przez @quinlan1993 w oparciu, o również jego autorstwa, algorytm ID3. Służy jedynie do zadań klasyfikacyjnych. W dużym uproszczeniu, dobór reguł podziału odbywa się na podstawie przyrostu informacji (patrz [Reguły podziału]). W przeciwieństwie do pierwotnego algorytmu ID3, C4.5 nie raczej nie przeucza drzew. Implementacja R-owa znajduje się w pakiecie **RWeka** [@R-Rweka] - funkcja do budowy drzewa to `J48`.
-- *C5.0* - kolejny algorytm autorstwa @R-C50 jest usprawnieniem algorytmu C4.5, generującym mniejsze drzewa automatycznie przycinane na podstawie złożności drzewa. Służy jedynie do zadań klasyfikacyjnych. Jest szybszy od poprzednika i pozwala na zastosowanie metody *boosting*^[budowa klasyfikatora w oparciu o proces iteracyjny, w którym kolejne w kolejnych iteracjach budowane są proste drzewa i przypisywane są im wagi - im gorszy klasyfikator, tym większa waga - po to aby nauczyć drzewo klasyfikować "trudne" przypadki]. Implementacja R-owa znajduje się w pakiecie *C50*, a funkcja do budowy drzewa to `C5.0`.
+- *C5.0* - kolejny algorytm autorstwa @R-C50 jest usprawnieniem algorytmu C4.5, generującym mniejsze drzewa automatycznie przycinane na podstawie złożoności drzewa. Służy jedynie do zadań klasyfikacyjnych. Jest szybszy od poprzednika i pozwala na zastosowanie metody *boosting*^[budowa klasyfikatora w oparciu o proces iteracyjny, w którym kolejne w kolejnych iteracjach budowane są proste drzewa i przypisywane są im wagi - im gorszy klasyfikator, tym większa waga - po to aby nauczyć drzewo klasyfikować "trudne" przypadki]. Implementacja R-owa znajduje się w pakiecie *C50*, a funkcja do budowy drzewa to `C5.0`.
 
 ```{example, przyk42}
 W celu porównania wyników klasyfikacji na podstawie drzew decyzyjnych o różnych algorytmach, zostaną nauczone modele w oparciu o funkcje `ctree`, `J48` i `C5.0` dla tego samego zestawu danych co w przykładzie wcześniejszym \@ref(exm:przyk41).
@@ -371,7 +371,7 @@ W celu porównania wyników klasyfikacji na podstawie drzew decyzyjnych o różn
 
 - **Drzewo `ctree`**
 
-Na początek ustalamy parametry ograniczające rozrozt drzewa podobne jak w poprzednim przykładzie.
+Na początek ustalamy parametry ograniczające rozrost drzewa podobne jak w poprzednim przykładzie.
 
 ```{r message=FALSE, warning=FALSE}
 library(partykit)
@@ -394,11 +394,11 @@ tab <- table(predykcja = pred2, obserwacja = dt.test$Species)
 tab
 ```
 
-Dopiero ocena jakości klasyfikacji na podstawe próby testowej pokazuje, że model zbudowany za pomocą `ctree` daje podobną precyzję jak `rpart` przycięty.
+Dopiero ocena jakości klasyfikacji na podstawie próby testowej pokazuje, że model zbudowany za pomocą `ctree` daje podobną precyzję jak `rpart` przycięty.
 
 - **Drzewo `J48`**
 
-W tym przypadku model sam poszukuje optymalnego rozwiazania przycinając się automatycznie.
+W tym przypadku model sam poszukuje optymalnego rozwiązania przycinając się automatycznie.
 
 ```{r message=FALSE, warning=FALSE}
 library(RWeka)
