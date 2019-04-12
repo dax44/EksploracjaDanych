@@ -1,0 +1,97 @@
+# Metoda $k$ najbliższych sąsiadów
+
+Technika $k$ najbliższych sąsiadów (ang. *$k$-Nearest Neighbors*) przewiduję wartość zmiennej wynikowej na podstawie $k$ najbliższych obserwacji zbioru uczącego. W przeciwieństwie do wspomnianych wcześniej modeli liniowych, nie posiada ona jawnej formy i należy do klasy technik nazywanych czarnymi skrzynkami (ang. *black box*). Może być wykorzystywana, zarówno do zadań klasyfikacyjnych, jak i regresyjnych. W obu przypadkach predykcja dla nowych wartości predyktorów przebiega podobnie. 
+
+Niech $\boldsymbol x_0$ będzie obserwacją, dla której poszukujemy wartości zmiennej wynikowej $y_0$. Na podstawie zbioru obserwacji $\boldsymbol x\in T$ zbioru uczącego wyznacza się $k$ najbliższych sąsiadów^[metrykę można wybierać dowolnie, choć najczęściej jest to metryka euklidesowa], gdzie $k$ jest z góry ustaloną wartością. Następnie, jeśli zadanie ma charakter klasyfikacyjny, to $y_0$ przypisuje się modę zmiennej wynikowej obserwacji będących $k$ najbliższymi sąsiadami. W przypadku zadań regresyjnych $y_0$ przypisuje się średnią lub medianę.
+
+Olbrzymie znaczenie dla wyników predykcji na podstawie metody *kNN* ma dobór metryki. Nie istnieje obiektywna technika wyboru najlepszej metryki, dlatego jej doboru dokonujemy metodą prób i błędów. Należy dodatkowo pamiętać, że wielkości mierzone $\boldsymbol x$ mogą się różnić zakresami zmienności, a co za tym idzie, mogą znacząco wpłynąć na mierzone odległości pomiędzy punktami. Dlatego zaleca się standaryzację zmiennych przed zastosowaniem metody *kNN*.
+
+Kolejnym parametrem, który ma znaczący wpływ na predykcję, jest liczba sąsiadów $k$. Wybór zbyt małej liczby $k$ może doprowadzić do przeuczenia modelu jak to jest pokazane na rysunku \@ref(fig:knn1)
+
+
+```{r knn1, echo=FALSE, fig.align='center',fig.cap="Przykład klasyfikacji dla $k=1$", warning=FALSE, message=FALSE}
+library(ElemStatLearn)
+source("functions/decisionplot.R")
+library(caret)
+dt <- data.frame(mixture.example$x, y = as.factor(mixture.example$y))
+mod <- knn3(y~., data = dt, k = 1)
+decisionplot(mod, dt, 
+             class = "y", 
+             resolution = 100,
+             main = "1-NN")
+```
+
+Z kolei zbyt duża liczba sąsiadów powoduje obciążenie wyników (patrz rysunek \@ref(fig:knn2))
+
+```{r knn2, echo=F, fig.align='center',fig.cap="Przykład zastosowania 100 sąsiadów"}
+mod <- knn3(y~., data = dt, k = 100)
+decisionplot(mod, dt, 
+             class = "y", 
+             resolution = 100,
+             main = "100-NN")
+```
+
+Dopiero dobór odpowiedniego $k$ daje model o stosunkowo niskiej wariancji i obciążeniu. Najczęściej liczby $k$ poszukujemy za pomocą próbkowania.
+
+```{r knn3, echo = F, fig.align='center', fig.cap="Model z optymalną liczbą sąsiadów"}
+mod <- knn3(y~., data = dt, k = 20)
+decisionplot(mod, dt, 
+             class = "y", 
+             resolution = 100,
+             main = "20-NN")
+```
+
+```{example knn_przklad1}
+Klasyfikację z wykorzystaniem metody *kNN* przeprowadzimy na przykładzie danych zbioru `spam` pakietu `ElemStatLearn`. Metoda *kNN* ma wiele implementacji R-owych ale na potrzeby przykładu wykorzystamy funkcję `knn3` pakietu `caret`. 
+
+Najpierw dokonamy oszacowania optymalnego $k$
+```
+
+```{r knnrys, fig.align='center', fig.cap="Ocena jakości dopasowania modelu dla różnej liczby sąsiadów", warning=F, message=F}
+library(ElemStatLearn)
+library(tidyverse)
+
+spam.std <- spam %>% 
+    mutate_if(is.numeric, scale)
+set.seed(123)
+ind <- sample(nrow(spam), size = nrow(spam)*2/3)
+dt.ucz <- spam.std[ind,]
+dt.test <- spam.std[-ind,]
+
+acc <- function(pred, obs){
+    tab <- table(pred,obs)
+    acc <- sum(diag(prop.table(tab)))
+    acc
+}
+
+1:40 %>% 
+    map(~knn3(spam~., data = dt.ucz, k = .x)) %>% 
+    map(~predict(.x, newdata = dt.test, type = "class")) %>% 
+    map_dbl(~acc(pred = .x, obs = dt.test$spam)) %>% 
+    tibble(k = 1:length(.), acc=.) %>% 
+    ggplot(aes(k, acc))+
+     geom_line()
+```
+
+Biorąc pod uwagę wykres \@ref(fig:knnrys) można rozważać 1 lub 9 sąsiadów jako optymalne rozwiązanie, ponieważ wówczas poprawność klasyfikacji jest najwyższa. Proponuje unikać rozwiązania z 1 najbliższym sąsiadem ponieważ, będzie się ono charakteryzowało duża zmiennością. Wybór $k=9$ wydaje się być optymalny.
+
+```{r}
+mod.knn <- knn3(spam~., data = dt.ucz,
+                k = 9)
+mod.knn
+```
+
+
+Predykcji dokonujemy w ten sam sposób co w innych modelach klasyfikacyjnych 
+
+```{r}
+pred.knn.class <- predict(mod.knn, newdata = dt.test, type = "class")
+head(pred.knn.class)
+pred.knn <- predict(mod.knn, newdata = dt.test)
+head(pred.knn)
+
+(tab <- table(pred.knn.class, dt.test$spam))
+
+sum(diag(prop.table(tab)))
+```
+

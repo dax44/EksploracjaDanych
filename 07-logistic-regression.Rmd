@@ -26,7 +26,7 @@ Ponieważ będziemy przyjmowali, że $p\in (0,1)$, to $o\in (0,\infty)$, a jej l
 
 Zatem logarytm szansy jest kombinacją liniową predyktorów
 \begin{equation}
-    \log\left[\frac{p(X)}{1-p(X)}\right]=\beta_0+\beta_1x_1+\ldots+\beta_kx_k.
+    \log\left[\frac{p(X)}{1-p(X)}\right]=\beta_0+\beta_1x_1+\ldots+\beta_dx_d.
 \end{equation}
 
 ## Estymacja parametrów modelu
