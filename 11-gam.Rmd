@@ -1,6 +1,6 @@
 # Uogólnione modele addytywne
 
-Modele liniowe, jako techniki klasyfikacji i regresji, mają niewątpliwą zaletę - jawna postać zależności pomiędzy predyktorami i zmienną wynikową. Często w rzeczywistości tak uproszczony model nie potrafi oddać złożoności natury badanego zjawiska. Dlatego powstał pomysł aby w miejsce kombinacji liniowej predyktorów wstacić kombinację liniową ich funkcji, czyli
+Modele liniowe, jako techniki klasyfikacji i regresji, mają niewątpliwą zaletę - jawna postać zależności pomiędzy predyktorami i zmienną wynikową. Często w rzeczywistości tak uproszczony model nie potrafi oddać złożoności natury badanego zjawiska. Dlatego powstał pomysł aby w miejsce kombinacji liniowej predyktorów wstawić kombinację liniową ich funkcji, czyli
 \begin{equation}
     \E(Y|X)=f(X) = \sum_{i=1}^M\beta_mh_m(X),
     (\#eq:row111)
@@ -40,7 +40,7 @@ Przykładowo sześcienny splajn^[czyli funkcja łączona] dla dwóch punków wę
     h_2(X)=X,\quad h_4(X)=X^3,\quad h_6(X)=(X-\xi_2)_+^3.
 \end{gather}
 
-Zachowanie wielomianów poza punktami węzłowymi jest czasami bardzo dziwne. Zdaża się, że charakteryzują się tam dużą zmiennością. Dlatego wprowadza się takie splajny aby w obszarach brzegowych zachowywały się przewidywalnie.
+Zachowanie wielomianów poza punktami węzłowymi jest czasami bardzo dziwne. Zdarza się, że charakteryzują się tam dużą zmiennością. Dlatego wprowadza się takie splajny aby w obszarach brzegowych zachowywały się przewidywalnie.
 Naturalny splajn sześcienny zakłada liniowość modelu poza węzłami brzegowymi. Dla $K$ węzłów naturalny splajn sześcienny składa się z następujących funkcji bazowych
 
 \begin{gather}
@@ -52,7 +52,7 @@ Estymacji parametrów modelu dokonujemy metodą najmniejszych kwadratów, minima
 \begin{equation}
     RSS(f,\lambda) = \sum_{i=1}^N(y_i-f(x_i))^2+\lambda\int(f''(t))^2dt,
 \end{equation}
-gdzie $\lambda$ jest parametrem wygładzania. Piersze wyrażenie po prawej stronie to ocena dopasowania, a drugie to kara za krzywoliniowość.
+gdzie $\lambda$ jest parametrem wygładzania. Pierwsze wyrażenie po prawej stronie to ocena dopasowania, a drugie to kara za krzywoliniowość.
 Dla naturalnego splajna 
 \begin{equation}
     f(x)=\sum_{j=1}^NN_j(x)\beta_j
@@ -63,7 +63,7 @@ minimalizujemy
 \end{equation}
 gdzie $\{\boldsymbol N\}_{ij}= N_j(x_i)$ i $\{\boldsymbol \Omega\}_{jk}=\int N''_j(t)N''_k(t)dt$. Rozwiązaniem zaganienia minimalizacji $RSS(\beta,\lambda)$ jest 
 \begin{equation}
-    \hat{\beta}=(\boldsymbol N'\boldsymbol N)+\lambda\boldsymbol \Omega)^{-1}\boldsymbol N'\boldsymbol y.
+    \hat{\beta}=((\boldsymbol N'\boldsymbol N)+\lambda\boldsymbol \Omega)^{-1}\boldsymbol N'\boldsymbol y.
 \end{equation}
 
 
@@ -82,20 +82,20 @@ Rozwiązanie przyjmuje postać
 \begin{equation}
     f(x) = \beta_0+\beta'x+\sum_{i=1}^N \alpha_ih_i(x),
 \end{equation}
-gdzie $h_i(x)=||x-x_j||^2\log||x-x_j||
+gdzie $h_i(x)=||x-x_j||^2\log||x-x_j||$.
 
 
 ## Uogólnione modele addytywne
 
-Przez uogólnione modele addytywne (ang. *Generalized Additive Models*) rozumiemy klasę modeli, które poprzez funkcję łączącą, opisują warunkową wartość zmiennej wynikowej w następującyc sposób
+Przez uogólnione modele addytywne (ang. *Generalized Additive Models*) rozumiemy klasę modeli, które poprzez funkcję łączącą, opisują warunkową wartość zmiennej wynikowej w następujący sposób
 \begin{equation}
     g(\E(Y|X))=g(\mu(X))=\alpha+f_1(X_1)+\dots+f_d(X_d),
 \end{equation}
 gdzie $g$ jest funkcją łączącą. Najczęściej stosowanymi funkcjami łączącymi są:
 
 - $g(\mu)=\mu$ - stosowana w modelach, gdy zmienna wynikowa ma rozkład normalny;
-- $g(\mu)=logit\mu$ - stosowana, gdy zmienna wynikowa ma rozkład dwumianowy;
-- $g(\mu)=probit\mu$ - stosowana również w przypadku gdy zmienna ma rozkład dwumianowy, a $\Phi^{-1}$ oznacza odwrotność dystrybuanty standaryzowanego rozkładu normalnego;
+- $g(\mu)=\logit\mu$ - stosowana, gdy zmienna wynikowa ma rozkład dwumianowy;
+- $g(\mu)=\probit\mu$ - stosowana również w przypadku gdy zmienna ma rozkład dwumianowy, a $\Phi^{-1}$ oznacza odwrotność dystrybuanty standaryzowanego rozkładu normalnego;
 - $g(\mu)=\log\mu$ - stosowana, gdy zmienna wynikowa jest zmienną typu zliczeniowego (rozkład Poissona).
 
 ### Algorytm uczenia modelu GAM
@@ -111,7 +111,7 @@ Algorytm uczenia wstecznego (ang. *backfitting*) przebiega wg następujących kr
 dopóki $\hat{f}_j$ osiągnie zbieżność. Funkcja $\mathcal{S}_j\left[(y_i-\hat{\alpha}-\sum_{k\neq j}\hat{f}_k(x_{ik}))^N_1\right]$ jest jednowymiarowym sześciennym splajnem o $N$ węzłach. W jej miejsce można przyjąć również inne funkcje, takie jak: jednowymiarowe lokalne regresje wielomianowe (ang. *LOESS - locally estimated scatterplot smoothing*), regresje liniowe, wielomianowe.
 
 ```{example gam}
-Dla zilustrowania zasady działania uogólnionych modeli addytywnych przeprowadzimy analizę stężenia ozonu ($O_3$) w zależności od wybranych parametrów meteorologicznych. Do zbudowania modelu GAM wykorzystamy funkcję `gam` pakietu `mgcv` [@wood2017].
+Dla zilustrowania zasady działania uogólnionych modeli addytywnych przeprowadzimy analizę stężenia ozonu ($O_3$) w zależności od wybranych parametrów meteorologicznych. Do zbudowania modelu GAM wykorzystamy funkcję `gam` pakietu `mgcv` [@R-mgcv].
 ```
 
 ```{r}

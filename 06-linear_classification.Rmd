@@ -43,11 +43,11 @@ Najbardziej popularną reprezentacją parametryczną stosowaną w klasyfikacji j
 \end{equation}
 Wówczas $g(x)$ nie reprezentuje bezpośrednio $\P(y=1|x)$ ale jego logit
 \begin{equation}
-    g(x)=logit(\P(y=1|x)),
+    g(x)=\logit(\P(y=1|x)),
 \end{equation}
-gdzie $logit(p)=\ln\frac{p}{1-p}$. Dlatego właściwa postać reprezentacji jest następująca
+gdzie $\logit(p)=\ln\frac{p}{1-p}$. Dlatego właściwa postać reprezentacji jest następująca
 \begin{equation}
-    \P(y=1|x)=logit^{-1}(g(x)).
+    \P(y=1|x)=\logit^{-1}(g(x)).
 \end{equation}
 W ten sposób reprezentacja logitowa jest równoważna reprezentacji progowej, ponieważ
 \begin{equation}

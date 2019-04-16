@@ -1,6 +1,6 @@
 # Metoda $k$ najbliższych sąsiadów
 
-Technika $k$ najbliższych sąsiadów (ang. *$k$-Nearest Neighbors*) przewiduję wartość zmiennej wynikowej na podstawie $k$ najbliższych obserwacji zbioru uczącego. W przeciwieństwie do wspomnianych wcześniej modeli liniowych, nie posiada ona jawnej formy i należy do klasy technik nazywanych czarnymi skrzynkami (ang. *black box*). Może być wykorzystywana, zarówno do zadań klasyfikacyjnych, jak i regresyjnych. W obu przypadkach predykcja dla nowych wartości predyktorów przebiega podobnie. 
+Technika $k$ najbliższych sąsiadów (ang. *$k$-Nearest Neighbors*) przewiduje wartość zmiennej wynikowej na podstawie $k$ najbliższych obserwacji zbioru uczącego. W przeciwieństwie do wspomnianych wcześniej modeli liniowych, nie posiada ona jawnej formy i należy do klasy technik nazywanych czarnymi skrzynkami (ang. *black box*). Może być wykorzystywana, zarówno do zadań klasyfikacyjnych, jak i regresyjnych. W obu przypadkach predykcja dla nowych wartości predyktorów przebiega podobnie. 
 
 Niech $\boldsymbol x_0$ będzie obserwacją, dla której poszukujemy wartości zmiennej wynikowej $y_0$. Na podstawie zbioru obserwacji $\boldsymbol x\in T$ zbioru uczącego wyznacza się $k$ najbliższych sąsiadów^[metrykę można wybierać dowolnie, choć najczęściej jest to metryka euklidesowa], gdzie $k$ jest z góry ustaloną wartością. Następnie, jeśli zadanie ma charakter klasyfikacyjny, to $y_0$ przypisuje się modę zmiennej wynikowej obserwacji będących $k$ najbliższymi sąsiadami. W przypadku zadań regresyjnych $y_0$ przypisuje się średnią lub medianę.
 
@@ -41,7 +41,7 @@ decisionplot(mod, dt,
              main = "20-NN")
 ```
 
-```{example knn_przklad1}
+```{example, knnprzklad1}
 Klasyfikację z wykorzystaniem metody *kNN* przeprowadzimy na przykładzie danych zbioru `spam` pakietu `ElemStatLearn`. Metoda *kNN* ma wiele implementacji R-owych ale na potrzeby przykładu wykorzystamy funkcję `knn3` pakietu `caret`. 
 
 Najpierw dokonamy oszacowania optymalnego $k$
