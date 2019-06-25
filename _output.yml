@@ -3,6 +3,7 @@ bookdown::gitbook:
     in_header: mathjax-symbols.html
   css: style.css
   config:
+    search: yes
     sharing:
       facebook: yes
       twitter: yes
@@ -21,12 +22,10 @@ bookdown::gitbook:
         <li><a href="./">Eksploracja Danych</a></li>
       after: |
         <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-    download: ["pdf", "epub"]
-    search: yes
+    download: ["pdf"]
 bookdown::pdf_book:
   includes:
     in_header: preamble.tex
   latex_engine: xelatex
-  citation_package: natbib
   keep_tex: yes
 bookdown::epub_book: default

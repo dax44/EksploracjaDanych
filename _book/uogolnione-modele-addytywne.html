@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2019-04-16">
+<meta name="date" content="2019-05-06">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="metoda-k-najblizszych-sasiadow.html">
-<link rel="next" href="bibliografia.html">
+<link rel="next" href="metoda-wektorow-nosnych.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -83,7 +83,7 @@ a.sourceLine { text-indent: -1em; padding-left: 1em; }
 pre.numberSource a.sourceLine
   { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+  { content: attr(title);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
     border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
@@ -236,6 +236,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.3.1" data-path="uogolnione-modele-addytywne.html"><a href="uogolnione-modele-addytywne.html#algorytm-uczenia-modelu-gam"><i class="fa fa-check"></i><b>11.3.1</b> Algorytm uczenia modelu GAM</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="12" data-path="metoda-wektorow-nosnych.html"><a href="metoda-wektorow-nosnych.html"><i class="fa fa-check"></i><b>12</b> Metoda wektorów nośnych</a><ul>
+<li class="chapter" data-level="12.1" data-path="metoda-wektorow-nosnych.html"><a href="metoda-wektorow-nosnych.html#wprowadzenie"><i class="fa fa-check"></i><b>12.1</b> Wprowadzenie</a></li>
+<li class="chapter" data-level="12.2" data-path="metoda-wektorow-nosnych.html"><a href="metoda-wektorow-nosnych.html#definicja-modelu-dla-klas-liniowo-separowalnych"><i class="fa fa-check"></i><b>12.2</b> Definicja modelu dla klas liniowo separowalnych</a></li>
+<li class="chapter" data-level="12.3" data-path="metoda-wektorow-nosnych.html"><a href="metoda-wektorow-nosnych.html#definicja-modelu-dla-klas-nieliniowo-separowalnych"><i class="fa fa-check"></i><b>12.3</b> Definicja modelu dla klas nieliniowo separowalnych</a></li>
+<li class="chapter" data-level="12.4" data-path="metoda-wektorow-nosnych.html"><a href="metoda-wektorow-nosnych.html#definicja-modelu-jadrowego"><i class="fa fa-check"></i><b>12.4</b> Definicja modelu jądrowego</a></li>
+<li class="chapter" data-level="12.5" data-path="metoda-wektorow-nosnych.html"><a href="metoda-wektorow-nosnych.html#zalety-i-wady-2"><i class="fa fa-check"></i><b>12.5</b> Zalety i wady</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="bibliografia.html"><a href="bibliografia.html"><i class="fa fa-check"></i>Bibliografia</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -284,18 +291,18 @@ gdzie <span class="math inline">\(h_m:\mathbb{R}^d\to\mathbb{R}\)</span> nazywan
 <h2><span class="header-section-number">11.1</span> Przypadek jednowymiarowy</h2>
 <p>Dla uproszczenia rozważań przyjmiemy, że <span class="math inline">\(X\)</span> jest jednowymiarowe.</p>
 <div class="figure" style="text-align: center"><span id="fig:spline1"></span>
-<img src="images/spline1.JPG" alt="Przykładowe zastosowanie kilku rodzajów funkcji bazowych. Wykres w lewym górnym rogu powstał ze stałych na przedziałach, wykres w górnym prawym rogu powstał z liniowych funkcji bazowych na przedzialach, w lewym dolnym rogu model powstał również z liniowych funkcji bazowych na przedzialach ale z założeniem ciągłości, a prawym dolnym rogu powstał z zastosowania funcji bazowej $\max(X-\xi_1,0)$"  />
+<img src="images/spline1.JPG" alt="Przykładowe zastosowanie kilku rodzajów funkcji bazowych. Wykres w lewym górnym rogu powstał ze stałych na przedziałach, wykres w górnym prawym rogu powstał z liniowych funkcji bazowych na przedzialach, w lewym dolnym rogu model powstał również z liniowych funkcji bazowych na przedzialach ale z założeniem ciągłości, a prawym dolnym rogu powstał z zastosowania funcji bazowej $\max(X-\xi_1,0)$" width="183" />
 <p class="caption">
 Rysunek 11.1: Przykładowe zastosowanie kilku rodzajów funkcji bazowych. Wykres w lewym górnym rogu powstał ze stałych na przedziałach, wykres w górnym prawym rogu powstał z liniowych funkcji bazowych na przedzialach, w lewym dolnym rogu model powstał również z liniowych funkcji bazowych na przedzialach ale z założeniem ciągłości, a prawym dolnym rogu powstał z zastosowania funcji bazowej <span class="math inline">\(\max(X-\xi_1,0)\)</span>
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:spline2"></span>
-<img src="images/spline2.JPG" alt="Kolejne wykresy przedstawiają coraz bardziej gładkie modele będące efektem dodawania wielomianów trzeciego stopnia na przedziałach. Na każdym kolejnym modelu mymuszone zostały silniejsze założenia dotyczące gładkości"  />
+<img src="images/spline2.JPG" alt="Kolejne wykresy przedstawiają coraz bardziej gładkie modele będące efektem dodawania wielomianów trzeciego stopnia na przedziałach. Na każdym kolejnym modelu mymuszone zostały silniejsze założenia dotyczące gładkości" width="178" />
 <p class="caption">
 Rysunek 11.2: Kolejne wykresy przedstawiają coraz bardziej gładkie modele będące efektem dodawania wielomianów trzeciego stopnia na przedziałach. Na każdym kolejnym modelu mymuszone zostały silniejsze założenia dotyczące gładkości
 </p>
 </div>
-<p>Przykładowo sześcienny splajn<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> dla dwóch punków węzłowych składa się z następujących funkcji bazowych</p>
+<p>Przykładowo sześcienny splajn<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a> dla dwóch punków węzłowych składa się z następujących funkcji bazowych</p>
 <p><span class="math display">\[\begin{gather}
     h_1(X)=1,\quad h_3(X)=X^2,\quad h_5(X)=(X-\xi_1)_+^3\\
     h_2(X)=X,\quad h_4(X)=X^3,\quad h_6(X)=(X-\xi_2)_+^3.
@@ -380,10 +387,8 @@ dopóki <span class="math inline">\(\hat{f}_j\)</span> osiągnie zbieżność. F
 ## 4  6 5720    4       69   35 1568  15 121  60  36
 ## 5  4 5790    6       19   45 2631 -33 123 100  37
 ## 6  4 5790    3       25   55  554 -28 182 250  38</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mgcv)</code></pre>
-<pre><code>## Loading required package: nlme</code></pre>
-<pre><code>## This is mgcv 1.8-26. For overview type &#39;help(&quot;mgcv-package&quot;)&#39;.</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">mod.gam &lt;-<span class="st"> </span><span class="kw">gam</span>(O3<span class="op">~</span><span class="kw">s</span>(temp, <span class="dt">bs =</span> <span class="st">&quot;cr&quot;</span>, <span class="dt">m =</span> <span class="dv">2</span>)<span class="op">+</span><span class="kw">s</span>(ibh)<span class="op">+</span><span class="kw">s</span>(ibt), <span class="dt">data =</span> ozone)
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mgcv)
+mod.gam &lt;-<span class="st"> </span><span class="kw">gam</span>(O3<span class="op">~</span><span class="kw">s</span>(temp, <span class="dt">bs =</span> <span class="st">&quot;cr&quot;</span>, <span class="dt">m =</span> <span class="dv">2</span>)<span class="op">+</span><span class="kw">s</span>(ibh)<span class="op">+</span><span class="kw">s</span>(ibt), <span class="dt">data =</span> ozone)
 <span class="kw">summary</span>(mod.gam)</code></pre>
 <pre><code>## 
 ## Family: gaussian 
@@ -412,7 +417,7 @@ dopóki <span class="math inline">\(\hat{f}_j\)</span> osiągnie zbieżność. F
 <p>Poniższy wykres pokazuje rodzaje transformacji użyte przy dopasowaniu modelu.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))
 <span class="kw">plot</span>(mod.gam, <span class="dt">shade =</span> T, <span class="dt">residuals =</span> T)</code></pre>
-<p><img src="EksploracjaDanych_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="EksploracjaDanych_files/figure-html/unnamed-chunk-85-1.png" width="1056" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</code></pre>
 
 </div>
@@ -426,8 +431,8 @@ dopóki <span class="math inline">\(\hat{f}_j\)</span> osiągnie zbieżność. F
 </div>
 <div class="footnotes">
 <hr />
-<ol start="2">
-<li id="fn2"><p>czyli funkcja łączona<a href="uogolnione-modele-addytywne.html#fnref2" class="footnote-back">↩</a></p></li>
+<ol start="20">
+<li id="fn20"><p>czyli funkcja łączona<a href="uogolnione-modele-addytywne.html#fnref20" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
             </section>
@@ -436,7 +441,7 @@ dopóki <span class="math inline">\(\hat{f}_j\)</span> osiągnie zbieżność. F
         </div>
       </div>
 <a href="metoda-k-najblizszych-sasiadow.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="bibliografia.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="metoda-wektorow-nosnych.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -473,15 +478,15 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["EksploracjaDanych.pdf", "EksploracjaDanych.epub"],
+"download": ["EksploracjaDanych.pdf"],
 "toc": {
 "collapse": "subsection",
 "scroll_highlight": true
 },
+"search": true,
 "toolbar": {
 "position": "fixed"
-},
-"search": true
+}
 });
 });
 </script>

@@ -275,7 +275,7 @@ Każde zadanie ucznia maszynowego zaczynamy od czyszczenia danych i odpowiednieg
 **Podział zbioru na próbę uczącą i testową**
 
 ```{r}
-set.seed(44)
+set.seed(2019)
 dt.train <- iris %>% 
     sample_frac(size = 0.7)
 dt.test <- setdiff(iris, dt.train)
@@ -321,9 +321,9 @@ tab <- table(predykcja = pred.class, obserwacja = dt.test$Species)
 tab
 ```
 
-Jak widać z powyższej tabeli, model całkiem dobrze radzi sobie z poprawną klasyfikacją obserwacji do odpowiednich kategorii. Tylko jedna obserwacja została błędnie zaklasyfikowana. 
+Jak widać z powyższej tabeli, model całkiem dobrze radzi sobie z poprawną klasyfikacją obserwacji do odpowiednich kategorii. 
 
-W dalszej kolejności sprawdzimy, czy nie jest konieczne przycięcie drzewa. Jednym z kryteriów przycinania drzewa jest przycinanie ze względu na złożoność drzewa. W tym przypadku jest wyrażony parametrem `cp`. Istnieje powszechnie stosowana reguła jednego odchylenia standardowego, która mówi, że drzewo należy przyciąć wówczas, gdy błąd oszacowany na podstawie sprawdzianu krzyżowego (`xerror`), pierwszy raz zejdzie poniżej poziomu wyznaczonego przez najniższą wartość błędu powiększonego o odchylenie standardowe tego błędu (`xstd`). Na podstawie poniższej tabeli można ustalić, że poziomem odcięcia jest wartość $0.10294+0.037589=0.140529$. Pierwszy raz błąd przyjmuje wartość mniejszą od $0.140529$ po drugim podziale (`nsplit=2`). Temu poziomowi odpowiada `cp` o wartości $0.029412$ i to jest złożoność drzewa, którą powinniśmy przyjąć do przycięcia drzewa.
+W dalszej kolejności sprawdzimy, czy nie jest konieczne przycięcie drzewa. Jednym z kryteriów przycinania drzewa jest przycinanie ze względu na złożoność drzewa. W tym przypadku jest wyrażony parametrem `cp`. Istnieje powszechnie stosowana reguła jednego odchylenia standardowego, która mówi, że drzewo należy przyciąć wówczas, gdy błąd oszacowany na podstawie sprawdzianu krzyżowego (`xerror`), pierwszy raz zejdzie poniżej poziomu wyznaczonego przez najniższą wartość błędu powiększonego o odchylenie standardowe tego błędu (`xstd`). Na podstawie poniższej tabeli można ustalić, że poziomem odcięcia jest wartość $0.16176+0.046148=0.207908$. Pierwszy raz błąd przyjmuje wartość mniejszą od $0.16176$ po drugim podziale (`nsplit=2`). Temu poziomowi odpowiada `cp` o wartości $0.029412$ i to jest złożoność drzewa, którą powinniśmy przyjąć do przycięcia drzewa.
 
 ```{r fig.cap="Na wykresie błędów punkt odcięcia zaznaczony jest linią przerywaną"}
 printcp(mod.rpart)
@@ -416,7 +416,7 @@ Drzewo jest nieco bardziej rozbudowane niż `tree2` i `mod.rpart2`.
 summary(tree3)
 ```
 
-Podsumowanie dopasowania drzewa na próbie uczącej jest bardzo dobre, bo poprawnych klasyfikacji jest ponad 98%. Oceny dopasowania i tak dokonujemy na zbiorze testowym.
+Podsumowanie dopasowania drzewa na próbie uczącej jest bardzo dobre, bo poprawnych klasyfikacji jest ponad 97%. Oceny dopasowania i tak dokonujemy na zbiorze testowym.
 
 ```{r}
 pred3 <- predict(tree3, newdata = dt.test)

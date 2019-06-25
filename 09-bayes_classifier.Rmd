@@ -155,7 +155,7 @@ tab
 sum(diag(prop.table(tab)))
 ```
 
-Klasyfikacja na podstawie modelu jest bardzo dobra (96%).
+Klasyfikacja na podstawie modelu jest bardzo dobra (98%).
 
 
 ## Zalety i wady

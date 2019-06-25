@@ -48,7 +48,7 @@ W sytuacji, w której model wykazuje dobre charakterystyki jakości dopasowania 
 Z drugiej strony parametry dopasowania modelu mogą pokazywać słabe dopasowanie, zarówno na zbiorze uczącym, jak i testowym. Wówczas również model nie jest użyteczny w pozyskiwaniu wiedzy na temat badanego zjawiska, a sytuację taką nazywamy niedouczeniem (ang. *underfitting*).
 
 ```{r echo=FALSE, fig.cap="Przykłady niedoucznia (wykresy 1 i 4), poprawego modelu (2 i 5) i przeuczenia (3 i 6). Pierwszy wiersz wykresów pokazuje klasyfikację na podstawie modelu na zbiorze uczącym, a drugi na zbiorze testowym. Wykres na dole pokazuje związek pomiędzy złożonością modelu a wielkością błędu predykcji. *Źródło*: https://cambridgecoding.wordpress.com/2016/03/24/misleading-modelling-overfitting-cross-validation-and-the-bias-variance-trade-off/"}
-knitr::include_graphics("images/unde_over_fitting.JPG")
+knitr::include_graphics("images/unde_over_fitting.png", dpi = 100)
 ```
 
 ## Modele regresyjne

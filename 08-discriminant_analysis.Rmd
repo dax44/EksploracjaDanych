@@ -6,15 +6,15 @@ Analiza dyskryminacyjna (ang. *discriminant analysis*) jest grupą technik dyskr
 
 ### Dwie kategorie zmiennej grupującej 
 
-Niech $\boldsymbol D$ będzie zbiorem zawierającym $n$ punktów $\{\boldsymbol x_i, y_i\}$, gdzie $\boldsymbol x_i\in \mathbb{R}^d$, a $y_i\in \{c_1,\ldots,c_k\}$. Niech $\boldsymbol D_i$ oznacza podzbiór punktów zbioru $\boldsymbol D$, które należą do klasy $c_i$, czyli $\boldsymbol D_i=\{\boldsymbol x_i|y_i=c_i\}$ i niech $|\boldsymbol D_i|=n_i$. Na początek załóżmy, że $\boldsymbol D$ składa się tylko z $\boldsymbol D_1$ i $\boldsymbol D_2$. 
+Niech $\boldsymbol D$ będzie zbiorem zawierającym $n$ punktów $\{\boldsymbol x, y\}$, gdzie $\boldsymbol x\in \mathbb{R}^d$, a $y\in \{c_1,\ldots,c_k\}$. Niech $\boldsymbol D_i$ oznacza podzbiór punktów zbioru $\boldsymbol D$, które należą do klasy $c_i$, czyli $\boldsymbol D_i=\{\boldsymbol x|y=c_i\}$ i niech $|\boldsymbol D_i|=n_i$. Na początek załóżmy, że $\boldsymbol D$ składa się tylko z $\boldsymbol D_1$ i $\boldsymbol D_2$. 
 
 Niech $\boldsymbol w$ będzie wektorem jednostkowym ($\boldsymbol w'\boldsymbol w=1$), wówczas rzut ortogonalny punku $\boldsymbol x_i$ na wektor $\boldsymbol w$ można zapisać następująco
 \begin{equation}
-    \tilde{\boldsymbol x}_i=\left(\frac{\boldsymbol w'\boldsymbol x_i}{\boldsymbol w'\boldsymbol w}\right)\boldsymbol w=(\boldsymbol w'\boldsymbol x_i)\boldsymbol w = a_i\boldsymbol w,
+    \tilde{\boldsymbol x}=\left(\frac{\boldsymbol w'\boldsymbol x}{\boldsymbol w'\boldsymbol w}\right)\boldsymbol w=(\boldsymbol w'\boldsymbol x)\boldsymbol w = a\boldsymbol w,
 \end{equation}
-gdzie $a_i$ jest współrzędną punktu $\tilde{\boldsymbol x}_i$ w kierunku wektora $\boldsymbol w$, czyli 
+gdzie $a$ jest współrzędną punktu $\tilde{\boldsymbol x}$ w kierunku wektora $\boldsymbol w$, czyli 
 \begin{equation}
-    a_i=\boldsymbol w'\boldsymbol x_i.
+    a=\boldsymbol w'\boldsymbol x.
 \end{equation}
 Zatem $(a_1,\ldots,a_n)$ reprezentują odwzorowanie $\mathbb{R}^d$ w $\mathbb{R}$, czyli z $d$-wymiarowej przestrzeni w przestrzeń generowaną przez $\boldsymbol w$. 
 
@@ -24,9 +24,9 @@ knitr::include_graphics("images/rzut.png", dpi = 100)
 
 Każdy punkt należy do pewnej klasy, dlatego możemy wyliczyć
 \begin{align}
-    m_1=&\frac{1}{n_1}\sum_{ \boldsymbol x_i\in \boldsymbol D_1}a_i=\\
-    =&\frac{1}{n_1}\sum_{ \boldsymbol x_i\in \boldsymbol D_1} \boldsymbol w' \boldsymbol x_i=\\
-    =& \boldsymbol w'\left(\frac{1}{n_1}\sum_{ \boldsymbol x_i\in \boldsymbol D_1} \boldsymbol x_i \right)=\\
+    m_1=&\frac{1}{n_1}\sum_{ \boldsymbol x\in \boldsymbol D_1}a=\\
+    =&\frac{1}{n_1}\sum_{ \boldsymbol x\in \boldsymbol D_1} \boldsymbol w' \boldsymbol x=\\
+    =& \boldsymbol w'\left(\frac{1}{n_1}\sum_{ \boldsymbol x\in \boldsymbol D_1} \boldsymbol x \right)=\\
     =& \boldsymbol w' \boldsymbol{\mu}_1,
     (\#eq:m)
 \end{align}
@@ -34,25 +34,25 @@ gdzie $\boldsymbol \mu_1$ jest wektorem średnich punktów z $\boldsymbol D_1$. 
 
 Rozsądnym wydaje się teraz poszukać takiego wektora, aby $|m_1-m_2|$ była maksymalnie duża przy zachowaniu niezbyt dużej zmienności wewnątrz grup. Dlatego kryterium Fisher'a przyjmuje postać
 \begin{equation}
-    \max_{ \boldsymbol w}J(\boldsymbol w)=\frac{(m_1-M_2)^2}{ss_1^2+ss_2^2},
+    \max_{ \boldsymbol w}J(\boldsymbol w)=\frac{(m_1-m_2)^2}{ss_1^2+ss_2^2},
     (\#eq:condFisher)
 \end{equation}
-gdzie $ss_j^2=\sum_{ \boldsymbol x_i\in \boldsymbol D_j}(a_i-m_j)^2=n_j\sigma_j^2.$
+gdzie $ss_j^2=\sum_{ \boldsymbol x\in \boldsymbol D_j}(a-m_j)^2=n_j\sigma_j^2.$
 
 Zauważmy, że licznik w \@ref(eq:condFisher) da się zapisać jako
 \begin{align}
     (m_1-m_2)^2=& ( \boldsymbol w'( \boldsymbol \mu_1- \boldsymbol \mu_2))^2=\\
-    =& \boldsymbol w'((\boldsymbol \mu_1- \boldsymbol \mu_2)(\boldsymbol \mu_1- \boldsymbol \mu_2)') \boldsymbol w=\\
+    =& \boldsymbol w'(\boldsymbol \mu_1- \boldsymbol \mu_2)(\boldsymbol \mu_1- \boldsymbol \mu_2)'\boldsymbol w=\\
     =& \boldsymbol w' \boldsymbol B \boldsymbol w
 \end{align}
 gdzie $\boldsymbol B=(\boldsymbol \mu_1- \boldsymbol \mu_2)(\boldsymbol \mu_1- \boldsymbol \mu_2)'$ jest macierzą $d\times d$.
 
 Ponadto 
 \begin{align}
-    ss_j^2=&\sum_{ \boldsymbol x_i\in \boldsymbol D_j}(a_i-m_j)^2=\\
-    =&\sum_{ \boldsymbol x_i\in \boldsymbol D_j}( \boldsymbol w' \boldsymbol x_i- \boldsymbol w' \boldsymbol\mu_j)^2=\\
-    =& \sum_{ \boldsymbol x_i\in \boldsymbol D_j}( \boldsymbol{w}'( \boldsymbol{x}_i- \boldsymbol{\mu}_j))^2=\\
-    =& \boldsymbol{w}'\left(\sum_{ \boldsymbol x_i\in \boldsymbol D_j}(\boldsymbol{x}_i-\boldsymbol \mu_j)(\boldsymbol x_i- \boldsymbol \mu_j)'\right) \boldsymbol{w}=\\
+    ss_j^2=&\sum_{ \boldsymbol x\in \boldsymbol D_j}(a-m_j)^2=\\
+    =&\sum_{ \boldsymbol x\in \boldsymbol D_j}( \boldsymbol w' \boldsymbol x- \boldsymbol w' \boldsymbol\mu_j)^2=\\
+    =& \sum_{ \boldsymbol x\in \boldsymbol D_j}( \boldsymbol{w}'( \boldsymbol{x}- \boldsymbol{\mu}_j))^2=\\
+    =& \boldsymbol{w}'\left(\sum_{ \boldsymbol x\in \boldsymbol D_j}(\boldsymbol{x}-\boldsymbol \mu_j)(\boldsymbol x- \boldsymbol \mu_j)'\right) \boldsymbol{w}=\\
     =& \boldsymbol{w}' \boldsymbol{S}_j \boldsymbol{w},
     (\#eq:Sj)
 \end{align}
@@ -68,17 +68,17 @@ Ostatecznie warunek Fisher'a przyjmuje postać
     (\#eq:condFisher2)
 \end{equation}
 
-Różniczkując \@ref(eq:condFisher2) po $\boldsymbol{w}$ otrzymamy warunek
+Różniczkując \@ref(eq:condFisher2) po $\boldsymbol{w}$ i przyrównując go do 0, otrzymamy warunek
 \begin{equation}
     \boldsymbol{B} \boldsymbol{w} = \lambda \boldsymbol{S} \boldsymbol{w},
     (\#eq:condFisher3)
 \end{equation}
 gdzie $\lambda=J(\boldsymbol{w})$. Maksimum \@ref(eq:condFisher3) jest osiągane dla wektora $\boldsymbol{w}$ równego wektorowi własnemu odpowiadającemu największej wartości własnej równania charakterystycznego $|\boldsymbol{B}-\lambda\boldsymbol{S}|=0$. Jeśli $\boldsymbol{S}$ nie jest osobliwa, to rozwiązanie \@ref(eq:condFisher3) otrzymujemy przez znalezienie największej wartości własnej macierzy $\boldsymbol{B}\boldsymbol{S}^{-1}$ lub bez wykorzystania wartości i wektorów własnych.
 
-Ponieważ $\boldsymbol{B}=\left((\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\right)\boldsymbol{w}$ jest macierzą $d \times d$ rzędu 1, to $\boldsymbol{B}\boldsymbol{w}$ jest punktem na kierunku wyznaczonym przez wektor $\boldsymbol{\mu}_1-\boldsymbol{\mu}_2$, bo
+Ponieważ $\boldsymbol{B}\boldsymbol w=\left((\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\right)\boldsymbol{w}$ jest macierzą $d \times 1$ rzędu 1, to $\boldsymbol{B}\boldsymbol{w}$ jest punktem na kierunku wyznaczonym przez wektor $\boldsymbol{\mu}_1-\boldsymbol{\mu}_2$, bo
 \begin{align}
     \boldsymbol{B}\boldsymbol{w}=& \left((\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\right)\boldsymbol{w}=\\
-    =&(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)\left((\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\right)\boldsymbol{w}=\\
+    =&(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)((\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\boldsymbol{w})=\\
     =& b(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2),
 \end{align}
 gdzie $b = (\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\boldsymbol{w}$ jest skalarem.
@@ -105,7 +105,7 @@ Uogólnieniem tej teorii na przypadek $k$ klas otrzymujemy przez uwzględnienie 
     \boldsymbol{S}_W=\sum_{i=1}^k\boldsymbol{S}_i,
 \end{equation}
 gdzie $\boldsymbol{S}_i$ jest zdefiniowane jak w \@ref(eq:Sj).
-Niech średnia i rozrzut globalny będą dane wzorami
+Niech średnia i zmienność całkowita będą dane wzorami
 \begin{equation}
     \boldsymbol{m}=\frac{1}{n}\sum_{i=1}^kn_i\boldsymbol{m}_i,
 \end{equation}
@@ -119,7 +119,7 @@ gdzie $\boldsymbol{m}_i$ jest określone jak w \@ref(eq:m). Wtedy zmienność mi
 bo $\boldsymbol{S}_T=\boldsymbol{S}_W+\boldsymbol{S}_B.$
 Określamy projekcję $d$-wymiarowej przestrzeni na $k-1$-wymiarową przestrzeń za pomocą $k-1$ funkcji dyskryminacyjnych postaci
 \begin{equation}
-    \boldsymbol{a}_j=\boldsymbol{w}_j'\boldsymbol{x}, \quad j=1,\ldots,k-1.
+    a_j=\boldsymbol{w}_j'\boldsymbol{x}, \quad j=1,\ldots,k-1.
 \end{equation}
 Połączone wszystkie $k-1$ rzutów możemy zapisać jako
 \begin{equation}
@@ -130,7 +130,7 @@ W nowej przestrzeni $k-1$-wymiarowej możemy zdefiniować
 \begin{equation}
     \tilde{\boldsymbol{m}}=\frac{1}{n}\sum_{i=1}^kn_i\tilde{\boldsymbol{m}}_i,
 \end{equation}
-gdzie $\tilde{\boldsymbol{m}}_i= \frac{1}{n_i}\sum_{\boldsymbol{a}\in A_i}\boldsymbol{a}$, a $A_i$ jest projekcją obiektów z $i$-tej klasy w kierunku wektora $\boldsymbol{W}$.
+gdzie $\tilde{\boldsymbol{m}}_i= \frac{1}{n_i}\sum_{\boldsymbol{a}\in A_i}\boldsymbol{a}$, a $A_i$ jest projekcją obiektów z $i$-tej klasy na hiperpowierzchnię generowaną przez $\boldsymbol{W}$.
 Dalej możemy zdefiniować zmienności miedzy- i wewnątrzgrupowe dla obiektów przekształconych przez $\boldsymbol{W}$
 \begin{align}
     \tilde{\boldsymbol{S}}_W=&\sum_{i=1}^k\sum_{\boldsymbol{a}\in A_i}(\boldsymbol{a}-\tilde{\boldsymbol{m}})(\boldsymbol{a}-\tilde{\boldsymbol{m}})'\\
@@ -161,7 +161,7 @@ library(MASS)
 library(tidyverse)
 iris.std <- iris %>% 
     mutate_if(is.numeric, scale)
-set.seed(2019)
+set.seed(44)
 ind <- sample(nrow(iris.std), size = 100)
 dt.ucz <- iris.std[ind,]
 dt.test <- iris.std[-ind,]
@@ -214,14 +214,14 @@ tab
 sum(diag(prop.table(tab)))
 ```
 
-Jak widać z powyższej tabeli model dobrze sobie radzi z klasyfikacją obiektów. Odsetek poprawnych klasyfikacji wynosi 98%.
+Jak widać z powyższej tabeli model dobrze sobie radzi z klasyfikacją obiektów. Odsetek poprawnych klasyfikacji wynosi 96%.
 
 ```{r, fig.align='center', fig.cap="Klasyfikacja w przestrzeni LD1, LD2 na podstawie modelu mod.lda"}
 cbind.data.frame(obs = dt.test$Species,
                  pred.lda$x, 
                  pred = pred.lda$class) %>% 
     ggplot(aes(x = LD1, y = LD2))+
-    geom_point(aes(color = pred, shape = obs))
+    geom_point(aes(color = pred, shape = obs), size = 2)
 ```
 
 ## Liniowa analiza dyskryminacyjna - podejście probabilistyczne
@@ -238,11 +238,11 @@ Liniowa kombinacja zmiennych losowych o normalnym rozkładzie łącznym ma równ
 ```
 
 ```{r trans, echo=FALSE, fig.align='center', fig.cap="Transformacje rozkładu normalnego łącznego. Źródło: @duda2001"}
-knitr::include_graphics("images/transform.JPG", dpi = 150)
+knitr::include_graphics("images/transform.JPG", dpi = 100)
 ```
 
 ```{definition}
-Niech $g_i(\boldsymbol{x}),\ i=1,\ldots,k$ będzie pewną funkcją dyskryminacyjną, wówczas obiekt $\boldsymbol{x}$ nalezy zaklasyfikować do grupy $c_i$ jeśli spełniony jest warunek
+Niech $g_i(\boldsymbol{x}),\ i=1,\ldots,k$ będą pewnymi funkcjami dyskryminacyjnymi. Wówczas obiekt $\boldsymbol{x}$ klasyfikujemy do grupy $c_i$ jeśli spełniony jest warunek
 \begin{equation}
     g_i(\boldsymbol{x})>g_j(\boldsymbol{x}), \quad j\neq i.
 \end{equation}
@@ -308,7 +308,7 @@ oraz
 Równanie \@ref(eq:row89) określa hiperpłaszczyznę przechodzącą przez $\boldsymbol x_0$ i prostopadłą do $\boldsymbol w$.
 
 ```{r hiper, echo=FALSE, fig.align='center', fig.cap="Dyskrymiancja hiperpłaszczyznami w sygucaji dwóch klas. Wykres po lewej, to ujęcie jednowymiarowe, wykresy po środu - ujęcie 2-wymiarowe i wykresy po prawej, to ujęcie 3-wymiarowe. Źródło: @duda2001"}
-knitr::include_graphics("images/dyskrym1.JPG", dpi = 150)
+knitr::include_graphics("images/dyskrym1.JPG", dpi = 100)
 ```
 
 ### Przypadek gdy $\boldsymbol \Sigma_i=\boldsymbol \Sigma$ {#przypSig}
@@ -341,7 +341,7 @@ oraz
 Tym razem $\boldsymbol{w}=\Sigma^{-1}(\boldsymbol \mu_i-\boldsymbol \mu_j)$ nie jest wektorem w kierunku $\boldsymbol \mu_i-\boldsymbol \mu_j$, więc hiperpłaszczyzna rozdzielająca obiekty różnych klas nie jest prostopadła do wektora $\boldsymbol \mu_i-\boldsymbol \mu_j$ ale przecina go w połowie (w punkcie $\boldsymbol x_0$).
 
 ```{r hiper2, echo=F, fig.align='center', fig.cap="Hiperpłaszczyzna rozdzielająca obszary innych klas może być przesunięta w kierunku bardziej prawdopodobnej klasy, jeśli prawdopodobieństwa a priori są różne. Źródło: @duda2001"}
-knitr::include_graphics("images/dyskrym2.JPG", dpi = 150)
+knitr::include_graphics("images/dyskrym2.JPG", dpi = 100)
 ```
 
 ### Przypadek gdy $\boldsymbol \Sigma_i$ jest dowolnej postaci
@@ -361,7 +361,7 @@ gdzie
 Ograniczenia w ten sposób budowane są hiperpowierzchniami (nie koniecznie hiperpłaszczyznami). W literaturze ta metoda znana jest pod nazwą kwadratowej analizy dyskryminacyjnej (ang. *Quadratic Discriminant Analysis*).
 
 ```{r hiper3, echo=F, fig.align='center', fig.cap="Przykład zastosowania kwadratowej analizy dyskryminacyjnej. Pokazane są dopuszczalne postaci zbiorów ograniczających. Źródło: @duda2001"}
-knitr::include_graphics("images/dyskrym3.JPG", dpi = 150)
+knitr::include_graphics("images/dyskrym3.JPG", dpi = 100)
 ```
 
 ```{example, caravan}
@@ -371,7 +371,7 @@ Przeprowadzimy klasyfikację na podstawie zbioru `Smarket` pakietu `ILSR`. Dane 
 ```{r}
 library(ISLR)
 head(Smarket)
-set.seed(2019)
+set.seed(44)
 dt.ucz <- Smarket %>% 
     mutate_if(is.numeric, scale) %>% 
     sample_frac(size = 2/3) 
@@ -425,7 +425,7 @@ tab
 sum(diag(prop.table(tab)))
 ```
 
-Ponieważ korelacje pomiędzy predyktorami w naszym przypadku nie były duże, to zastosowanie PLSDA nie poprawiło znacząco klasyfikacji w stosunku do metody QDA.
+Ponieważ korelacje pomiędzy predyktorami w naszym przypadku nie były duże, to zastosowanie PLSDA nie poprawiło klasyfikacji w stosunku do metody QDA.
 
 ```{r}
 cor(dt.ucz[,2:6])
@@ -510,7 +510,7 @@ gdzie $h$ są tzw. funkcjami bazowymi postaci
 Klasyfikacji dokonujemy sprawdzając znak funkcji dyskryminacyjnej $g_i$, jeśli jest dodatni, to funkcja przypisuje obiekt do klasy $i$-tej. W przeciwnym przypadku nie należy do tej klasy.  
 
 ```{r fda, echo=F, fig.align='center', fig.cap="Przykład klasyfikacji dwustanowej za pomocą metody FDA"}
-knitr::include_graphics("images/fda.JPG", dpi = 150)
+knitr::include_graphics("images/fda.JPG", dpi = 100)
 ```
 
 ```{example, przykFDA}
@@ -518,7 +518,7 @@ Funkcja `fda` pakietu `mda` jest implementacją techniki FDA w R. Na postawie da
 ```
 
 ```{r}
-mod.fda <- fda(Direction~Lag1+Lag2, dt.ucz, method = mars)
+mod.fda <- fda(Direction ~ Lag1+Lag2, dt.ucz, method = mars)
 mod.fda
 ```
 

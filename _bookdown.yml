@@ -18,3 +18,4 @@ language:
     solution: 'Rozwiązanie. '
   ui:
     chapter_name: ""
+rmd_subdir: true

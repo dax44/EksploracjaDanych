@@ -87,7 +87,7 @@ exp(cbind(OR = coef(mod.logit), confint(mod.logit))) %>%
     kable(digits = 4)
 ```
 
-Z powyższej tabeli wynika, że bycie studentem zmniejsza szanse na `Yes` w zmiennej `default` o około 40% (w stosunku do nie-studentów). Natomiast wzrost zmiennej `balance` przy zachowaniu pozostałych zmiennych na tym samym poziomie skutkuje wzrostem szans na `Yes` o około 0.6%.
+Z powyższej tabeli wynika, że bycie studentem zmniejsza szanse na `Yes` w zmiennej `default` o około 37% (w stosunku do nie-studentów). Natomiast wzrost zmiennej `balance` przy zachowaniu pozostałych zmiennych na tym samym poziomie skutkuje wzrostem szans na `Yes` o około 0.6%.
 
 Chcąc przeprowadzić predykcję na podstawie modelu dla ustalonych wartości cech (np. `student = Yes`, `balance = $1000` i `income = $40000`) postępujemy następująco
 

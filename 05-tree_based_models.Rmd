@@ -73,7 +73,7 @@ Przycinamy drzewo...
 ```{r}
 printcp(boston.rpart)
 plotcp(boston.rpart)
-boston.rpart2 <- prune(boston.rpart, cp = 0.012026)
+boston.rpart2 <- prune(boston.rpart, cp = 0.016952)
 ```
 
 ```{r fig.cap="Drzewo regresyjne przycięte"}
@@ -197,4 +197,4 @@ boston.pred4 <- predict(boston.boost, newdata = boston.test, n.trees = 5000)
 rmse(boston.pred4, boston.test$medv)
 ```
 
-$RMSE$ jest w tym przypadku mniejsze niż w lasach losowych ale nieco większe niż w metodzie bagging. Wszystkie metody wzmacnianych drzew dają wyniki lepsze niż pojedyncze drzewa.
+$RMSE$ jest w tym przypadku nieco większe niż w lasach losowych ale sporo mniejsze niż w metodzie bagging. Wszystkie metody wzmacnianych drzew dają wyniki lepsze niż pojedyncze drzewa.

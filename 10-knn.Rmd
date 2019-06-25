@@ -73,11 +73,11 @@ acc <- function(pred, obs){
      geom_line()
 ```
 
-Biorąc pod uwagę wykres \@ref(fig:knnrys) można rozważać 1 lub 9 sąsiadów jako optymalne rozwiązanie, ponieważ wówczas poprawność klasyfikacji jest najwyższa. Proponuje unikać rozwiązania z 1 najbliższym sąsiadem ponieważ, będzie się ono charakteryzowało duża zmiennością. Wybór $k=9$ wydaje się być optymalny.
+Biorąc pod uwagę wykres \@ref(fig:knnrys) można rozważać 3 lub 5 sąsiadów jako optymalne rozwiązanie, ponieważ wówczas poprawność klasyfikacji jest najwyższa. Proponuje unikać rozwiązania z 1 najbliższym sąsiadem ponieważ, będzie się ono charakteryzowało duża zmiennością. Wybór $k=3$ wydaje się być optymalny.
 
 ```{r}
 mod.knn <- knn3(spam~., data = dt.ucz,
-                k = 9)
+                k = 3)
 mod.knn
 ```
 
