@@ -73,7 +73,7 @@ Różniczkując \@ref(eq:condFisher2) po $\boldsymbol{w}$ i przyrównując go do
     \boldsymbol{B} \boldsymbol{w} = \lambda \boldsymbol{S} \boldsymbol{w},
     (\#eq:condFisher3)
 \end{equation}
-gdzie $\lambda=J(\boldsymbol{w})$. Maksimum \@ref(eq:condFisher3) jest osiągane dla wektora $\boldsymbol{w}$ równego wektorowi własnemu odpowiadającemu największej wartości własnej równania charakterystycznego $|\boldsymbol{B}-\lambda\boldsymbol{S}|=0$. Jeśli $\boldsymbol{S}$ nie jest osobliwa, to rozwiązanie \@ref(eq:condFisher3) otrzymujemy przez znalezienie największej wartości własnej macierzy $\boldsymbol{B}\boldsymbol{S}^{-1}$ lub bez wykorzystania wartości i wektorów własnych.
+gdzie $\lambda=J(\boldsymbol{w})$. Maksimum \@ref(eq:condFisher2) jest osiągane dla wektora $\boldsymbol{w}$ równego wektorowi własnemu odpowiadającemu największej wartości własnej równania charakterystycznego $|\boldsymbol{B}-\lambda\boldsymbol{S}|=0$. Jeśli $\boldsymbol{S}$ nie jest osobliwa, to rozwiązanie \@ref(eq:condFisher3) otrzymujemy przez znalezienie największej wartości własnej macierzy $\boldsymbol{B}\boldsymbol{S}^{-1}$ lub bez wykorzystania wartości i wektorów własnych.
 
 Ponieważ $\boldsymbol{B}\boldsymbol w=\left((\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)'\right)\boldsymbol{w}$ jest macierzą $d \times 1$ rzędu 1, to $\boldsymbol{B}\boldsymbol{w}$ jest punktem na kierunku wyznaczonym przez wektor $\boldsymbol{\mu}_1-\boldsymbol{\mu}_2$, bo
 \begin{align}
@@ -143,7 +143,7 @@ Dalej możemy zdefiniować zmienności miedzy- i wewnątrzgrupowe dla obiektów 
 \end{align}
 Ostatecznie warunek \@ref(eq:condFisher) w $k$-wymiarowym ujęciu można przedstawić jako
 \begin{equation}
-    \max_{\boldsymbol{W}}J(\boldsymbol{W})=\frac{\tilde{\boldsymbol{S}}_W}{\tilde{\boldsymbol{S}}_B}=\frac{\boldsymbol{W}'\boldsymbol{S}_W\boldsymbol{W}}{\boldsymbol{W}'\boldsymbol{S}_B\boldsymbol{W}}.
+    \max_{\boldsymbol{W}}J(\boldsymbol{W})=\frac{\tilde{\boldsymbol{S}}_B}{\tilde{\boldsymbol{S}}_W}=\frac{\boldsymbol{W}'\boldsymbol{S}_B\boldsymbol{W}}{\boldsymbol{W}'\boldsymbol{S}_W\boldsymbol{W}}.
 \end{equation}
 Maksimum można znaleźć poprzez rozwiązanie równania charakterystycznego \begin{equation}
     |\boldsymbol{S}_B-\lambda_i\boldsymbol{S}_W|=0

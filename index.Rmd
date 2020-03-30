@@ -60,10 +60,11 @@ Przedmiot *Eksploracja danych* będzie obejmował swoim zakresem eksplorację i 
     - predykcja
     - analiza skupień
     - *text mining*
+    - analiza przeżycia
 - i wiele innych
 
 ```{r cluster1, echo=FALSE, fig.cap="Przykład nienadzorowanego uczenia maszynowego.\\\  *Źródło:*https://analyticstraining.com/cluster-analysis-for-business/"}
-knitr::include_graphics("images/cluster1.jpg")
+knitr::include_graphics("images/cluster1.jpg", dpi = 100)
 ```
 
 <blockquote class="twitter-video">
@@ -73,7 +74,7 @@ knitr::include_graphics("images/cluster1.jpg")
 ## Etapy eksploracji danych {-}
 
 ```{r echo=FALSE, fig.cap="Etapy eksploracji danych [@kavakiotis2017]"}
-include_graphics("images/dm_stages.jpg")
+include_graphics("images/dm_stages.jpg", dpi = 70)
 ```
 
 

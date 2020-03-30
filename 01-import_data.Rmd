@@ -3,12 +3,13 @@
 Środowisko **R** pozwala na import i export plików o różnych rozszerzeniach (`txt, csv, xls, xlsx, sav, xpt, dta`, itd.)^[póki co nie jest mi znana funkcja pozwalająca na import plików programu Statistica]. W tym celu czasami trzeba zainstalować pakiety rozszerzające podstawowe możliwości R-a. Najnowsza^[na dzień 19.02.2019] wersja programu [RStudio](https://www.rstudio.com) (v. 1.1.463)^[istnieją rownież nowsze wersje deweloperskie]  pozwala na wczytanie danych z popularnych źródeł za pomocą GUI.
 
 ```{r import1, echo=FALSE, fig.cap="Narzędzie do importu plików programu RStudio"}
-include_graphics("images/import.JPG", dpi = 70)
+knitr::include_graphics("images/import.JPG", dpi = 70)
 ```
 
 Jeśli dane są zapisane w trybie tekstowym (np. `txt`, `csv`), to wczytujemy je w następujący sposób
 
-```{r import2}
+```{r import2, message=FALSE, warning=FALSE}
+library(tidyverse)
 dane1 <- read.table("data/dane1.txt", header = T)
 head(dane1)
 dane2 <- read.csv2("data/dane1.csv", header = T)
@@ -23,7 +24,7 @@ dane3
 Jeśli dane są przechowywane w pliku Excel (np. `xlsx`), to importujemy je za pomocą funkcji `read_excel` pakietu `readxl`. Domyślnie jest wczytywany arkusz pierwszy ale jeśli zachodzi taka potrzeba, to można ustalić, który arkusz pliku Excel ma być wczytany za pomocą paramteru `sheet`, np. `sheet=3`, co oznacza, że zostanie wczytany trzeci arkusz pliku.
 
 ```{r excel, echo=FALSE, fig.cap="Fragment pliku Excel"}
-include_graphics("images/excel.jpg")
+knitr::include_graphics("images/excel.jpg", dpi = 70)
 ```
 
 Ponieważ w pliku `dane1.xlsx` braki danych zostały zakodowane znakami `BD` oraz `-`, to należy ten fakt przekazać funkcji, aby poprawnie wczytać braki danych. W przeciwnym przypadku zmienne zawierające braki tak kodowane, będą wczytane jako zmienne znakowe.
@@ -121,7 +122,7 @@ Poniższa ilustracja przedstawia fragment pliku danych `Analysis.txt` zawierają
 ```
 
 ```{r foto, echo=FALSE, fig.cap="Fragment pliku danych Analisis.txt"}
-include_graphics("images/analalysi_foto.png", dpi = 100)
+knitr::include_graphics("images/analalysi_foto.png", dpi = 100)
 ```
 
 ```{r import3}
