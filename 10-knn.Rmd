@@ -10,10 +10,10 @@ Kolejnym parametrem, który ma znaczący wpływ na predykcję, jest liczba sąsi
 
 
 ```{r knn1, echo=FALSE, fig.align='center',fig.cap="Przykład klasyfikacji dla $k=1$", warning=FALSE, message=FALSE}
-library(ElemStatLearn)
+load("ESL.mixture.rda")
 source("functions/decisionplot.R")
 library(caret)
-dt <- data.frame(mixture.example$x, y = as.factor(mixture.example$y))
+dt <- data.frame(ESL.mixture$x, y = as.factor(ESL.mixture$y))
 mod <- knn3(y~., data = dt, k = 1)
 decisionplot(mod, dt, 
              class = "y", 
@@ -42,14 +42,18 @@ decisionplot(mod, dt,
 ```
 
 ```{example, knnprzklad1}
-Klasyfikację z wykorzystaniem metody *kNN* przeprowadzimy na przykładzie danych zbioru `spam` pakietu `ElemStatLearn`. Metoda *kNN* ma wiele implementacji R-owych ale na potrzeby przykładu wykorzystamy funkcję `knn3` pakietu `caret`. 
+Klasyfikację z wykorzystaniem metody *kNN* przeprowadzimy na przykładzie danych zbioru `spam` ze strony [spambase](https://archive.ics.uci.edu/dataset/94/spambase). Metoda *kNN* ma wiele implementacji R-owych ale na potrzeby przykładu wykorzystamy funkcję `knn3` pakietu `caret`. 
 
 Najpierw dokonamy oszacowania optymalnego $k$
 ```
 
 ```{r knnrys, fig.align='center', fig.cap="Ocena jakości dopasowania modelu dla różnej liczby sąsiadów", warning=F, message=F}
-library(ElemStatLearn)
 library(tidyverse)
+
+spam <- read.csv("spam.csv")
+spam <- spam[,-1] # usuwam licznik wierszy
+names(spam)[58] <- "spam"
+spam$spam <- as.factor(spam$spam)
 
 spam.std <- spam %>% 
     mutate_if(is.numeric, scale)

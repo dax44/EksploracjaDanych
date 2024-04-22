@@ -55,7 +55,7 @@ Wiele ciekawych funkcji do eksploracji danych znajduje się w pakiecie **DMwR** 
 ## poszukiwanie wierszy zawierających wiele braków
 ## w tym przypadku próg wyświetlania ustawiony jest na 0.2
 ## czyli 20% wszystkich kolumn
-library(DMwR)
+library(DMwR2)
 manyNAs(algae)
 
 ## tworzenie zbioru pozbawionego wierszy zawierających wiele braków

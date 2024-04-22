@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>8 Analiza dyskryminacyjna | Eksploracja danych</title>
   <meta name="description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.38 and GitBook 2.6.7" />
 
   <meta property="og:title" content="8 Analiza dyskryminacyjna | Eksploracja danych" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://dax44.github.io/datamining/" />
   
   <meta property="og:description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   <meta name="github-repo" content="dax44/datamining" />
@@ -23,7 +22,7 @@
 
 
 
-<meta name="date" content="2020-03-30" />
+<meta name="date" content="2024-04-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +31,8 @@
   
 <link rel="prev" href="regresja-logistyczna.html"/>
 <link rel="next" href="bayes.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -48,7 +48,9 @@
 
 
 
-
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   TeX: {
@@ -68,25 +70,27 @@ MathJax.Hub.Config({
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -95,15 +99,15 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -116,7 +120,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -128,6 +132,34 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -146,34 +178,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">Eksploracja Danych</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Wstęp</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Wstęp</a>
+<ul>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#o-książce"><i class="fa fa-check"></i>O książce</a></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#zakres-przedmiotu"><i class="fa fa-check"></i>Zakres przedmiotu</a></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#zakres-technik-stosowanych-w-data-mining"><i class="fa fa-check"></i>Zakres technik stosowanych w data mining</a></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#etapy-eksploracji-danych"><i class="fa fa-check"></i>Etapy eksploracji danych</a></li>
 </ul></li>
 <li class="chapter" data-level="1" data-path="roz1.html"><a href="roz1.html"><i class="fa fa-check"></i><b>1</b> Import danych</a></li>
-<li class="chapter" data-level="2" data-path="przygotowanie-danych.html"><a href="przygotowanie-danych.html"><i class="fa fa-check"></i><b>2</b> Przygotowanie danych</a><ul>
+<li class="chapter" data-level="2" data-path="przygotowanie-danych.html"><a href="przygotowanie-danych.html"><i class="fa fa-check"></i><b>2</b> Przygotowanie danych</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="przygotowanie-danych.html"><a href="przygotowanie-danych.html#identyfikacja-braków-danych"><i class="fa fa-check"></i><b>2.1</b> Identyfikacja braków danych</a></li>
 <li class="chapter" data-level="2.2" data-path="przygotowanie-danych.html"><a href="przygotowanie-danych.html#zastępowanie-braków-danych"><i class="fa fa-check"></i><b>2.2</b> Zastępowanie braków danych</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html"><i class="fa fa-check"></i><b>3</b> Podział metod data mining</a><ul>
-<li class="chapter" data-level="3.1" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#rodzaje-wnioskowania"><i class="fa fa-check"></i><b>3.1</b> Rodzaje wnioskowania</a><ul>
-<li class="chapter" data-level="3.1.1" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#dziedzina"><i class="fa fa-check"></i><b>3.1.1</b> Dziedzina</a></li>
-<li class="chapter" data-level="3.1.2" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#obserwacja"><i class="fa fa-check"></i><b>3.1.2</b> Obserwacja</a></li>
-<li class="chapter" data-level="3.1.3" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#atrybuty-obserwacji"><i class="fa fa-check"></i><b>3.1.3</b> Atrybuty obserwacji</a></li>
-<li class="chapter" data-level="3.1.4" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#zbiór-uczący"><i class="fa fa-check"></i><b>3.1.4</b> Zbiór uczący</a></li>
-<li class="chapter" data-level="3.1.5" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#zbiór-testowy"><i class="fa fa-check"></i><b>3.1.5</b> Zbiór testowy</a></li>
-<li class="chapter" data-level="3.1.6" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#model"><i class="fa fa-check"></i><b>3.1.6</b> Model</a></li>
-<li class="chapter" data-level="3.1.7" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#jakość-dopasowania-modelu"><i class="fa fa-check"></i><b>3.1.7</b> Jakość dopasowania modelu</a></li>
+<li class="chapter" data-level="3" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html"><i class="fa fa-check"></i><b>3</b> Podział metod data mining</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#rodzaje-wnioskowania"><i class="fa fa-check"></i><b>3.1</b> Rodzaje wnioskowania</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#dziedzina"><i class="fa fa-check"></i><b>3.1.1</b> Dziedzina</a></li>
+<li class="chapter" data-level="3.1.2" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#obserwacja"><i class="fa fa-check"></i><b>3.1.2</b> Obserwacja</a></li>
+<li class="chapter" data-level="3.1.3" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#atrybuty-obserwacji"><i class="fa fa-check"></i><b>3.1.3</b> Atrybuty obserwacji</a></li>
+<li class="chapter" data-level="3.1.4" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#zbiór-uczący"><i class="fa fa-check"></i><b>3.1.4</b> Zbiór uczący</a></li>
+<li class="chapter" data-level="3.1.5" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#zbiór-testowy"><i class="fa fa-check"></i><b>3.1.5</b> Zbiór testowy</a></li>
+<li class="chapter" data-level="3.1.6" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#model"><i class="fa fa-check"></i><b>3.1.6</b> Model</a></li>
+<li class="chapter" data-level="3.1.7" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#jakość-dopasowania-modelu"><i class="fa fa-check"></i><b>3.1.7</b> Jakość dopasowania modelu</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#modele-regresyjne"><i class="fa fa-check"></i><b>3.2</b> Modele regresyjne</a></li>
-<li class="chapter" data-level="3.3" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#modele-klasyfikacyjne"><i class="fa fa-check"></i><b>3.3</b> Modele klasyfikacyjne</a></li>
-<li class="chapter" data-level="3.4" data-path="podzia-metod-data-mining.html"><a href="podzia-metod-data-mining.html#modele-grupujące"><i class="fa fa-check"></i><b>3.4</b> Modele grupujące</a></li>
+<li class="chapter" data-level="3.2" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#modele-regresyjne"><i class="fa fa-check"></i><b>3.2</b> Modele regresyjne</a></li>
+<li class="chapter" data-level="3.3" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#modele-klasyfikacyjne"><i class="fa fa-check"></i><b>3.3</b> Modele klasyfikacyjne</a></li>
+<li class="chapter" data-level="3.4" data-path="podział-metod-data-mining.html"><a href="podział-metod-data-mining.html#modele-grupujące"><i class="fa fa-check"></i><b>3.4</b> Modele grupujące</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html"><i class="fa fa-check"></i><b>4</b> Drzewa decyzyjne</a><ul>
+<li class="chapter" data-level="4" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html"><i class="fa fa-check"></i><b>4</b> Drzewa decyzyjne</a>
+<ul>
 <li class="chapter" data-level="4.1" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#węzły-i-gałęzie"><i class="fa fa-check"></i><b>4.1</b> Węzły i gałęzie</a></li>
-<li class="chapter" data-level="4.2" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#rodzaje-reguł-podziału"><i class="fa fa-check"></i><b>4.2</b> Rodzaje reguł podziału</a><ul>
+<li class="chapter" data-level="4.2" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#rodzaje-reguł-podziału"><i class="fa fa-check"></i><b>4.2</b> Rodzaje reguł podziału</a>
+<ul>
 <li class="chapter" data-level="4.2.1" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#podziały-dla-atrybutów-ze-skali-nominalnej"><i class="fa fa-check"></i><b>4.2.1</b> Podziały dla atrybutów ze skali nominalnej</a></li>
 <li class="chapter" data-level="4.2.2" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#podziały-dla-atrybutów-ze-skali-ciągłej"><i class="fa fa-check"></i><b>4.2.2</b> Podziały dla atrybutów ze skali ciągłej</a></li>
 <li class="chapter" data-level="4.2.3" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#podziały-dla-atrybutów-ze-skali-porządkowej"><i class="fa fa-check"></i><b>4.2.3</b> Podziały dla atrybutów ze skali porządkowej</a></li>
@@ -181,39 +219,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.3" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#algorytm-budowy-drzewa"><i class="fa fa-check"></i><b>4.3</b> Algorytm budowy drzewa</a></li>
 <li class="chapter" data-level="4.4" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#kryteria-zatrzymania"><i class="fa fa-check"></i><b>4.4</b> Kryteria zatrzymania</a></li>
 <li class="chapter" data-level="4.5" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#reguły-podziału"><i class="fa fa-check"></i><b>4.5</b> Reguły podziału</a></li>
-<li class="chapter" data-level="4.6" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#przycinanie-drzewa-decyzyjnego"><i class="fa fa-check"></i><b>4.6</b> Przycinanie drzewa decyzyjnego</a><ul>
+<li class="chapter" data-level="4.6" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#przycinanie-drzewa-decyzyjnego"><i class="fa fa-check"></i><b>4.6</b> Przycinanie drzewa decyzyjnego</a>
+<ul>
 <li class="chapter" data-level="4.6.1" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#przycinanie-redukujące-błąd"><i class="fa fa-check"></i><b>4.6.1</b> Przycinanie redukujące błąd</a></li>
 <li class="chapter" data-level="4.6.2" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#przycinanie-minimalizujące-błąd"><i class="fa fa-check"></i><b>4.6.2</b> Przycinanie minimalizujące błąd</a></li>
 <li class="chapter" data-level="4.6.3" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#przycinanie-ze-względu-na-współczynnik-złożoności-drzewa"><i class="fa fa-check"></i><b>4.6.3</b> Przycinanie ze względu na współczynnik złożoności drzewa</a></li>
 </ul></li>
 <li class="chapter" data-level="4.7" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#obsługa-braków-danych"><i class="fa fa-check"></i><b>4.7</b> Obsługa braków danych</a></li>
-<li class="chapter" data-level="4.8" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#zalety-i-wady"><i class="fa fa-check"></i><b>4.8</b> Zalety i wady</a><ul>
+<li class="chapter" data-level="4.8" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#zalety-i-wady"><i class="fa fa-check"></i><b>4.8</b> Zalety i wady</a>
+<ul>
 <li class="chapter" data-level="4.8.1" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#zalety"><i class="fa fa-check"></i><b>4.8.1</b> Zalety</a></li>
 <li class="chapter" data-level="4.8.2" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#wady"><i class="fa fa-check"></i><b>4.8.2</b> Wady</a></li>
 </ul></li>
 <li class="chapter" data-level="4.9" data-path="drzewa-decyzyjne.html"><a href="drzewa-decyzyjne.html#inne-algorytmy-budowy-drzew-decyzyjnych-implementowane-w-r"><i class="fa fa-check"></i><b>4.9</b> Inne algorytmy budowy drzew decyzyjnych implementowane w <strong>R</strong></a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="pochodne-drzew-decyzyjnych.html"><a href="pochodne-drzew-decyzyjnych.html"><i class="fa fa-check"></i><b>5</b> Pochodne drzew decyzyjnych</a><ul>
+<li class="chapter" data-level="5" data-path="pochodne-drzew-decyzyjnych.html"><a href="pochodne-drzew-decyzyjnych.html"><i class="fa fa-check"></i><b>5</b> Pochodne drzew decyzyjnych</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="pochodne-drzew-decyzyjnych.html"><a href="pochodne-drzew-decyzyjnych.html#bagging"><i class="fa fa-check"></i><b>5.1</b> Bagging</a></li>
 <li class="chapter" data-level="5.2" data-path="pochodne-drzew-decyzyjnych.html"><a href="pochodne-drzew-decyzyjnych.html#lasy-losowe"><i class="fa fa-check"></i><b>5.2</b> Lasy losowe</a></li>
 <li class="chapter" data-level="5.3" data-path="pochodne-drzew-decyzyjnych.html"><a href="pochodne-drzew-decyzyjnych.html#boosting"><i class="fa fa-check"></i><b>5.3</b> Boosting</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="klasyfikatory-liniowe.html"><a href="klasyfikatory-liniowe.html"><i class="fa fa-check"></i><b>6</b> Klasyfikatory liniowe</a><ul>
+<li class="chapter" data-level="6" data-path="klasyfikatory-liniowe.html"><a href="klasyfikatory-liniowe.html"><i class="fa fa-check"></i><b>6</b> Klasyfikatory liniowe</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="klasyfikatory-liniowe.html"><a href="klasyfikatory-liniowe.html#reprezentacja-progowa"><i class="fa fa-check"></i><b>6.1</b> Reprezentacja progowa</a></li>
 <li class="chapter" data-level="6.2" data-path="klasyfikatory-liniowe.html"><a href="klasyfikatory-liniowe.html#reprezentacja-logitowa"><i class="fa fa-check"></i><b>6.2</b> Reprezentacja logitowa</a></li>
 <li class="chapter" data-level="6.3" data-path="klasyfikatory-liniowe.html"><a href="klasyfikatory-liniowe.html#wady-klasyfikatorów-liniowych"><i class="fa fa-check"></i><b>6.3</b> Wady klasyfikatorów liniowych</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="regresja-logistyczna.html"><a href="regresja-logistyczna.html"><i class="fa fa-check"></i><b>7</b> Regresja logistyczna</a><ul>
+<li class="chapter" data-level="7" data-path="regresja-logistyczna.html"><a href="regresja-logistyczna.html"><i class="fa fa-check"></i><b>7</b> Regresja logistyczna</a>
+<ul>
 <li class="chapter" data-level="7.1" data-path="regresja-logistyczna.html"><a href="regresja-logistyczna.html#model-1"><i class="fa fa-check"></i><b>7.1</b> Model</a></li>
 <li class="chapter" data-level="7.2" data-path="regresja-logistyczna.html"><a href="regresja-logistyczna.html#estymacja-parametrów-modelu"><i class="fa fa-check"></i><b>7.2</b> Estymacja parametrów modelu</a></li>
 <li class="chapter" data-level="7.3" data-path="regresja-logistyczna.html"><a href="regresja-logistyczna.html#interpretacja"><i class="fa fa-check"></i><b>7.3</b> Interpretacja</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="LDA.html"><a href="LDA.html"><i class="fa fa-check"></i><b>8</b> Analiza dyskryminacyjna</a><ul>
-<li class="chapter" data-level="8.1" data-path="LDA.html"><a href="LDA.html#liniowa-analiza-dyskryminacyjna-fishera"><i class="fa fa-check"></i><b>8.1</b> Liniowa analiza dyskryminacyjna Fisher’a</a><ul>
+<li class="chapter" data-level="8" data-path="LDA.html"><a href="LDA.html"><i class="fa fa-check"></i><b>8</b> Analiza dyskryminacyjna</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="LDA.html"><a href="LDA.html#liniowa-analiza-dyskryminacyjna-fishera"><i class="fa fa-check"></i><b>8.1</b> Liniowa analiza dyskryminacyjna Fisher’a</a>
+<ul>
 <li class="chapter" data-level="8.1.1" data-path="LDA.html"><a href="LDA.html#dwie-kategorie-zmiennej-grupującej"><i class="fa fa-check"></i><b>8.1.1</b> Dwie kategorie zmiennej grupującej</a></li>
 <li class="chapter" data-level="8.1.2" data-path="LDA.html"><a href="LDA.html#k-kategorii-zmiennej-grupującej"><i class="fa fa-check"></i><b>8.1.2</b> <span class="math inline">\(k\)</span>-kategorii zmiennej grupującej</a></li>
 </ul></li>
-<li class="chapter" data-level="8.2" data-path="LDA.html"><a href="LDA.html#liniowa-analiza-dyskryminacyjna---podejście-probabilistyczne"><i class="fa fa-check"></i><b>8.2</b> Liniowa analiza dyskryminacyjna - podejście probabilistyczne</a><ul>
+<li class="chapter" data-level="8.2" data-path="LDA.html"><a href="LDA.html#liniowa-analiza-dyskryminacyjna---podejście-probabilistyczne"><i class="fa fa-check"></i><b>8.2</b> Liniowa analiza dyskryminacyjna - podejście probabilistyczne</a>
+<ul>
 <li class="chapter" data-level="8.2.1" data-path="LDA.html"><a href="LDA.html#przypI"><i class="fa fa-check"></i><b>8.2.1</b> Przypadek gdy <span class="math inline">\(\boldsymbol{\Sigma}_i=\sigma^2I\)</span></a></li>
 <li class="chapter" data-level="8.2.2" data-path="LDA.html"><a href="LDA.html#przypSig"><i class="fa fa-check"></i><b>8.2.2</b> Przypadek gdy <span class="math inline">\(\boldsymbol \Sigma_i=\boldsymbol \Sigma\)</span></a></li>
 <li class="chapter" data-level="8.2.3" data-path="LDA.html"><a href="LDA.html#przypadek-gdy-boldsymbol-sigma_i-jest-dowolnej-postaci"><i class="fa fa-check"></i><b>8.2.3</b> Przypadek gdy <span class="math inline">\(\boldsymbol \Sigma_i\)</span> jest dowolnej postaci</a></li>
@@ -223,26 +269,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.5" data-path="LDA.html"><a href="LDA.html#analiza-dyskryminacyjna-mieszana"><i class="fa fa-check"></i><b>8.5</b> Analiza dyskryminacyjna mieszana</a></li>
 <li class="chapter" data-level="8.6" data-path="LDA.html"><a href="LDA.html#elastyczna-analiza-dyskryminacyjna"><i class="fa fa-check"></i><b>8.6</b> Elastyczna analiza dyskryminacyjna</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="bayes.html"><a href="bayes.html"><i class="fa fa-check"></i><b>9</b> Klasyfikatory bayesowskie</a><ul>
+<li class="chapter" data-level="9" data-path="bayes.html"><a href="bayes.html"><i class="fa fa-check"></i><b>9</b> Klasyfikatory bayesowskie</a>
+<ul>
 <li class="chapter" data-level="9.1" data-path="bayes.html"><a href="bayes.html#klasyfikator-maximum-a-posteriori-map"><i class="fa fa-check"></i><b>9.1</b> Klasyfikator maximum a posteriori (MAP)</a></li>
 <li class="chapter" data-level="9.2" data-path="bayes.html"><a href="bayes.html#klasyfikator-największej-wiarogodności-ml"><i class="fa fa-check"></i><b>9.2</b> Klasyfikator największej wiarogodności (ML)</a></li>
 <li class="chapter" data-level="9.3" data-path="bayes.html"><a href="bayes.html#naiwny-klasyfikator-bayesa-nb"><i class="fa fa-check"></i><b>9.3</b> Naiwny klasyfikator Bayesa (NB)</a></li>
 <li class="chapter" data-level="9.4" data-path="bayes.html"><a href="bayes.html#zalety-i-wady-1"><i class="fa fa-check"></i><b>9.4</b> Zalety i wady</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="metoda-k-najbli-szych-s-siadów.html"><a href="metoda-k-najbli-szych-s-siadów.html"><i class="fa fa-check"></i><b>10</b> Metoda <span class="math inline">\(k\)</span> najbliższych sąsiadów</a></li>
-<li class="chapter" data-level="11" data-path="uogólnione-modele-addytywne.html"><a href="uogólnione-modele-addytywne.html"><i class="fa fa-check"></i><b>11</b> Uogólnione modele addytywne</a><ul>
+<li class="chapter" data-level="10" data-path="metoda-k-najbliższych-sąsiadów.html"><a href="metoda-k-najbliższych-sąsiadów.html"><i class="fa fa-check"></i><b>10</b> Metoda <span class="math inline">\(k\)</span> najbliższych sąsiadów</a></li>
+<li class="chapter" data-level="11" data-path="uogólnione-modele-addytywne.html"><a href="uogólnione-modele-addytywne.html"><i class="fa fa-check"></i><b>11</b> Uogólnione modele addytywne</a>
+<ul>
 <li class="chapter" data-level="11.1" data-path="uogólnione-modele-addytywne.html"><a href="uogólnione-modele-addytywne.html#przypadek-jednowymiarowy"><i class="fa fa-check"></i><b>11.1</b> Przypadek jednowymiarowy</a></li>
 <li class="chapter" data-level="11.2" data-path="uogólnione-modele-addytywne.html"><a href="uogólnione-modele-addytywne.html#przypadek-wielowymiarowy"><i class="fa fa-check"></i><b>11.2</b> Przypadek wielowymiarowy</a></li>
-<li class="chapter" data-level="11.3" data-path="uogólnione-modele-addytywne.html"><a href="uogólnione-modele-addytywne.html#uogólnione-modele-addytywne-1"><i class="fa fa-check"></i><b>11.3</b> Uogólnione modele addytywne</a><ul>
+<li class="chapter" data-level="11.3" data-path="uogólnione-modele-addytywne.html"><a href="uogólnione-modele-addytywne.html#uogólnione-modele-addytywne-1"><i class="fa fa-check"></i><b>11.3</b> Uogólnione modele addytywne</a>
+<ul>
 <li class="chapter" data-level="11.3.1" data-path="uogólnione-modele-addytywne.html"><a href="uogólnione-modele-addytywne.html#algorytm-uczenia-modelu-gam"><i class="fa fa-check"></i><b>11.3.1</b> Algorytm uczenia modelu GAM</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="metoda-wektorów-no-nych.html"><a href="metoda-wektorów-no-nych.html"><i class="fa fa-check"></i><b>12</b> Metoda wektorów nośnych</a><ul>
-<li class="chapter" data-level="12.1" data-path="metoda-wektorów-no-nych.html"><a href="metoda-wektorów-no-nych.html#wprowadzenie"><i class="fa fa-check"></i><b>12.1</b> Wprowadzenie</a></li>
-<li class="chapter" data-level="12.2" data-path="metoda-wektorów-no-nych.html"><a href="metoda-wektorów-no-nych.html#definicja-modelu-dla-klas-liniowo-separowalnych"><i class="fa fa-check"></i><b>12.2</b> Definicja modelu dla klas liniowo separowalnych</a></li>
-<li class="chapter" data-level="12.3" data-path="metoda-wektorów-no-nych.html"><a href="metoda-wektorów-no-nych.html#definicja-modelu-dla-klas-nieliniowo-separowalnych"><i class="fa fa-check"></i><b>12.3</b> Definicja modelu dla klas nieliniowo separowalnych</a></li>
-<li class="chapter" data-level="12.4" data-path="metoda-wektorów-no-nych.html"><a href="metoda-wektorów-no-nych.html#definicja-modelu-jądrowego"><i class="fa fa-check"></i><b>12.4</b> Definicja modelu jądrowego</a></li>
-<li class="chapter" data-level="12.5" data-path="metoda-wektorów-no-nych.html"><a href="metoda-wektorów-no-nych.html#zalety-i-wady-2"><i class="fa fa-check"></i><b>12.5</b> Zalety i wady</a></li>
+<li class="chapter" data-level="12" data-path="metoda-wektorów-nośnych.html"><a href="metoda-wektorów-nośnych.html"><i class="fa fa-check"></i><b>12</b> Metoda wektorów nośnych</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="metoda-wektorów-nośnych.html"><a href="metoda-wektorów-nośnych.html#wprowadzenie"><i class="fa fa-check"></i><b>12.1</b> Wprowadzenie</a></li>
+<li class="chapter" data-level="12.2" data-path="metoda-wektorów-nośnych.html"><a href="metoda-wektorów-nośnych.html#definicja-modelu-dla-klas-liniowo-separowalnych"><i class="fa fa-check"></i><b>12.2</b> Definicja modelu dla klas liniowo separowalnych</a></li>
+<li class="chapter" data-level="12.3" data-path="metoda-wektorów-nośnych.html"><a href="metoda-wektorów-nośnych.html#definicja-modelu-dla-klas-nieliniowo-separowalnych"><i class="fa fa-check"></i><b>12.3</b> Definicja modelu dla klas nieliniowo separowalnych</a></li>
+<li class="chapter" data-level="12.4" data-path="metoda-wektorów-nośnych.html"><a href="metoda-wektorów-nośnych.html#definicja-modelu-jądrowego"><i class="fa fa-check"></i><b>12.4</b> Definicja modelu jądrowego</a></li>
+<li class="chapter" data-level="12.5" data-path="metoda-wektorów-nośnych.html"><a href="metoda-wektorów-nośnych.html#zalety-i-wady-2"><i class="fa fa-check"></i><b>12.5</b> Zalety i wady</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="bibliografia.html"><a href="bibliografia.html"><i class="fa fa-check"></i>Bibliografia</a></li>
 <li class="divider"></li>
@@ -265,13 +315,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="LDA" class="section level1">
-<h1><span class="header-section-number">8</span> Analiza dyskryminacyjna</h1>
-<p>Analiza dyskryminacyjna (ang. <em>discriminant analysis</em>) jest grupą technik dyskryminacji obserwacji względem przynależności do klas. Część z nich należy do klasyfikatorów liniowych (choć nie zawsze w ścisłym sensie). Za autorów tej metody uważa się Fisher’a <span class="citation">(<a href="#ref-fisher1936" role="doc-biblioref">1936</a>)</span> i Welch’a <span class="citation">(<a href="#ref-welch1939" role="doc-biblioref">1939</a>)</span>. Każdy z nich prezentował nieco inne podejście do tematu klasyfikacji. Welch poszukiwał klasyfikacji minimalizującej prawdopodobieństwo błędnej klasyfikacji, znane jako <a href="bayes.html#bayes">klasyfikatory bayesowskie</a>. Podejście Fisher’a skupiało się raczej na porównaniu zmienności międzygrupowej do zmienności wewnątrzgrupowej. Wychodząc z założenia, że iloraz tych wariancji powinien być stosunkowo duży przy różnych klasach, jeśli do ich opisu użyjemy odpowiednich zmiennych niezależnych. W istocie chodzi o znalezienie takiego wektora, w kierunku którego wspomniany iloraz wariancji jest największy.</p>
-<div id="liniowa-analiza-dyskryminacyjna-fishera" class="section level2">
-<h2><span class="header-section-number">8.1</span> Liniowa analiza dyskryminacyjna Fisher’a</h2>
-<div id="dwie-kategorie-zmiennej-grupującej" class="section level3">
-<h3><span class="header-section-number">8.1.1</span> Dwie kategorie zmiennej grupującej</h3>
+<div id="LDA" class="section level1 hasAnchor" number="8">
+<h1><span class="header-section-number">8</span> Analiza dyskryminacyjna<a href="LDA.html#LDA" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Analiza dyskryminacyjna (ang. <em>discriminant analysis</em>) jest grupą technik dyskryminacji obserwacji względem przynależności do klas. Część z nich należy do klasyfikatorów liniowych (choć nie zawsze w ścisłym sensie). Za autorów tej metody uważa się Fisher’a -<span class="citation">Fisher (<a href="#ref-fisher1936">1936</a>)</span> i Welch’a -<span class="citation">Welch (<a href="#ref-welch1939">1939</a>)</span>. Każdy z nich prezentował nieco inne podejście do tematu klasyfikacji. Welch poszukiwał klasyfikacji minimalizującej prawdopodobieństwo błędnej klasyfikacji, znane jako <a href="bayes.html#bayes">klasyfikatory bayesowskie</a>. Podejście Fisher’a skupiało się raczej na porównaniu zmienności międzygrupowej do zmienności wewnątrzgrupowej. Wychodząc z założenia, że iloraz tych wariancji powinien być stosunkowo duży przy różnych klasach, jeśli do ich opisu użyjemy odpowiednich zmiennych niezależnych. W istocie chodzi o znalezienie takiego wektora, w kierunku którego wspomniany iloraz wariancji jest największy.</p>
+<div id="liniowa-analiza-dyskryminacyjna-fishera" class="section level2 hasAnchor" number="8.1">
+<h2><span class="header-section-number">8.1</span> Liniowa analiza dyskryminacyjna Fisher’a<a href="LDA.html#liniowa-analiza-dyskryminacyjna-fishera" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="dwie-kategorie-zmiennej-grupującej" class="section level3 hasAnchor" number="8.1.1">
+<h3><span class="header-section-number">8.1.1</span> Dwie kategorie zmiennej grupującej<a href="LDA.html#dwie-kategorie-zmiennej-grupującej" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Niech <span class="math inline">\(\boldsymbol D\)</span> będzie zbiorem zawierającym <span class="math inline">\(n\)</span> punktów <span class="math inline">\(\{\boldsymbol x, y\}\)</span>, gdzie <span class="math inline">\(\boldsymbol x\in \mathbb{R}^d\)</span>, a <span class="math inline">\(y\in \{c_1,\ldots,c_k\}\)</span>. Niech <span class="math inline">\(\boldsymbol D_i\)</span> oznacza podzbiór punktów zbioru <span class="math inline">\(\boldsymbol D\)</span>, które należą do klasy <span class="math inline">\(c_i\)</span>, czyli <span class="math inline">\(\boldsymbol D_i=\{\boldsymbol x|y=c_i\}\)</span> i niech <span class="math inline">\(|\boldsymbol D_i|=n_i\)</span>. Na początek załóżmy, że <span class="math inline">\(\boldsymbol D\)</span> składa się tylko z <span class="math inline">\(\boldsymbol D_1\)</span> i <span class="math inline">\(\boldsymbol D_2\)</span>.</p>
 <p>Niech <span class="math inline">\(\boldsymbol w\)</span> będzie wektorem jednostkowym (<span class="math inline">\(\boldsymbol w&#39;\boldsymbol w=1\)</span>), wówczas rzut ortogonalny punku <span class="math inline">\(\boldsymbol x_i\)</span> na wektor <span class="math inline">\(\boldsymbol w\)</span> można zapisać następująco
 <span class="math display">\[\begin{equation}
@@ -282,7 +332,7 @@ gdzie <span class="math inline">\(a\)</span> jest współrzędną punktu <span c
     a=\boldsymbol w&#39;\boldsymbol x.
 \end{equation}\]</span>
 Zatem <span class="math inline">\((a_1,\ldots,a_n)\)</span> reprezentują odwzorowanie <span class="math inline">\(\mathbb{R}^d\)</span> w <span class="math inline">\(\mathbb{R}\)</span>, czyli z <span class="math inline">\(d\)</span>-wymiarowej przestrzeni w przestrzeń generowaną przez <span class="math inline">\(\boldsymbol w\)</span>.</p>
-<div class="figure" style="text-align: center"><span id="fig:rzut"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:rzut"></span>
 <img src="images/rzut.png" alt="Rzut ortogonalny punktów w kierunku wektora $\boldsymbol w$" width="560" />
 <p class="caption">
 Rysunek 8.1: Rzut ortogonalny punktów w kierunku wektora <span class="math inline">\(\boldsymbol w\)</span>
@@ -352,15 +402,15 @@ gdzie <span class="math inline">\(b = (\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)&#3
 <span class="math display">\[\begin{equation}
     \boldsymbol{w}=\boldsymbol{S}^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2).
 \end{equation}\]</span></p>
-<div class="figure" style="text-align: center"><span id="fig:rzut2"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:rzut2"></span>
 <img src="images/rzut2.JPG" alt="Rzut ortogonalny w kierunku wektora $\boldsymbol{w}$, będącego najlepiej dyskryminującym obie grupy obserwacji" width="578" />
 <p class="caption">
 Rysunek 8.2: Rzut ortogonalny w kierunku wektora <span class="math inline">\(\boldsymbol{w}\)</span>, będącego najlepiej dyskryminującym obie grupy obserwacji
 </p>
 </div>
 </div>
-<div id="k-kategorii-zmiennej-grupującej" class="section level3">
-<h3><span class="header-section-number">8.1.2</span> <span class="math inline">\(k\)</span>-kategorii zmiennej grupującej</h3>
+<div id="k-kategorii-zmiennej-grupującej" class="section level3 hasAnchor" number="8.1.2">
+<h3><span class="header-section-number">8.1.2</span> <span class="math inline">\(k\)</span>-kategorii zmiennej grupującej<a href="LDA.html#k-kategorii-zmiennej-grupującej" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Uogólnieniem tej teorii na przypadek <span class="math inline">\(k\)</span> klas otrzymujemy przez uwzględnienie <span class="math inline">\(k-1\)</span> funkcji dyskryminacyjnych. Zmienność wewnątrzgrupowa przyjmuje wówczas postać
 <span class="math display">\[\begin{equation}
     \boldsymbol{S}_W=\sum_{i=1}^k\boldsymbol{S}_i,
@@ -409,33 +459,31 @@ Maksimum można znaleźć poprzez rozwiązanie równania charakterystycznego <sp
     |\boldsymbol{S}_B-\lambda_i\boldsymbol{S}_W|=0
 \end{equation}\]</span>
 dla każdego <span class="math inline">\(i\)</span>.</p>
-
 <div class="example">
-<span id="exm:unnamed-chunk-1" class="example"><strong>Przykład 8.1  </strong></span>Dla danych ze zbioru <code>iris</code> przeprowadzimy analizę dyskryminacji. Implementację metody LDA znajdziemy w pakiecie <code>MASS</code> w postaci funkcji <code>lda</code>.
+<p><span id="exm:unnamed-chunk-51" class="example"><strong>Przykład 8.1  </strong></span>Dla danych ze zbioru <code>iris</code> przeprowadzimy analizę dyskryminacji. Implementację metody LDA znajdziemy w pakiecie <code>MASS</code> w postaci funkcji <code>lda</code>.</p>
 </div>
-
 <p>Zaczynamy od standaryzacji zmiennych i podziału próby na uczącą i testową.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(MASS)</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb1-3" title="3">iris.std &lt;-<span class="st"> </span>iris <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="st">    </span><span class="kw">mutate_if</span>(is.numeric, scale)</a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="kw">set.seed</span>(<span class="dv">44</span>)</a>
-<a class="sourceLine" id="cb1-6" title="6">ind &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">nrow</span>(iris.std), <span class="dt">size =</span> <span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb1-7" title="7">dt.ucz &lt;-<span class="st"> </span>iris.std[ind,]</a>
-<a class="sourceLine" id="cb1-8" title="8">dt.test &lt;-<span class="st"> </span>iris.std[<span class="op">-</span>ind,]</a></code></pre></div>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="LDA.html#cb186-1" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb186-2"><a href="LDA.html#cb186-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb186-3"><a href="LDA.html#cb186-3" tabindex="-1"></a>iris.std <span class="ot">&lt;-</span> iris <span class="sc">%&gt;%</span> </span>
+<span id="cb186-4"><a href="LDA.html#cb186-4" tabindex="-1"></a>    <span class="fu">mutate_if</span>(is.numeric, scale)</span>
+<span id="cb186-5"><a href="LDA.html#cb186-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">44</span>)</span>
+<span id="cb186-6"><a href="LDA.html#cb186-6" tabindex="-1"></a>ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(iris.std), <span class="at">size =</span> <span class="dv">100</span>)</span>
+<span id="cb186-7"><a href="LDA.html#cb186-7" tabindex="-1"></a>dt.ucz <span class="ot">&lt;-</span> iris.std[ind,]</span>
+<span id="cb186-8"><a href="LDA.html#cb186-8" tabindex="-1"></a>dt.test <span class="ot">&lt;-</span> iris.std[<span class="sc">-</span>ind,]</span></code></pre></div>
 <p>Budowa modelu</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">mod.lda &lt;-<span class="st"> </span><span class="kw">lda</span>(Species<span class="op">~</span>., <span class="dt">data =</span> dt.ucz)</a>
-<a class="sourceLine" id="cb2-2" title="2">mod.lda<span class="op">$</span>prior</a></code></pre></div>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="LDA.html#cb187-1" tabindex="-1"></a>mod.lda <span class="ot">&lt;-</span> <span class="fu">lda</span>(Species<span class="sc">~</span>., <span class="at">data =</span> dt.ucz)</span>
+<span id="cb187-2"><a href="LDA.html#cb187-2" tabindex="-1"></a>mod.lda<span class="sc">$</span>prior</span></code></pre></div>
 <pre><code>##     setosa versicolor  virginica 
 ##       0.32       0.32       0.36</code></pre>
 <p>Prawdopodobieństwa <em>a priori</em> przynależności do klas przyjęto na podstawie próby uczącej.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">mod.lda<span class="op">$</span>means</a></code></pre></div>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="LDA.html#cb189-1" tabindex="-1"></a>mod.lda<span class="sc">$</span>means</span></code></pre></div>
 <pre><code>##            Sepal.Length Sepal.Width Petal.Length Petal.Width
 ## setosa      -1.05240186   0.7790042   -1.2968064  -1.2536554
 ## versicolor   0.04201557  -0.6764307    0.2521529   0.1607657
 ## virginica    0.87352122  -0.2398799    1.0182730   1.0868584</code></pre>
 <p>W części <code>means</code> wyświetlone są średnie poszczególnych zmiennych niezależnych w podziale na grupy. Dzięki temu można określić położenia środków ciężkości poszczególnych klas w oryginalnej przestrzeni.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">mod.lda<span class="op">$</span>scaling</a></code></pre></div>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="LDA.html#cb191-1" tabindex="-1"></a>mod.lda<span class="sc">$</span>scaling</span></code></pre></div>
 <pre><code>##                     LD1         LD2
 ## Sepal.Length  0.5884101  0.04738098
 ## Sepal.Width   0.7566030 -0.97757574
@@ -443,10 +491,10 @@ dla każdego <span class="math inline">\(i\)</span>.</p>
 ## Petal.Width  -2.3799488 -1.95325155</code></pre>
 <p>Powyższa tabela zawiera współrzędne wektorów wyznaczających funkcje dyskryminacyjne. Na ich podstawie możemy określić, która z nich wpływa najmocniej na tworzenie się nowej przestrzeni.</p>
 <p>Obiekt <code>svd</code> przechowuje pierwiastki z <span class="math inline">\(\lambda_i\)</span>, dlatego podnosząc je do kwadratu i dzieląc przez ich sumę otrzymamy udział poszczególnych zmiennych w dyskryminacji przypadków. Jak widać pierwsza funkcja dyskryminacyjna w zupełności by wystarczyła.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">mod.lda<span class="op">$</span>svd<span class="op">^</span><span class="dv">2</span><span class="op">/</span><span class="kw">sum</span>(mod.lda<span class="op">$</span>svd<span class="op">^</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="LDA.html#cb193-1" tabindex="-1"></a>mod.lda<span class="sc">$</span>svd<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="fu">sum</span>(mod.lda<span class="sc">$</span>svd<span class="sc">^</span><span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## [1] 0.992052359 0.007947641</code></pre>
 <p>Klasyfikacja na podstawie modelu</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">pred.lda &lt;-<span class="st"> </span><span class="kw">predict</span>(mod.lda, dt.test)</a></code></pre></div>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="LDA.html#cb195-1" tabindex="-1"></a>pred.lda <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod.lda, dt.test)</span></code></pre></div>
 <p>Wynik predykcji przechowuje trzy rodzaje obiektów:</p>
 <ul>
 <li>klasy, które przypisał obiektom model (<code>class</code>);</li>
@@ -454,56 +502,52 @@ dla każdego <span class="math inline">\(i\)</span>.</p>
 <li>współrzędne w nowej przestrzeni LD1, LD2 (<code>x</code>).</li>
 </ul>
 <p>Sprawdzenie jakości klasyfikacji</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">pred =</span> pred.lda<span class="op">$</span>class, <span class="dt">obs =</span> dt.test<span class="op">$</span>Species)</a>
-<a class="sourceLine" id="cb11-2" title="2">tab</a></code></pre></div>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="LDA.html#cb196-1" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">pred =</span> pred.lda<span class="sc">$</span>class, <span class="at">obs =</span> dt.test<span class="sc">$</span>Species)</span>
+<span id="cb196-2"><a href="LDA.html#cb196-2" tabindex="-1"></a>tab</span></code></pre></div>
 <pre><code>##             obs
 ## pred         setosa versicolor virginica
 ##   setosa         18          0         0
 ##   versicolor      0         17         1
 ##   virginica       0          1        13</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">sum</span>(<span class="kw">diag</span>(<span class="kw">prop.table</span>(tab)))</a></code></pre></div>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="LDA.html#cb198-1" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">diag</span>(<span class="fu">prop.table</span>(tab)))</span></code></pre></div>
 <pre><code>## [1] 0.96</code></pre>
 <p>Jak widać z powyższej tabeli model dobrze sobie radzi z klasyfikacją obiektów. Odsetek poprawnych klasyfikacji wynosi 96%.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">cbind.data.frame</span>(<span class="dt">obs =</span> dt.test<span class="op">$</span>Species,</a>
-<a class="sourceLine" id="cb15-2" title="2">                 pred.lda<span class="op">$</span>x, </a>
-<a class="sourceLine" id="cb15-3" title="3">                 <span class="dt">pred =</span> pred.lda<span class="op">$</span>class) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb15-4" title="4"><span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> LD1, <span class="dt">y =</span> LD2))<span class="op">+</span></a>
-<a class="sourceLine" id="cb15-5" title="5"><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> pred, <span class="dt">shape =</span> obs), <span class="dt">size =</span> <span class="dv">2</span>)</a></code></pre></div>
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-9"></span>
-<img src="EksploracjaDanych_files/figure-html/unnamed-chunk-9-1.png" alt="Klasyfikacja w przestrzeni LD1, LD2 na podstawie modelu mod.lda" width="672" />
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="LDA.html#cb200-1" tabindex="-1"></a><span class="fu">cbind.data.frame</span>(<span class="at">obs =</span> dt.test<span class="sc">$</span>Species,</span>
+<span id="cb200-2"><a href="LDA.html#cb200-2" tabindex="-1"></a>                 pred.lda<span class="sc">$</span>x, </span>
+<span id="cb200-3"><a href="LDA.html#cb200-3" tabindex="-1"></a>                 <span class="at">pred =</span> pred.lda<span class="sc">$</span>class) <span class="sc">%&gt;%</span> </span>
+<span id="cb200-4"><a href="LDA.html#cb200-4" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> LD1, <span class="at">y =</span> LD2))<span class="sc">+</span></span>
+<span id="cb200-5"><a href="LDA.html#cb200-5" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> pred, <span class="at">shape =</span> obs), <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-59"></span>
+<img src="EksploracjaDanych_files/figure-html/unnamed-chunk-59-1.png" alt="Klasyfikacja w przestrzeni LD1, LD2 na podstawie modelu mod.lda" width="1056" />
 <p class="caption">
 Rysunek 8.3: Klasyfikacja w przestrzeni LD1, LD2 na podstawie modelu mod.lda
 </p>
 </div>
 </div>
 </div>
-<div id="liniowa-analiza-dyskryminacyjna---podejście-probabilistyczne" class="section level2">
-<h2><span class="header-section-number">8.2</span> Liniowa analiza dyskryminacyjna - podejście probabilistyczne</h2>
+<div id="liniowa-analiza-dyskryminacyjna---podejście-probabilistyczne" class="section level2 hasAnchor" number="8.2">
+<h2><span class="header-section-number">8.2</span> Liniowa analiza dyskryminacyjna - podejście probabilistyczne<a href="LDA.html#liniowa-analiza-dyskryminacyjna---podejście-probabilistyczne" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Jak wspomniano na wstępie (patrz rozdział <a href="LDA.html#LDA">8</a>), podejście prezentowane przez Welcha polegało na minimalizacji prawdopodobieństwa popełnienia błędu przy klasyfikacji. Cała rodzina klasyfikatorów Bayesa (patrz rozdział <a href="bayes.html#bayes">9</a>) polega na wyznaczeniu prawdopodobieństw <em>a posteriori</em>, na podstawie których dokonuje się decyzji o klasyfikacji obiektów. Tym razem dodajemy również założenie, że zmienne niezależne <span class="math inline">\(\boldsymbol{x}=(\boldsymbol{x}_1,\ldots,\boldsymbol{x}_d)\)</span> charakteryzują się wielowymiarowym rozkładem normalnym
 <span class="math display" id="eq:mnv">\[\begin{equation}
     f(\boldsymbol{x}) = \frac{1}{(2\pi)^{d/2}|\boldsymbol{\Sigma}|^{1/2}}\exp\left[-\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu})&#39;\boldsymbol{\Sigma}(\boldsymbol{x}-\boldsymbol{\mu})\right],
     \tag{8.6}
 \end{equation}\]</span>
 gdzie <span class="math inline">\(\boldsymbol{\mu}\)</span> jest wektorem średnich <span class="math inline">\(\boldsymbol{x}\)</span>, a <span class="math inline">\(\boldsymbol{\Sigma}\)</span> jest macierzą kowariancji <span class="math inline">\(\boldsymbol{x}\)</span>.</p>
-
 <div class="remark">
- <span class="remark"><em>Uwaga. </em></span> Liniowa kombinacja zmiennych losowych o normalnym rozkładzie łącznym ma również rozkład łączny normalny. W szczególności, jeśli <span class="math inline">\(A\)</span> jest macierzą wymiaru <span class="math inline">\(d\times k\)</span> i <span class="math inline">\(\boldsymbol{y} = A&#39;\boldsymbol{x}\)</span>, to <span class="math inline">\(f(\boldsymbol{y})\sim N(A&#39;\boldsymbol{\mu}, A&#39;\boldsymbol{\Sigma}A)\)</span>. Odpowiednia forma macierzy przekształcenia <span class="math inline">\(A_w\)</span>, sprawia, że zmienne po transformacji charakteryzują się rozkładem normalnym łącznym o wariancji określonej przez <span class="math inline">\(I\)</span>. Jeśli <span class="math inline">\(\boldsymbol{\Phi}\)</span> jest macierzą, której kolumny są ortonormalnymi wektorami własnymi macierzy <span class="math inline">\(\boldsymbol{\Sigma}\)</span>, a <span class="math inline">\(\boldsymbol{\Lambda}\)</span> macierzą diagonalną wartości własnych, to transformacja <span class="math inline">\(A_w=\boldsymbol{\Phi}\boldsymbol{\Lambda}^{-1}\)</span> przekształca <span class="math inline">\(\boldsymbol{x}\)</span> w <span class="math inline">\(\boldsymbol{y}\sim N(A_w&#39;\boldsymbol{\mu}, I)\)</span>.
+<p><span id="unlabeled-div-1" class="remark"><em>Uwaga</em>. </span>Liniowa kombinacja zmiennych losowych o normalnym rozkładzie łącznym ma również rozkład łączny normalny. W szczególności, jeśli <span class="math inline">\(A\)</span> jest macierzą wymiaru <span class="math inline">\(d\times k\)</span> i <span class="math inline">\(\boldsymbol{y} = A&#39;\boldsymbol{x}\)</span>, to <span class="math inline">\(f(\boldsymbol{y})\sim N(A&#39;\boldsymbol{\mu}, A&#39;\boldsymbol{\Sigma}A)\)</span>. Odpowiednia forma macierzy przekształcenia <span class="math inline">\(A_w\)</span>, sprawia, że zmienne po transformacji charakteryzują się rozkładem normalnym łącznym o wariancji określonej przez <span class="math inline">\(I\)</span>. Jeśli <span class="math inline">\(\boldsymbol{\Phi}\)</span> jest macierzą, której kolumny są ortonormalnymi wektorami własnymi macierzy <span class="math inline">\(\boldsymbol{\Sigma}\)</span>, a <span class="math inline">\(\boldsymbol{\Lambda}\)</span> macierzą diagonalną wartości własnych, to transformacja <span class="math inline">\(A_w=\boldsymbol{\Phi}\boldsymbol{\Lambda}^{-1}\)</span> przekształca <span class="math inline">\(\boldsymbol{x}\)</span> w <span class="math inline">\(\boldsymbol{y}\sim N(A_w&#39;\boldsymbol{\mu}, I)\)</span>.</p>
 </div>
-
-<div class="figure" style="text-align: center"><span id="fig:trans"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:trans"></span>
 <img src="images/transform.JPG" alt="Transformacje rozkładu normalnego łącznego. Źródło: @duda2001" width="434" />
 <p class="caption">
-Rysunek 8.4: Transformacje rozkładu normalnego łącznego. Źródło: <span class="citation">Duda, Hart, and Stork (<a href="#ref-duda2001" role="doc-biblioref">2001</a>)</span>
+Rysunek 8.4: Transformacje rozkładu normalnego łącznego. Źródło: <span class="citation">Duda, Hart, and Stork (<a href="#ref-duda2001">2001</a>)</span>
 </p>
 </div>
-
 <div class="definition">
-<span id="def:unnamed-chunk-10" class="definition"><strong>Definicja 8.1  </strong></span>Niech <span class="math inline">\(g_i(\boldsymbol{x}),\ i=1,\ldots,k\)</span> będą pewnymi funkcjami dyskryminacyjnymi. Wówczas obiekt <span class="math inline">\(\boldsymbol{x}\)</span> klasyfikujemy do grupy <span class="math inline">\(c_i\)</span> jeśli spełniony jest warunek
+<p><span id="def:unnamed-chunk-60" class="definition"><strong>Definicja 8.1  </strong></span>Niech <span class="math inline">\(g_i(\boldsymbol{x}),\ i=1,\ldots,k\)</span> będą pewnymi funkcjami dyskryminacyjnymi. Wówczas obiekt <span class="math inline">\(\boldsymbol{x}\)</span> klasyfikujemy do grupy <span class="math inline">\(c_i\)</span> jeśli spełniony jest warunek
 <span class="math display">\[\begin{equation}
     g_i(\boldsymbol{x})&gt;g_j(\boldsymbol{x}), \quad j\neq i.
-\end{equation}\]</span>
+\end{equation}\]</span></p>
 </div>
-
 <p>W podejściu polegającym na minimalizacji prawdopodobieństwa błędnej klasyfikacji, przyjmuje się najczęściej, że
 <span class="math display">\[\begin{equation}
     g_i(\boldsymbol{x})=\P(c_i|\boldsymbol{x}),
@@ -521,8 +565,8 @@ W przypadku gdy <span class="math inline">\(\boldsymbol{x}|c_i\sim N(\boldsymbol
     g_i(\boldsymbol{x})=-\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu}_i)&#39;\boldsymbol{\Sigma}_i^{-1}(\boldsymbol{x}-\boldsymbol{\mu}_i)-\frac{d}{2}\log(2\pi)-\frac{1}{2}\log|\boldsymbol{\Sigma}_i|+\log\P(c_i).
 \end{equation}\]</span></p>
 <p>W kolejnych podrozdziałach przeanalizujemy trzy możliwe formy macierzy kowariancji.</p>
-<div id="przypI" class="section level3">
-<h3><span class="header-section-number">8.2.1</span> Przypadek gdy <span class="math inline">\(\boldsymbol{\Sigma}_i=\sigma^2I\)</span></h3>
+<div id="przypI" class="section level3 hasAnchor" number="8.2.1">
+<h3><span class="header-section-number">8.2.1</span> Przypadek gdy <span class="math inline">\(\boldsymbol{\Sigma}_i=\sigma^2I\)</span><a href="LDA.html#przypI" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>To najprostszy przypadek, zakładający niezależność zmiennych wchodzących w skład <span class="math inline">\(\boldsymbol x\)</span>, których wariancje są stałe <span class="math inline">\(\sigma^2\)</span>.
 Wówczas <span class="math inline">\(g_i\)</span> przyjmuje postać
 <span class="math display" id="eq:row88">\[\begin{equation}
@@ -557,15 +601,15 @@ oraz
     \boldsymbol x_0 = \frac12(\boldsymbol \mu_i+\boldsymbol\mu_j)-\frac{\sigma^2}{||\boldsymbol \mu_i-\boldsymbol \mu_j||^2}\log\frac{\P(c_i)}{\P(c_j)}(\boldsymbol \mu_i-\boldsymbol \mu_j).
 \end{equation}\]</span></p>
 <p>Równanie <a href="LDA.html#eq:row89">(8.9)</a> określa hiperpłaszczyznę przechodzącą przez <span class="math inline">\(\boldsymbol x_0\)</span> i prostopadłą do <span class="math inline">\(\boldsymbol w\)</span>.</p>
-<div class="figure" style="text-align: center"><span id="fig:hiper"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:hiper"></span>
 <img src="images/dyskrym1.JPG" alt="Dyskrymiancja hiperpłaszczyznami w sygucaji dwóch klas. Wykres po lewej, to ujęcie jednowymiarowe, wykresy po środu - ujęcie 2-wymiarowe i wykresy po prawej, to ujęcie 3-wymiarowe. Źródło: @duda2001" width="621" />
 <p class="caption">
-Rysunek 8.5: Dyskrymiancja hiperpłaszczyznami w sygucaji dwóch klas. Wykres po lewej, to ujęcie jednowymiarowe, wykresy po środu - ujęcie 2-wymiarowe i wykresy po prawej, to ujęcie 3-wymiarowe. Źródło: <span class="citation">Duda, Hart, and Stork (<a href="#ref-duda2001" role="doc-biblioref">2001</a>)</span>
+Rysunek 8.5: Dyskrymiancja hiperpłaszczyznami w sygucaji dwóch klas. Wykres po lewej, to ujęcie jednowymiarowe, wykresy po środu - ujęcie 2-wymiarowe i wykresy po prawej, to ujęcie 3-wymiarowe. Źródło: <span class="citation">Duda, Hart, and Stork (<a href="#ref-duda2001">2001</a>)</span>
 </p>
 </div>
 </div>
-<div id="przypSig" class="section level3">
-<h3><span class="header-section-number">8.2.2</span> Przypadek gdy <span class="math inline">\(\boldsymbol \Sigma_i=\boldsymbol \Sigma\)</span></h3>
+<div id="przypSig" class="section level3 hasAnchor" number="8.2.2">
+<h3><span class="header-section-number">8.2.2</span> Przypadek gdy <span class="math inline">\(\boldsymbol \Sigma_i=\boldsymbol \Sigma\)</span><a href="LDA.html#przypSig" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Przypadek ten opisuje sytuację, gdy rozkłady <span class="math inline">\(\boldsymbol x\)</span> są identyczne we wszystkich grupach ale zmienne w ich skład wchodzące nie są niezależne.
 W tym przypadku funkcje dyskryminacyjne przyjmują postać
 <span class="math display" id="eq:row810">\[\begin{equation}
@@ -591,15 +635,15 @@ oraz
     \boldsymbol x_0 = \frac12(\boldsymbol \mu_i+\boldsymbol\mu_j)-\frac{\log[ \P(c_i)/\P(c_j)]}{(\boldsymbol x-\boldsymbol \mu_i)&#39;\boldsymbol\Sigma^{-1}(\boldsymbol x-\boldsymbol \mu_i)}(\boldsymbol \mu_i-\boldsymbol \mu_j).
 \end{equation}\]</span>
 Tym razem <span class="math inline">\(\boldsymbol{w}=\Sigma^{-1}(\boldsymbol \mu_i-\boldsymbol \mu_j)\)</span> nie jest wektorem w kierunku <span class="math inline">\(\boldsymbol \mu_i-\boldsymbol \mu_j\)</span>, więc hiperpłaszczyzna rozdzielająca obiekty różnych klas nie jest prostopadła do wektora <span class="math inline">\(\boldsymbol \mu_i-\boldsymbol \mu_j\)</span> ale przecina go w połowie (w punkcie <span class="math inline">\(\boldsymbol x_0\)</span>).</p>
-<div class="figure" style="text-align: center"><span id="fig:hiper2"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:hiper2"></span>
 <img src="images/dyskrym2.JPG" alt="Hiperpłaszczyzna rozdzielająca obszary innych klas może być przesunięta w kierunku bardziej prawdopodobnej klasy, jeśli prawdopodobieństwa a priori są różne. Źródło: @duda2001" width="523" />
 <p class="caption">
-Rysunek 8.6: Hiperpłaszczyzna rozdzielająca obszary innych klas może być przesunięta w kierunku bardziej prawdopodobnej klasy, jeśli prawdopodobieństwa a priori są różne. Źródło: <span class="citation">Duda, Hart, and Stork (<a href="#ref-duda2001" role="doc-biblioref">2001</a>)</span>
+Rysunek 8.6: Hiperpłaszczyzna rozdzielająca obszary innych klas może być przesunięta w kierunku bardziej prawdopodobnej klasy, jeśli prawdopodobieństwa a priori są różne. Źródło: <span class="citation">Duda, Hart, and Stork (<a href="#ref-duda2001">2001</a>)</span>
 </p>
 </div>
 </div>
-<div id="przypadek-gdy-boldsymbol-sigma_i-jest-dowolnej-postaci" class="section level3">
-<h3><span class="header-section-number">8.2.3</span> Przypadek gdy <span class="math inline">\(\boldsymbol \Sigma_i\)</span> jest dowolnej postaci</h3>
+<div id="przypadek-gdy-boldsymbol-sigma_i-jest-dowolnej-postaci" class="section level3 hasAnchor" number="8.2.3">
+<h3><span class="header-section-number">8.2.3</span> Przypadek gdy <span class="math inline">\(\boldsymbol \Sigma_i\)</span> jest dowolnej postaci<a href="LDA.html#przypadek-gdy-boldsymbol-sigma_i-jest-dowolnej-postaci" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Jest to najbardziej ogólny przypadek, kiedy nie nakłada się żadnych ograniczeń na macierze kowariancji grupowych. Postać funkcji dyskryminacyjnych jest następująca
 <span class="math display" id="eq:row813">\[\begin{equation}
     g_i(\boldsymbol x)=\boldsymbol x&#39;\boldsymbol W_i\boldsymbol x+\boldsymbol w_i&#39;\boldsymbol x+w_{i0}
@@ -612,19 +656,17 @@ gdzie
     w_{i0} = &amp;-\frac12\boldsymbol\mu_i&#39;\boldsymbol\Sigma_i^{-1}\boldsymbol\mu_i-\frac12\log|\boldsymbol\Sigma_i|+\log\P(c_i).
 \end{align}\]</span></p>
 <p>Ograniczenia w ten sposób budowane są hiperpowierzchniami (nie koniecznie hiperpłaszczyznami). W literaturze ta metoda znana jest pod nazwą kwadratowej analizy dyskryminacyjnej (ang. <em>Quadratic Discriminant Analysis</em>).</p>
-<div class="figure" style="text-align: center"><span id="fig:hiper3"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:hiper3"></span>
 <img src="images/dyskrym3.JPG" alt="Przykład zastosowania kwadratowej analizy dyskryminacyjnej. Pokazane są dopuszczalne postaci zbiorów ograniczających. Źródło: @duda2001" width="610" />
 <p class="caption">
-Rysunek 8.7: Przykład zastosowania kwadratowej analizy dyskryminacyjnej. Pokazane są dopuszczalne postaci zbiorów ograniczających. Źródło: <span class="citation">Duda, Hart, and Stork (<a href="#ref-duda2001" role="doc-biblioref">2001</a>)</span>
+Rysunek 8.7: Przykład zastosowania kwadratowej analizy dyskryminacyjnej. Pokazane są dopuszczalne postaci zbiorów ograniczających. Źródło: <span class="citation">Duda, Hart, and Stork (<a href="#ref-duda2001">2001</a>)</span>
 </p>
 </div>
-
 <div class="example">
-<span id="exm:caravan" class="example"><strong>Przykład 8.2  </strong></span>Przeprowadzimy klasyfikację na podstawie zbioru <code>Smarket</code> pakietu <code>ILSR</code>. Dane zawierają kursy indeksu giełdowego S&amp;P500 w latach 2001-2005. Na podstawie wartości waloru z poprzednich 2 dni będziemy chcieli przewidzieć czy ruch w kolejnym okresie czasu będzie w górę czy w dół.
+<p><span id="exm:caravan" class="example"><strong>Przykład 8.2  </strong></span>Przeprowadzimy klasyfikację na podstawie zbioru <code>Smarket</code> pakietu <code>ILSR</code>. Dane zawierają kursy indeksu giełdowego S&amp;P500 w latach 2001-2005. Na podstawie wartości waloru z poprzednich 2 dni będziemy chcieli przewidzieć czy ruch w kolejnym okresie czasu będzie w górę czy w dół.</p>
 </div>
-
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">library</span>(ISLR)</a>
-<a class="sourceLine" id="cb16-2" title="2"><span class="kw">head</span>(Smarket)</a></code></pre></div>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="LDA.html#cb201-1" tabindex="-1"></a><span class="fu">library</span>(ISLR)</span>
+<span id="cb201-2"><a href="LDA.html#cb201-2" tabindex="-1"></a><span class="fu">head</span>(Smarket)</span></code></pre></div>
 <pre><code>##   Year   Lag1   Lag2   Lag3   Lag4   Lag5 Volume  Today Direction
 ## 1 2001  0.381 -0.192 -2.624 -1.055  5.010 1.1913  0.959        Up
 ## 2 2001  0.959  0.381 -0.192 -2.624 -1.055 1.2965  1.032        Up
@@ -632,13 +674,13 @@ Rysunek 8.7: Przykład zastosowania kwadratowej analizy dyskryminacyjnej. Pokaza
 ## 4 2001 -0.623  1.032  0.959  0.381 -0.192 1.2760  0.614        Up
 ## 5 2001  0.614 -0.623  1.032  0.959  0.381 1.2057  0.213        Up
 ## 6 2001  0.213  0.614 -0.623  1.032  0.959 1.3491  1.392        Up</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">set.seed</span>(<span class="dv">44</span>)</a>
-<a class="sourceLine" id="cb18-2" title="2">dt.ucz &lt;-<span class="st"> </span>Smarket <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb18-3" title="3"><span class="st">    </span><span class="kw">mutate_if</span>(is.numeric, scale) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb18-4" title="4"><span class="st">    </span><span class="kw">sample_frac</span>(<span class="dt">size =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>) </a>
-<a class="sourceLine" id="cb18-5" title="5">dt.test &lt;-<span class="st"> </span>Smarket[<span class="op">-</span><span class="kw">as.numeric</span>(<span class="kw">rownames</span>(dt.ucz)),]</a>
-<a class="sourceLine" id="cb18-6" title="6">mod.qda &lt;-<span class="st"> </span><span class="kw">qda</span>(Direction<span class="op">~</span>Lag1<span class="op">+</span>Lag2, <span class="dt">data =</span> dt.ucz)</a>
-<a class="sourceLine" id="cb18-7" title="7">mod.qda</a></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="LDA.html#cb203-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">44</span>)</span>
+<span id="cb203-2"><a href="LDA.html#cb203-2" tabindex="-1"></a>dt.ucz <span class="ot">&lt;-</span> Smarket <span class="sc">%&gt;%</span> </span>
+<span id="cb203-3"><a href="LDA.html#cb203-3" tabindex="-1"></a>    <span class="fu">mutate_if</span>(is.numeric, scale) <span class="sc">%&gt;%</span> </span>
+<span id="cb203-4"><a href="LDA.html#cb203-4" tabindex="-1"></a>    <span class="fu">sample_frac</span>(<span class="at">size =</span> <span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>) </span>
+<span id="cb203-5"><a href="LDA.html#cb203-5" tabindex="-1"></a>dt.test <span class="ot">&lt;-</span> Smarket[<span class="sc">-</span><span class="fu">as.numeric</span>(<span class="fu">rownames</span>(dt.ucz)),]</span>
+<span id="cb203-6"><a href="LDA.html#cb203-6" tabindex="-1"></a>mod.qda <span class="ot">&lt;-</span> <span class="fu">qda</span>(Direction<span class="sc">~</span>Lag1<span class="sc">+</span>Lag2, <span class="at">data =</span> dt.ucz)</span>
+<span id="cb203-7"><a href="LDA.html#cb203-7" tabindex="-1"></a>mod.qda</span></code></pre></div>
 <pre><code>## Call:
 ## qda(Direction ~ Lag1 + Lag2, data = dt.ucz)
 ## 
@@ -651,43 +693,41 @@ Rysunek 8.7: Przykład zastosowania kwadratowej analizy dyskryminacyjnej. Pokaza
 ## Down  0.0328367  0.06722714
 ## Up   -0.0671615 -0.08814914</code></pre>
 <p>Ponieważ funkcje dyskryminacyjne mogą być nieliniowe, to podsumowanie modelu nie zawiera współczynników funkcji. Podsumowanie zawiera tylko prawdopodobieństwa a priori i średnie poszczególnych zmiennych niezależnych w klasach.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">pred.qda &lt;-<span class="st"> </span><span class="kw">predict</span>(mod.qda, dt.test)</a>
-<a class="sourceLine" id="cb20-2" title="2">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">pred =</span> pred.qda<span class="op">$</span>class, dt.test<span class="op">$</span>Direction)</a>
-<a class="sourceLine" id="cb20-3" title="3">tab</a></code></pre></div>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="LDA.html#cb205-1" tabindex="-1"></a>pred.qda <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod.qda, dt.test)</span>
+<span id="cb205-2"><a href="LDA.html#cb205-2" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">pred =</span> pred.qda<span class="sc">$</span>class, dt.test<span class="sc">$</span>Direction)</span>
+<span id="cb205-3"><a href="LDA.html#cb205-3" tabindex="-1"></a>tab</span></code></pre></div>
 <pre><code>##       
 ## pred   Down  Up
 ##   Down   42  34
 ##   Up    139 202</code></pre>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">sum</span>(<span class="kw">diag</span>(<span class="kw">prop.table</span>(tab)))</a></code></pre></div>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="LDA.html#cb207-1" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">diag</span>(<span class="fu">prop.table</span>(tab)))</span></code></pre></div>
 <pre><code>## [1] 0.5851319</code></pre>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">library</span>(klaR)</a>
-<a class="sourceLine" id="cb24-2" title="2"><span class="kw">partimat</span>(Direction <span class="op">~</span><span class="st"> </span>Lag1<span class="op">+</span>Lag2, </a>
-<a class="sourceLine" id="cb24-3" title="3">         <span class="dt">data =</span> dt.ucz,</a>
-<a class="sourceLine" id="cb24-4" title="4">         <span class="dt">method =</span> <span class="st">&quot;qda&quot;</span>,</a>
-<a class="sourceLine" id="cb24-5" title="5">         <span class="dt">col.correct=</span><span class="st">&#39;blue&#39;</span>,</a>
-<a class="sourceLine" id="cb24-6" title="6">         <span class="dt">col.wrong=</span><span class="st">&#39;red&#39;</span>)</a></code></pre></div>
-<div class="figure" style="text-align: center"><span id="fig:qda"></span>
-<img src="EksploracjaDanych_files/figure-html/qda-1.png" alt="Wykres klasyfikacji na podstawie QDA. Obserwacje zaznczone kolorem niebieskim są prawidłowo zaklasyfikowane, a czerwonym źle" width="672" />
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="LDA.html#cb209-1" tabindex="-1"></a><span class="fu">library</span>(klaR)</span>
+<span id="cb209-2"><a href="LDA.html#cb209-2" tabindex="-1"></a><span class="fu">partimat</span>(Direction <span class="sc">~</span> Lag1<span class="sc">+</span>Lag2, </span>
+<span id="cb209-3"><a href="LDA.html#cb209-3" tabindex="-1"></a>         <span class="at">data =</span> dt.ucz,</span>
+<span id="cb209-4"><a href="LDA.html#cb209-4" tabindex="-1"></a>         <span class="at">method =</span> <span class="st">&quot;qda&quot;</span>,</span>
+<span id="cb209-5"><a href="LDA.html#cb209-5" tabindex="-1"></a>         <span class="at">col.correct=</span><span class="st">&#39;blue&#39;</span>,</span>
+<span id="cb209-6"><a href="LDA.html#cb209-6" tabindex="-1"></a>         <span class="at">col.wrong=</span><span class="st">&#39;red&#39;</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:qda"></span>
+<img src="EksploracjaDanych_files/figure-html/qda-1.png" alt="Wykres klasyfikacji na podstawie QDA. Obserwacje zaznczone kolorem niebieskim są prawidłowo zaklasyfikowane, a czerwonym źle" width="1056" />
 <p class="caption">
 Rysunek 8.8: Wykres klasyfikacji na podstawie QDA. Obserwacje zaznczone kolorem niebieskim są prawidłowo zaklasyfikowane, a czerwonym źle
 </p>
 </div>
 </div>
 </div>
-<div id="analiza-dyskryminacyjna-metodą-częściowych-najmniejszych-kwadratów" class="section level2">
-<h2><span class="header-section-number">8.3</span> Analiza dyskryminacyjna metodą częściowych najmniejszych kwadratów</h2>
+<div id="analiza-dyskryminacyjna-metodą-częściowych-najmniejszych-kwadratów" class="section level2 hasAnchor" number="8.3">
+<h2><span class="header-section-number">8.3</span> Analiza dyskryminacyjna metodą częściowych najmniejszych kwadratów<a href="LDA.html#analiza-dyskryminacyjna-metodą-częściowych-najmniejszych-kwadratów" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Analiza dyskryminacyjna metodą częściowych najmniejszych kwadratów (ang. <em>Partial Least Squares Discriminant Analysis</em>) jest wykorzystywana szczególnie w sytuacjach gdy zestaw predyktorów zwiera zmienne silnie ze sobą skorelowane. Jak wiadomo z wcześniejszych rozważań, metody dyskryminacji obserwacji są mało odporne na nadmiarowość zmiennych niezależnych. Stąd powstał pomysł zastosowania połączenia LDA z PLS (Partial Least Squares), której celem jest redukcja wymiaru przestrzeni jednocześnie maksymalizując korelację zmiennych niezależnych ze zmienną wynikową.</p>
-<p>Parametrem, który jest kontrolowany podczas budowy modelu jest liczba ukrytych zmiennych. Metoda PLSDA ma kilka implementacji w R, ale najbardziej znana jest funkcja <code>plsda</code> z pakietu <code>caret</code> <span class="citation">(Jed Wing et al. <a href="#ref-kuhn" role="doc-biblioref">2018</a>)</span>.</p>
-
+<p>Parametrem, który jest kontrolowany podczas budowy modelu jest liczba ukrytych zmiennych. Metoda PLSDA ma kilka implementacji w R, ale najbardziej znana jest funkcja <code>plsda</code> z pakietu <code>caret</code> <span class="citation">(<a href="#ref-kuhn">Jed Wing et al. 2018</a>)</span>.</p>
 <div class="example">
-<span id="exm:plsda" class="example"><strong>Przykład 8.3  </strong></span>Kontynując poprzedni przykład przeprowadzimy klasyfikacje ruchu waloru korzystając z metody PLSDA. W przeciwieństwie do poprzednich funkcji <code>plsda</code> potrzebuje przekazania zbioru predyktorów i wektora zmiennej wynikowej oddzielnie, a nie za pomocą formuły. Doboru liczby zmiennych latentnych dokonamy arbitralnie.
+<p><span id="exm:plsda" class="example"><strong>Przykład 8.3  </strong></span>Kontynując poprzedni przykład przeprowadzimy klasyfikacje ruchu waloru korzystając z metody PLSDA. W przeciwieństwie do poprzednich funkcji <code>plsda</code> potrzebuje przekazania zbioru predyktorów i wektora zmiennej wynikowej oddzielnie, a nie za pomocą formuły. Doboru liczby zmiennych latentnych dokonamy arbitralnie.</p>
 </div>
-
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw">library</span>(caret)</a>
-<a class="sourceLine" id="cb25-2" title="2">mod.plsda &lt;-<span class="st"> </span><span class="kw">plsda</span>(dt.ucz[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">7</span><span class="op">:</span><span class="dv">9</span>)],</a>
-<a class="sourceLine" id="cb25-3" title="3">                   <span class="kw">as.factor</span>(dt.ucz<span class="op">$</span>Direction), </a>
-<a class="sourceLine" id="cb25-4" title="4">                   <span class="dt">ncomp =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb25-5" title="5">mod.plsda<span class="op">$</span>loadings</a></code></pre></div>
+<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="LDA.html#cb210-1" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb210-2"><a href="LDA.html#cb210-2" tabindex="-1"></a>mod.plsda <span class="ot">&lt;-</span> <span class="fu">plsda</span>(dt.ucz[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>)],</span>
+<span id="cb210-3"><a href="LDA.html#cb210-3" tabindex="-1"></a>                   <span class="fu">as.factor</span>(dt.ucz<span class="sc">$</span>Direction), </span>
+<span id="cb210-4"><a href="LDA.html#cb210-4" tabindex="-1"></a>                   <span class="at">ncomp =</span> <span class="dv">2</span>)</span>
+<span id="cb210-5"><a href="LDA.html#cb210-5" tabindex="-1"></a>mod.plsda<span class="sc">$</span>loadings</span></code></pre></div>
 <pre><code>## 
 ## Loadings:
 ##      Comp 1 Comp 2
@@ -702,17 +742,17 @@ Rysunek 8.8: Wykres klasyfikacji na podstawie QDA. Obserwacje zaznczone kolorem 
 ## Proportion Var  0.201  0.200
 ## Cumulative Var  0.201  0.401</code></pre>
 <p>Dwie ukryte zmienne użyte do redukcji wymiaru przestrzeni wyjaśniają około 40% zmienności pierwotnych zmiennych. Ładunki (<code>Loadings</code>) pokazują kontrybucje poszczególnych zmiennych w tworzenie się zmiennych ukrytych.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1">pred.plsda &lt;-<span class="st"> </span><span class="kw">predict</span>(mod.plsda, dt.test[,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">7</span><span class="op">:</span><span class="dv">9</span>)])</a>
-<a class="sourceLine" id="cb27-2" title="2">tab &lt;-<span class="st"> </span><span class="kw">table</span>(pred.plsda, dt.test<span class="op">$</span>Direction)</a>
-<a class="sourceLine" id="cb27-3" title="3">tab</a></code></pre></div>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="LDA.html#cb212-1" tabindex="-1"></a>pred.plsda <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod.plsda, dt.test[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>)])</span>
+<span id="cb212-2"><a href="LDA.html#cb212-2" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">table</span>(pred.plsda, dt.test<span class="sc">$</span>Direction)</span>
+<span id="cb212-3"><a href="LDA.html#cb212-3" tabindex="-1"></a>tab</span></code></pre></div>
 <pre><code>##           
 ## pred.plsda Down  Up
 ##       Down   87  97
 ##       Up     94 139</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="kw">sum</span>(<span class="kw">diag</span>(<span class="kw">prop.table</span>(tab)))</a></code></pre></div>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="LDA.html#cb214-1" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">diag</span>(<span class="fu">prop.table</span>(tab)))</span></code></pre></div>
 <pre><code>## [1] 0.5419664</code></pre>
 <p>Ponieważ korelacje pomiędzy predyktorami w naszym przypadku nie były duże, to zastosowanie PLSDA nie poprawiło klasyfikacji w stosunku do metody QDA.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="kw">cor</span>(dt.ucz[,<span class="dv">2</span><span class="op">:</span><span class="dv">6</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="LDA.html#cb216-1" tabindex="-1"></a><span class="fu">cor</span>(dt.ucz[,<span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>])</span></code></pre></div>
 <pre><code>##              Lag1         Lag2         Lag3        Lag4        Lag5
 ## Lag1  1.000000000 -0.003318026 -0.004329303  0.02574559  0.01831679
 ## Lag2 -0.003318026  1.000000000 -0.057166931  0.01209305  0.02127975
@@ -720,9 +760,9 @@ Rysunek 8.8: Wykres klasyfikacji na podstawie QDA. Obserwacje zaznczone kolorem 
 ## Lag4  0.025745592  0.012093049  0.015748958  1.00000000 -0.04607207
 ## Lag5  0.018316786  0.021279754 -0.075415921 -0.04607207  1.00000000</code></pre>
 </div>
-<div id="regularyzowana-analiza-dyskryminacyjna" class="section level2">
-<h2><span class="header-section-number">8.4</span> Regularyzowana analiza dyskryminacyjna</h2>
-<p>Regularyzowana analiza dyskryminacyjna (ang. <em>Regularized Discriminant Analysis</em>) powstała jako technika równoważąca zalety i wady LDA i QDA. Ze względu na zdolności generalizacyjne model LDA jest lepszy od QDA (mniejsza wariancja modelu), ale jednocześnie QDA ma bardziej elastyczną postać hiperpowierzchni brzegowych rozdzielających obiekty różnych klas. Dlatego Friedman <span class="citation">(<a href="#ref-friedman1989" role="doc-biblioref">1989</a>)</span> wprowadził technikę będącą kompromisem pomiędzy LDA i QDA poprzez odpowiednie określenie macierzy kowariancji
+<div id="regularyzowana-analiza-dyskryminacyjna" class="section level2 hasAnchor" number="8.4">
+<h2><span class="header-section-number">8.4</span> Regularyzowana analiza dyskryminacyjna<a href="LDA.html#regularyzowana-analiza-dyskryminacyjna" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Regularyzowana analiza dyskryminacyjna (ang. <em>Regularized Discriminant Analysis</em>) powstała jako technika równoważąca zalety i wady LDA i QDA. Ze względu na zdolności generalizacyjne model LDA jest lepszy od QDA (mniejsza wariancja modelu), ale jednocześnie QDA ma bardziej elastyczną postać hiperpowierzchni brzegowych rozdzielających obiekty różnych klas. Dlatego Friedman -<span class="citation">Friedman (<a href="#ref-friedman1989">1989</a>)</span> wprowadził technikę będącą kompromisem pomiędzy LDA i QDA poprzez odpowiednie określenie macierzy kowariancji
 <span class="math display">\[\begin{equation}
     \tilde{\boldsymbol \Sigma}_i(\lambda) = \lambda\boldsymbol\Sigma_i + (1-\lambda)\boldsymbol\Sigma,
 \end{equation}\]</span>
@@ -731,14 +771,12 @@ gdzie <span class="math inline">\(\boldsymbol \Sigma_i\)</span> jest macierzą k
 <span class="math display">\[\begin{equation}
     \boldsymbol \Sigma(\gamma) = \gamma\boldsymbol \Sigma+(1-\gamma)\sigma^2I.
 \end{equation}\]</span></p>
-
 <div class="example">
-<span id="exm:rda" class="example"><strong>Przykład 8.4  </strong></span>Funkcja <code>rda</code> pakietu <code>klaR</code> jest implementacją powyższej metody. Ilustrają jej działania będzie klasyfikacja stanów z poprzedniego przykładu.
+<p><span id="exm:rda" class="example"><strong>Przykład 8.4  </strong></span>Funkcja <code>rda</code> pakietu <code>klaR</code> jest implementacją powyższej metody. Ilustrają jej działania będzie klasyfikacja stanów z poprzedniego przykładu.</p>
 </div>
-
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">library</span>(klaR)</a>
-<a class="sourceLine" id="cb33-2" title="2">mod.rda &lt;-<span class="st"> </span><span class="kw">rda</span>(Direction<span class="op">~</span>Lag1<span class="op">+</span>Lag2<span class="op">+</span>Lag3<span class="op">+</span>Lag4<span class="op">+</span>Lag5, dt.ucz)</a>
-<a class="sourceLine" id="cb33-3" title="3">mod.rda</a></code></pre></div>
+<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="LDA.html#cb218-1" tabindex="-1"></a><span class="fu">library</span>(klaR)</span>
+<span id="cb218-2"><a href="LDA.html#cb218-2" tabindex="-1"></a>mod.rda <span class="ot">&lt;-</span> <span class="fu">rda</span>(Direction<span class="sc">~</span>Lag1<span class="sc">+</span>Lag2<span class="sc">+</span>Lag3<span class="sc">+</span>Lag4<span class="sc">+</span>Lag5, dt.ucz)</span>
+<span id="cb218-3"><a href="LDA.html#cb218-3" tabindex="-1"></a>mod.rda</span></code></pre></div>
 <pre><code>## Call: 
 ## rda(formula = Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5, data = dt.ucz)
 ## 
@@ -754,34 +792,30 @@ gdzie <span class="math inline">\(\boldsymbol \Sigma_i\)</span> jest macierzą k
 ##        apparent: 44.058 %
 ## cross-validated: 46.482 %</code></pre>
 <p>Model został oszacowany z parametrami wyznaczonymi na podstawie sprawdzianu krzyżowego zastosowanego w funkcji <code>rda</code>.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1">pred.rda &lt;-<span class="st"> </span><span class="kw">predict</span>(mod.rda, dt.test)</a>
-<a class="sourceLine" id="cb35-2" title="2">(tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">pred =</span> pred.rda<span class="op">$</span>class, dt.test<span class="op">$</span>Direction))</a></code></pre></div>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="LDA.html#cb220-1" tabindex="-1"></a>pred.rda <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod.rda, dt.test)</span>
+<span id="cb220-2"><a href="LDA.html#cb220-2" tabindex="-1"></a>(tab <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">pred =</span> pred.rda<span class="sc">$</span>class, dt.test<span class="sc">$</span>Direction))</span></code></pre></div>
 <pre><code>##       
 ## pred   Down  Up
 ##   Down   24  31
 ##   Up    157 205</code></pre>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">sum</span>(<span class="kw">diag</span>(<span class="kw">prop.table</span>(tab)))</a></code></pre></div>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="LDA.html#cb222-1" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">diag</span>(<span class="fu">prop.table</span>(tab)))</span></code></pre></div>
 <pre><code>## [1] 0.5491607</code></pre>
 <p>Jakość klasyfikacji jest na zbliżonym poziomie jak przy poprzednich metodach.</p>
 </div>
-<div id="analiza-dyskryminacyjna-mieszana" class="section level2">
-<h2><span class="header-section-number">8.5</span> Analiza dyskryminacyjna mieszana</h2>
+<div id="analiza-dyskryminacyjna-mieszana" class="section level2 hasAnchor" number="8.5">
+<h2><span class="header-section-number">8.5</span> Analiza dyskryminacyjna mieszana<a href="LDA.html#analiza-dyskryminacyjna-mieszana" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Liniowa analiza dyskryminacyjna zakładała, że średnie (centroidy) w klasach są różne ale macierz kowariancji wszystkich klas jest jednakowa. Analiza dyskryminacyjna mieszana (ang. <em>Mixture Discriminant Analysis</em>) prezentuje jeszcze inne podejście ponieważ zakłada, że każda klasa może być charakteryzowana przez wiele wielowymiarowych rozkładów normalnych, których centroidy mogą się różnic, ale macierze kowariancji nie.</p>
 <p>Wówczas rozkład dla danej klasy jest mieszaniną rozkładów składowych, a funkcja dyskryminacyjna dla <span class="math inline">\(i\)</span>-tej klasy przyjmuje postać
 <span class="math display">\[\begin{equation}
     g_i(\boldsymbol x)\propto \sum_{k=1}^{L_i}\phi_{ik}g_{ik}(\boldsymbol x),
 \end{equation}\]</span>
 gdzie <span class="math inline">\(L_i\)</span> jest liczbą rozkładów składających się na <span class="math inline">\(i\)</span>-tą klasę, a <span class="math inline">\(\phi_{ik}\)</span> jest współczynnikiem proporcji estymowanych w czasie uczenia modelu.</p>
-
 <div class="example">
-<span id="exm:mda" class="example"><strong>Przykład 8.5  </strong></span>Funkcja <code>mda</code> pakietu <code>mda</code> <span class="citation">(Trevor Hastie et al. <a href="#ref-R-mda" role="doc-biblioref">2017</a>)</span> jest implementacją tej techniki w R. Jej zastosowanie pokażemy na przykładzie danych giełdowych z poprzedniego przykładu. Użyjemy domyślnych ustawień funkcji (trzy rozkłady dla każdej klasy).
+<p><span id="exm:mda" class="example"><strong>Przykład 8.5  </strong></span>Funkcja <code>mda</code> pakietu <code>mda</code> <span class="citation">(<a href="#ref-R-mda">Trevor Hastie et al. 2017</a>)</span> jest implementacją tej techniki w R. Jej zastosowanie pokażemy na przykładzie danych giełdowych z poprzedniego przykładu. Użyjemy domyślnych ustawień funkcji (trzy rozkłady dla każdej klasy).</p>
 </div>
-
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="kw">library</span>(mda)</a></code></pre></div>
-<pre><code>## Loading required package: class</code></pre>
-<pre><code>## Loaded mda 0.4-10</code></pre>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" title="1">mod.mda &lt;-<span class="st"> </span><span class="kw">mda</span>(Direction<span class="op">~</span>Lag1<span class="op">+</span>Lag2<span class="op">+</span>Lag3<span class="op">+</span>Lag4<span class="op">+</span>Lag5, dt.ucz)</a>
-<a class="sourceLine" id="cb42-2" title="2">mod.mda</a></code></pre></div>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="LDA.html#cb224-1" tabindex="-1"></a><span class="fu">library</span>(mda)</span>
+<span id="cb224-2"><a href="LDA.html#cb224-2" tabindex="-1"></a>mod.mda <span class="ot">&lt;-</span> <span class="fu">mda</span>(Direction<span class="sc">~</span>Lag1<span class="sc">+</span>Lag2<span class="sc">+</span>Lag3<span class="sc">+</span>Lag4<span class="sc">+</span>Lag5, dt.ucz)</span>
+<span id="cb224-3"><a href="LDA.html#cb224-3" tabindex="-1"></a>mod.mda</span></code></pre></div>
 <pre><code>## Call:
 ## mda(formula = Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5, data = dt.ucz)
 ## 
@@ -796,18 +830,18 @@ gdzie <span class="math inline">\(L_i\)</span> jest liczbą rozkładów składaj
 ## Training Misclassification Error: 0.43337 ( N = 833 )
 ## 
 ## Deviance: 1134.288</code></pre>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" title="1">pred.mda &lt;-<span class="st"> </span><span class="kw">predict</span>(mod.mda, dt.test)</a>
-<a class="sourceLine" id="cb44-2" title="2">(tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">pred =</span> pred.mda, dt.test<span class="op">$</span>Direction))</a></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="LDA.html#cb226-1" tabindex="-1"></a>pred.mda <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod.mda, dt.test)</span>
+<span id="cb226-2"><a href="LDA.html#cb226-2" tabindex="-1"></a>(tab <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">pred =</span> pred.mda, dt.test<span class="sc">$</span>Direction))</span></code></pre></div>
 <pre><code>##       
 ## pred   Down  Up
 ##   Down   38  46
 ##   Up    143 190</code></pre>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1"><span class="kw">sum</span>(<span class="kw">diag</span>(<span class="kw">prop.table</span>(tab)))</a></code></pre></div>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb228-1"><a href="LDA.html#cb228-1" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">diag</span>(<span class="fu">prop.table</span>(tab)))</span></code></pre></div>
 <pre><code>## [1] 0.5467626</code></pre>
 <p>Kolejny raz model dyskryminacyjny charakteryzuje się podobną jakością klasyfikacji.</p>
 </div>
-<div id="elastyczna-analiza-dyskryminacyjna" class="section level2">
-<h2><span class="header-section-number">8.6</span> Elastyczna analiza dyskryminacyjna</h2>
+<div id="elastyczna-analiza-dyskryminacyjna" class="section level2 hasAnchor" number="8.6">
+<h2><span class="header-section-number">8.6</span> Elastyczna analiza dyskryminacyjna<a href="LDA.html#elastyczna-analiza-dyskryminacyjna" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Zupełnie inne podejście w stosunku do wcześniejszych rozwiązań, prezentuje elastyczna analiza dyskryminacyjna (ang. <em>Flexible Discriminant Analysis</em>) . Kodując klasy wynikowe jako zmienne dychotomiczne (dla każdej klasy jest odrębna zmienna wynikowa) dla każdej z nich budowanych jest <span class="math inline">\(k\)</span> modeli regresji. Mogą to być modele regresji penalizowanej, jak regresja grzbietowa lub LASSO, modele regresji wielomianowej albo modele regresji sklejanej (MARS), o których będzie mowa w dalszej części tego opracowania.</p>
 <p>Przykładowo, jeśli modelem bazowym jest MARS, to funkcja dyskryminacyjna <span class="math inline">\(i\)</span>-tej klasy może być postaci
 <span class="math display">\[\begin{equation}
@@ -821,19 +855,17 @@ gdzie <span class="math inline">\(h\)</span> są tzw. funkcjami bazowymi postaci
     \end{cases}
 \end{equation}\]</span>
 Klasyfikacji dokonujemy sprawdzając znak funkcji dyskryminacyjnej <span class="math inline">\(g_i\)</span>, jeśli jest dodatni, to funkcja przypisuje obiekt do klasy <span class="math inline">\(i\)</span>-tej. W przeciwnym przypadku nie należy do tej klasy.</p>
-<div class="figure" style="text-align: center"><span id="fig:fda"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:fda"></span>
 <img src="images/fda.JPG" alt="Przykład klasyfikacji dwustanowej za pomocą metody FDA" width="297" />
 <p class="caption">
 Rysunek 8.9: Przykład klasyfikacji dwustanowej za pomocą metody FDA
 </p>
 </div>
-
 <div class="example">
-<span id="exm:przykFDA" class="example"><strong>Przykład 8.6  </strong></span>Funkcja <code>fda</code> pakietu <code>mda</code> jest implementacją techniki FDA w R. Na postawie danych z poprzedniego przykładu zostanie przedstawiona zasada dziełania. Przyjmiemy domyślne ustawienia funkcji, z wyjątkiem metody estymacji modelu, jako którą przyjmiemy MARS.
+<p><span id="exm:przykFDA" class="example"><strong>Przykład 8.6  </strong></span>Funkcja <code>fda</code> pakietu <code>mda</code> jest implementacją techniki FDA w R. Na postawie danych z poprzedniego przykładu zostanie przedstawiona zasada dziełania. Przyjmiemy domyślne ustawienia funkcji, z wyjątkiem metody estymacji modelu, jako którą przyjmiemy MARS.</p>
 </div>
-
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1">mod.fda &lt;-<span class="st"> </span><span class="kw">fda</span>(Direction <span class="op">~</span><span class="st"> </span>Lag1<span class="op">+</span>Lag2, dt.ucz, <span class="dt">method =</span> mars)</a>
-<a class="sourceLine" id="cb48-2" title="2">mod.fda</a></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="LDA.html#cb230-1" tabindex="-1"></a>mod.fda <span class="ot">&lt;-</span> <span class="fu">fda</span>(Direction <span class="sc">~</span> Lag1<span class="sc">+</span>Lag2, dt.ucz, <span class="at">method =</span> mars)</span>
+<span id="cb230-2"><a href="LDA.html#cb230-2" tabindex="-1"></a>mod.fda</span></code></pre></div>
 <pre><code>## Call:
 ## fda(formula = Direction ~ Lag1 + Lag2, data = dt.ucz, method = mars)
 ## 
@@ -846,41 +878,41 @@ Rysunek 8.9: Przykład klasyfikacji dwustanowej za pomocą metody FDA
 ## Training Misclassification Error: 0.44418 ( N = 833 )</code></pre>
 <p>Ponieważ, zmienna wynikowa jest dwustanowa, to powstała tylko jedna funkcja dyskryminacyjna.
 Parametry modelu są następujące</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1">mod.fda<span class="op">$</span>fit<span class="op">$</span>coefficients</a></code></pre></div>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="LDA.html#cb232-1" tabindex="-1"></a>mod.fda<span class="sc">$</span>fit<span class="sc">$</span>coefficients</span></code></pre></div>
 <pre><code>##             [,1]
 ## [1,]  0.05846465
 ## [2,] -0.17936208</code></pre>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1">pred.fda &lt;-<span class="st"> </span><span class="kw">predict</span>(mod.fda, dt.test)</a>
-<a class="sourceLine" id="cb52-2" title="2">(tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">pred =</span> pred.fda, dt.test<span class="op">$</span>Direction))</a></code></pre></div>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="LDA.html#cb234-1" tabindex="-1"></a>pred.fda <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod.fda, dt.test)</span>
+<span id="cb234-2"><a href="LDA.html#cb234-2" tabindex="-1"></a>(tab <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">pred =</span> pred.fda, dt.test<span class="sc">$</span>Direction))</span></code></pre></div>
 <pre><code>##       
 ## pred   Down  Up
 ##   Down   40  50
 ##   Up    141 186</code></pre>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1"><span class="kw">sum</span>(<span class="kw">diag</span>(<span class="kw">prop.table</span>(tab)))</a></code></pre></div>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="LDA.html#cb236-1" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">diag</span>(<span class="fu">prop.table</span>(tab)))</span></code></pre></div>
 <pre><code>## [1] 0.5419664</code></pre>
 <p>Jakość klasyfikacji jest tylko nieco lepsza niż w przypadku poprzednich metod.</p>
 
 </div>
 </div>
-<h3>Bibliografia</h3>
-<div id="refs" class="references">
-<div id="ref-duda2001">
-<p>Duda, Richard O., Peter E. Hart, and David G. Stork. 2001. <em>Pattern Classification</em>. Wiley. <a href="http://books.google.com?id=YoxQAAAAMAAJ">http://books.google.com?id=YoxQAAAAMAAJ</a>.</p>
+<h3>Bibliografia<a href="bibliografia.html#bibliografia" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-duda2001" class="csl-entry">
+Duda, Richard O., Peter E. Hart, and David G. Stork. 2001. <em>Pattern Classification</em>. <span>Wiley</span>. <a href="https://books.google.com?id=YoxQAAAAMAAJ">https://books.google.com?id=YoxQAAAAMAAJ</a>.
 </div>
-<div id="ref-fisher1936">
-<p>Fisher, R. A. 1936. “The Use of Multiple Measurements in Taxonomic Problems.” <em>Annals of Eugenics</em> 7 (2): 179–88. <a href="https://doi.org/10.1111/j.1469-1809.1936.tb02137.x">https://doi.org/10.1111/j.1469-1809.1936.tb02137.x</a>.</p>
+<div id="ref-fisher1936" class="csl-entry">
+Fisher, R. A. 1936. <span>“The <span>Use</span> of <span>Multiple Measurements</span> in <span>Taxonomic Problems</span>.”</span> <em>Annals of Eugenics</em> 7 (2): 179–88. <a href="https://doi.org/10.1111/j.1469-1809.1936.tb02137.x">https://doi.org/10.1111/j.1469-1809.1936.tb02137.x</a>.
 </div>
-<div id="ref-friedman1989">
-<p>Friedman, Jerome H. 1989. “Regularized Discriminant Analysis.” <em>Journal of the American Statistical Association</em> 84 (405): 165–75. <a href="https://doi.org/10.2307/2289860">https://doi.org/10.2307/2289860</a>.</p>
+<div id="ref-friedman1989" class="csl-entry">
+Friedman, Jerome H. 1989. <span>“Regularized <span>Discriminant Analysis</span>.”</span> <em>Journal of the American Statistical Association</em> 84 (405): 165–75. <a href="https://doi.org/10.2307/2289860">https://doi.org/10.2307/2289860</a>.
 </div>
-<div id="ref-kuhn">
-<p>Jed Wing, Max Kuhn. Contributions from, Steve Weston, Andre Williams, Chris Keefer, Allan Engelhardt, Tony Cooper, Zachary Mayer, et al. 2018. <em>Caret: Classification and Regression Training</em>. <a href="https://CRAN.R-project.org/package=caret">https://CRAN.R-project.org/package=caret</a>.</p>
+<div id="ref-kuhn" class="csl-entry">
+Jed Wing, Max Kuhn. Contributions from, Steve Weston, Andre Williams, Chris Keefer, Allan Engelhardt, Tony Cooper, Zachary Mayer, et al. 2018. <em>Caret: Classification and Regression Training</em>. <a href="https://CRAN.R-project.org/package=caret">https://CRAN.R-project.org/package=caret</a>.
 </div>
-<div id="ref-R-mda">
-<p>Trevor Hastie, S original by, Robert Tibshirani. Original R port by Friedrich Leisch, Kurt Hornik, and Brian D. Ripley. 2017. <em>Mda: Mixture and Flexible Discriminant Analysis</em>. <a href="https://CRAN.R-project.org/package=mda">https://CRAN.R-project.org/package=mda</a>.</p>
+<div id="ref-R-mda" class="csl-entry">
+Trevor Hastie, S original by, Robert Tibshirani. Original R port by Friedrich Leisch, Kurt Hornik, and Brian D. Ripley. 2017. <em>Mda: Mixture and Flexible Discriminant Analysis</em>. <a href="https://CRAN.R-project.org/package=mda">https://CRAN.R-project.org/package=mda</a>.
 </div>
-<div id="ref-welch1939">
-<p>Welch, B. L. 1939. “Note on Discriminant Functions.” <em>Biometrika</em> 31 (1/2): 218–20. <a href="https://doi.org/10.2307/2334985">https://doi.org/10.2307/2334985</a>.</p>
+<div id="ref-welch1939" class="csl-entry">
+Welch, B. L. 1939. <span>“Note on <span>Discriminant Functions</span>.”</span> <em>Biometrika</em> 31 (1/2): 218–20. <a href="https://doi.org/10.2307/2334985">https://doi.org/10.2307/2334985</a>.
 </div>
 </div>
             </section>
@@ -893,7 +925,6 @@ Parametry modelu są następujące</p>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -906,12 +937,13 @@ gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
 "github": false,
-"facebook": true,
-"twitter": true,
+"facebook": false,
+"twitter": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"],
 "google": false
 },
@@ -932,12 +964,15 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["EksploracjaDanych.pdf"],
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection",
 "scroll_highlight": true
 },
-"search": true,
 "toolbar": {
 "position": "fixed"
 }
@@ -951,7 +986,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');
