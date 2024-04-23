@@ -4,33 +4,33 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3 Podział metod data mining | Eksploracja danych</title>
+  <title>11 Uogólnione modele addytywne | Eksploracja danych</title>
   <meta name="description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   <meta name="generator" content="bookdown 0.38 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3 Podział metod data mining | Eksploracja danych" />
+  <meta property="og:title" content="11 Uogólnione modele addytywne | Eksploracja danych" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   <meta name="github-repo" content="dax44/datamining" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3 Podział metod data mining | Eksploracja danych" />
+  <meta name="twitter:title" content="11 Uogólnione modele addytywne | Eksploracja danych" />
   
   <meta name="twitter:description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   
 
 
 
-<meta name="date" content="2024-04-17" />
+<meta name="date" content="2024-04-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="przygotowanie-danych.html"/>
-<link rel="next" href="drzewa-decyzyjne.html"/>
+<link rel="prev" href="metoda-k-najbliższych-sąsiadów.html"/>
+<link rel="next" href="metoda-wektorów-nośnych.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -315,80 +315,182 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="podział-metod-data-mining" class="section level1 hasAnchor" number="3">
-<h1><span class="header-section-number">3</span> Podział metod data mining<a href="podział-metod-data-mining.html#podział-metod-data-mining" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="rodzaje-wnioskowania" class="section level2 hasAnchor" number="3.1">
-<h2><span class="header-section-number">3.1</span> Rodzaje wnioskowania<a href="podział-metod-data-mining.html#rodzaje-wnioskowania" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p><em>Data mining</em> to zestaw metod pozyskiwania wiedzy na podstawie danych. Ową wiedzę zdobywamy w procesie wnioskowania na podstawie modeli. Wnioskowanie możemy podzielić na dedukcyjne i indukcyjne. I tak z wnioskowaniem dedukcyjnym mamy do czynienia wówczas, gdy na podstawie obecnego stanu wiedzy potrafimy odpowiedzieć na postawione pytanie dotyczące nowej wiedzy, stosując reguły wnioskowania. O wnioskowaniem indukcyjnym powiemy, że jest to metoda pozyskiwania wiedzy na podstawie informacji ze zbioru uczącego. Znajduje ono szerokie zastosowanie w data mining i charakteryzuje się omylnością, ponieważ nawet najlepiej nauczony model na zbiorze uczącym nie zapewnia nam prawdziwości odpowiedzi w przypadku nowych danych, a jedynie je uprawdopodabnia. Esencją wnioskowania indukcyjnego w zakresie data mining, jest poszukiwanie na podstawie danych uczących modelu charakteryzującego się najlepszymi właściwościami predykcyjnymi i dającego się zastosować do zupełnie nowego zbioru danych.</p>
-<p>Każdy proces uczenia z wykorzystaniem wnioskowania indukcyjnego składa się z następujących elementów.</p>
-<div id="dziedzina" class="section level3 hasAnchor" number="3.1.1">
-<h3><span class="header-section-number">3.1.1</span> Dziedzina<a href="podział-metod-data-mining.html#dziedzina" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p><em>Dziedzina</em> to zbiór wszystkich obiektów pozostających w zainteresowaniu badacza, będących przedmiotem wnioskowania, oznaczana najczęściej przez <span class="math inline">\(X\)</span>. Przykładowo mogą to być zbiory osób, transakcji, urządzeń, instytucji, itp.</p>
-</div>
-<div id="obserwacja" class="section level3 hasAnchor" number="3.1.2">
-<h3><span class="header-section-number">3.1.2</span> Obserwacja<a href="podział-metod-data-mining.html#obserwacja" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Każdy element dziedziny <span class="math inline">\(x\in X\)</span> nazywamy obserwacją. Obserwacją nazywać będziemy zarówno rekordy danych ze zbioru uczącego, jak i ze zbioru testowego.</p>
-</div>
-<div id="atrybuty-obserwacji" class="section level3 hasAnchor" number="3.1.3">
-<h3><span class="header-section-number">3.1.3</span> Atrybuty obserwacji<a href="podział-metod-data-mining.html#atrybuty-obserwacji" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Każdy obiekt z dziedziny <span class="math inline">\(x\in X\)</span> można opisać zestawem cech (atrybutów), które w notacji matematycznej oznaczymy przez <span class="math inline">\(a:X\to A\)</span>, gdzie <span class="math inline">\(A\)</span> jest przestrzenią wartości atrybutów. Każda obserwacja <span class="math inline">\(x\)</span> posiadająca <span class="math inline">\(k\)</span> cech da się wyrazić wektorowo jako <span class="math inline">\((a_1(x), a_2(x), \ldots, a_k(x))\)</span>. Dla większości algorytmów uczenia maszynowego wyróżnia się trzy typy atrybutów:</p>
+<div id="uogólnione-modele-addytywne" class="section level1 hasAnchor" number="11">
+<h1><span class="header-section-number">11</span> Uogólnione modele addytywne<a href="uogólnione-modele-addytywne.html#uogólnione-modele-addytywne" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Modele liniowe, jako techniki klasyfikacji i regresji, mają niewątpliwą zaletę - jawna postać zależności pomiędzy predyktorami i zmienną wynikową. Często w rzeczywistości tak uproszczony model nie potrafi oddać złożoności natury badanego zjawiska. Dlatego powstał pomysł aby w miejsce kombinacji liniowej predyktorów wstawić kombinację liniową ich funkcji, czyli
+<span class="math display" id="eq:row111">\[\begin{equation}
+    \E(Y|X)=f(X) = \sum_{i=1}^M\beta_mh_m(X),
+    \tag{11.1}
+\end{equation}\]</span>
+gdzie <span class="math inline">\(h_m:\mathbb{R}^d\to\mathbb{R}\)</span> nazywana często funkcją bazową (ang. <em>linear basis expansion</em>). Wówczas w zależności od postaci funkcji bazowej otrzymujemy modele z różnymi poziomami elastyczności:</p>
 <ul>
-<li><em>nominalne</em> - posiadające skończoną liczbę stanów, które posiadają porządku;</li>
-<li><em>porządkowe</em> - posiadające skończoną liczbę stanów z zachowaniem porządku;</li>
-<li><em>ciągłe</em> - przyjmujące wartości numeryczne.</li>
+<li>gdy <span class="math inline">\(h_m(X)=X_m,\ m=1,\ldots,M\)</span>, to otrzymujemy model liniowy;</li>
+<li>gdy <span class="math inline">\(h_m(X)=X_j^2\)</span> lub <span class="math inline">\(h_m(X)=X_jX_k\)</span>, to otrzymujemy struktury wielomianowe, charakteryzujące się większą elastycznością modelu;</li>
+<li>gdy <span class="math inline">\(h_m(X)=\log X_j\)</span> lub <span class="math inline">\(h_m(X)=\sqrt{X_j}\)</span>, to uzyskujemy nieliniowość czynników wchodzących w skład kombinacji liniowej <a href="uogólnione-modele-addytywne.html#eq:row111">(11.1)</a>;</li>
+<li>dopuszczalne są również kawałkami liniowe funkcje postaci <span class="math inline">\(h_m(X)= I(l_m\leq X_k &lt;u_m)\)</span>, gdzie <span class="math inline">\(I\)</span> jest funkcją charakterystyczną (ang. <em>indicator</em>) przedziału <span class="math inline">\([l_m,u_m)\)</span>.</li>
 </ul>
-<p>Często jeden z atrybutów spełnia specjalną rolę, ponieważ stanowi realizację cechy, którą traktujemy jako wyjściową (ang. <em>target value attribute</em>). W tym przypadku powiemy o <strong>nadzorowanym uczeniu maszynowym</strong>. Jeśli zmiennej wyjściowej nie ma dziedzinie, to mówimy o <strong>nienadzorowanym uczeniu maszynowym</strong>.</p>
-</div>
-<div id="zbiór-uczący" class="section level3 hasAnchor" number="3.1.4">
-<h3><span class="header-section-number">3.1.4</span> Zbiór uczący<a href="podział-metod-data-mining.html#zbiór-uczący" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Zbiorem uczącym <span class="math inline">\(T\)</span> (ang. <em>training set</em>) nazywamy podzbiór <span class="math inline">\(D\)</span> dziedziny <span class="math inline">\(X\)</span> (czyli <span class="math inline">\(T\subseteq D\subseteq X\)</span>), gdzie zbiór <span class="math inline">\(D\)</span> stanowi ogół dostępnych obserwacji z dziedziny <span class="math inline">\(X\)</span>. Zbiór uczący zawiera informacje dotyczące badanego zjawiska, na podstawie których, dokonuje się doboru modelu, selekcji cech istotnych z punktu widzenia własności predykcyjnych lub jakości klasyfikacji, budowy modelu oraz optymalizacji jego parametrów. W przypadku uczenia z nauczycielem (nadzorowanego) zbiór <span class="math inline">\(T\)</span> zawiera informację o wartościach atrybutów zmiennej wynikowej.</p>
-</div>
-<div id="zbiór-testowy" class="section level3 hasAnchor" number="3.1.5">
-<h3><span class="header-section-number">3.1.5</span> Zbiór testowy<a href="podział-metod-data-mining.html#zbiór-testowy" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Zbiór testowy <span class="math inline">\(T&#39;\)</span> (ang. <em>test set</em>) będący dopełnieniem zbioru uczącego do zbioru <span class="math inline">\(D\)</span>, czyli <span class="math inline">\(T&#39;=D\setminus T\)</span>, stanowi zestaw danych służący do oceny poprawności modelu nadzorowanego. W przypadku metod nienadzorowanych raczej nie stosuje się zbiorów testowych.</p>
-</div>
-<div id="model" class="section level3 hasAnchor" number="3.1.6">
-<h3><span class="header-section-number">3.1.6</span> Model<a href="podział-metod-data-mining.html#model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Model to narzędzie pozyskiwania wiedzy na podstawie zbioru uczącego. Nauczony model jest zbiorem reguł <span class="math inline">\(f\)</span>, którego zadaniem jest oszacowanie wielkości wartości wynikowej lub odpowiednia klasyfikacja obiektów. W zadaniu grupowania obiektów (ang. <em>clustering task</em>), celem modelu jest podanie grup możliwie najbardziej jednorodnych przy zadanym zestawie zmiennych oraz ustalonej liczbie skupień (czasami wyznaczenie liczby skupień jest również częścią zadania stawianego przed modelem).</p>
-</div>
-<div id="jakość-dopasowania-modelu" class="section level3 hasAnchor" number="3.1.7">
-<h3><span class="header-section-number">3.1.7</span> Jakość dopasowania modelu<a href="podział-metod-data-mining.html#jakość-dopasowania-modelu" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Do oceny jakości dopasowania modelu wykorzystuje się, w zależności od zadania, wiele współczynników (np. dla zadań regresyjnych są to błąd średnio-kwadratowy - ang. <em>Mean Square Error</em>, a dla zadań klasyfikacyjnych - trafność - ang. <em>Accuracy</em>). Możemy mówić dwóch rodzajach dopasowania modeli:</p>
+<p>Zbiory wszystkich funkcji bazowych definiowanych w ten sposób tworzy słownik funkcji bazowych <span class="math inline">\(\mathcal{D}\)</span>. Aby kontrolować złożoność modeli, mając do dyspozycji tak zasobny słownik, wprowadza się następujące podejścia:</p>
 <ul>
-<li>poziom dopasowania na zbiorze uczącym</li>
-<li>poziom dopasowania na zbiorze testowym (oczywiście z punktu widzenia utylitarności modelu ten współczynnik jest ważniejszy).</li>
+<li>ogranicza się klasę dostępnych funkcji bazowych
+<span class="math display">\[\begin{equation}
+  f(X) = \sum_{j=1}^df_j(X_j)=\sum_{j=1}^d\sum_{m=1}^{M_j}\beta_{jm}h_{jm}(X_j),
+\end{equation}\]</span></li>
+<li>włącza się do modelu jedynie te funkcje ze słownika <span class="math inline">\(\mathcal{D}\)</span>, które istotnie poprawiają dopasowanie modelu,</li>
+<li>używa się metod penalizowanych, czyli dopuszcza się stosowanie wszystkich funkcji bazowych ze słownika <span class="math inline">\(\mathcal{D}\)</span>, ale współczynniki przy nich stojące są ograniczane.</li>
 </ul>
-<p>W sytuacji, w której model wykazuje dobre charakterystyki jakości dopasowania na zbiorze uczącym ale słabe na testowym, mówimy o zjawisku przeuczenia modelu (ang. <em>overfitting</em>). Oznacza to, że model wskazuje predykcję poprawnie jedynie dla zbioru treningowego ale ma słaba własności generalizacyjne nowe przypadki danych. Takie model nie przedstawiają znaczącej wartości w odkrywaniu wiedzy w sposób indukcyjny.</p>
-<p>Z drugiej strony parametry dopasowania modelu mogą pokazywać słabe dopasowanie, zarówno na zbiorze uczącym, jak i testowym. Wówczas również model nie jest użyteczny w pozyskiwaniu wiedzy na temat badanego zjawiska, a sytuację taką nazywamy niedouczeniem (ang. <em>underfitting</em>).</p>
-<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-10"></span>
-<img src="images/unde_over_fitting.png" alt="Przykłady niedoucznia (wykresy 1 i 4), poprawego modelu (2 i 5) i przeuczenia (3 i 6). Pierwszy wiersz wykresów pokazuje klasyfikację na podstawie modelu na zbiorze uczącym, a drugi na zbiorze testowym. Wykres na dole pokazuje związek pomiędzy złożonością modelu a wielkością błędu predykcji. *Źródło*: https://cambridgecoding.wordpress.com/2016/03/24/misleading-modelling-overfitting-cross-validation-and-the-bias-variance-trade-off/" width="586" />
+<div id="przypadek-jednowymiarowy" class="section level2 hasAnchor" number="11.1">
+<h2><span class="header-section-number">11.1</span> Przypadek jednowymiarowy<a href="uogólnione-modele-addytywne.html#przypadek-jednowymiarowy" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Dla uproszczenia rozważań przyjmiemy, że <span class="math inline">\(X\)</span> jest jednowymiarowe.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:spline1"></span>
+<img src="images/spline1.JPG" alt="Przykładowe zastosowanie kilku rodzajów funkcji bazowych. Wykres w lewym górnym rogu powstał ze stałych na przedziałach, wykres w górnym prawym rogu powstał z liniowych funkcji bazowych na przedzialach, w lewym dolnym rogu model powstał również z liniowych funkcji bazowych na przedzialach ale z założeniem ciągłości, a prawym dolnym rogu powstał z zastosowania funcji bazowej $\max(X-\xi_1,0)$" width="183" />
 <p class="caption">
-Rysunek 3.1: Przykłady niedoucznia (wykresy 1 i 4), poprawego modelu (2 i 5) i przeuczenia (3 i 6). Pierwszy wiersz wykresów pokazuje klasyfikację na podstawie modelu na zbiorze uczącym, a drugi na zbiorze testowym. Wykres na dole pokazuje związek pomiędzy złożonością modelu a wielkością błędu predykcji. <em>Źródło</em>: <a href="https://cambridgecoding.wordpress.com/2016/03/24/misleading-modelling-overfitting-cross-validation-and-the-bias-variance-trade-off/" class="uri">https://cambridgecoding.wordpress.com/2016/03/24/misleading-modelling-overfitting-cross-validation-and-the-bias-variance-trade-off/</a>
+Rysunek 11.1: Przykładowe zastosowanie kilku rodzajów funkcji bazowych. Wykres w lewym górnym rogu powstał ze stałych na przedziałach, wykres w górnym prawym rogu powstał z liniowych funkcji bazowych na przedzialach, w lewym dolnym rogu model powstał również z liniowych funkcji bazowych na przedzialach ale z założeniem ciągłości, a prawym dolnym rogu powstał z zastosowania funcji bazowej <span class="math inline">\(\max(X-\xi_1,0)\)</span>
 </p>
 </div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:spline2"></span>
+<img src="images/spline2.JPG" alt="Kolejne wykresy przedstawiają coraz bardziej gładkie modele będące efektem dodawania wielomianów trzeciego stopnia na przedziałach. Na każdym kolejnym modelu mymuszone zostały silniejsze założenia dotyczące gładkości" width="178" />
+<p class="caption">
+Rysunek 11.2: Kolejne wykresy przedstawiają coraz bardziej gładkie modele będące efektem dodawania wielomianów trzeciego stopnia na przedziałach. Na każdym kolejnym modelu mymuszone zostały silniejsze założenia dotyczące gładkości
+</p>
 </div>
+<p>Przykładowo sześcienny splajn<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a> dla dwóch punków węzłowych składa się z następujących funkcji bazowych</p>
+<p><span class="math display">\[\begin{gather}
+    h_1(X)=1,\quad h_3(X)=X^2,\quad h_5(X)=(X-\xi_1)_+^3\\
+    h_2(X)=X,\quad h_4(X)=X^3,\quad h_6(X)=(X-\xi_2)_+^3.
+\end{gather}\]</span></p>
+<p>Zachowanie wielomianów poza punktami węzłowymi jest czasami bardzo dziwne. Zdarza się, że charakteryzują się tam dużą zmiennością. Dlatego wprowadza się takie splajny aby w obszarach brzegowych zachowywały się przewidywalnie.
+Naturalny splajn sześcienny zakłada liniowość modelu poza węzłami brzegowymi. Dla <span class="math inline">\(K\)</span> węzłów naturalny splajn sześcienny składa się z następujących funkcji bazowych</p>
+<p><span class="math display">\[\begin{gather}
+    N_1(X)=1,\quad N_2(X)=X,\quad N_{k+2}(X)=d_k(X)-d_{K-1}(X),
+\end{gather}\]</span>
+gdzie <span class="math inline">\(d_k(X)=\frac{(X-\xi_k)^3_+-(X-\xi_K)^3_+}{\xi_K-\xi_k}.\)</span></p>
+<p>Estymacji parametrów modelu dokonujemy metodą najmniejszych kwadratów, minimalizując
+<span class="math display">\[\begin{equation}
+    RSS(f,\lambda) = \sum_{i=1}^N(y_i-f(x_i))^2+\lambda\int(f&#39;&#39;(t))^2dt,
+\end{equation}\]</span>
+gdzie <span class="math inline">\(\lambda\)</span> jest parametrem wygładzania. Pierwsze wyrażenie po prawej stronie to ocena dopasowania, a drugie to kara za krzywoliniowość.
+Dla naturalnego splajna
+<span class="math display">\[\begin{equation}
+    f(x)=\sum_{j=1}^NN_j(x)\beta_j
+\end{equation}\]</span>
+minimalizujemy
+<span class="math display">\[\begin{equation}
+    RSS(\beta, \lambda)=(\boldsymbol y -\boldsymbol N\beta)&#39;(\boldsymbol y-\boldsymbol N\beta)+\lambda\beta&#39;\boldsymbol \Omega \beta,
+\end{equation}\]</span>
+gdzie <span class="math inline">\(\{\boldsymbol N\}_{ij}= N_j(x_i)\)</span> i <span class="math inline">\(\{\boldsymbol \Omega\}_{jk}=\int N&#39;&#39;_j(t)N&#39;&#39;_k(t)dt\)</span>. Rozwiązaniem zaganienia minimalizacji <span class="math inline">\(RSS(\beta,\lambda)\)</span> jest
+<span class="math display">\[\begin{equation}
+    \hat{\beta}=((\boldsymbol N&#39;\boldsymbol N)+\lambda\boldsymbol \Omega)^{-1}\boldsymbol N&#39;\boldsymbol y.
+\end{equation}\]</span></p>
 </div>
-<div id="modele-regresyjne" class="section level2 hasAnchor" number="3.2">
-<h2><span class="header-section-number">3.2</span> Modele regresyjne<a href="podział-metod-data-mining.html#modele-regresyjne" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Jednym z rodzajów zadań bazującym na wnioskowaniu indukcyjnym jest model regresyjny. Należy on do grupy metod nadzorowanych, których celem jest oszacowanie wartości cechy wyjściowej (która jest ilościowa) na podstawie zestawu predyktorów, które mogą być ilościowe i jakościowe. Uczenie takich modeli odbywa się poprzez optymalizację funkcji celu (np. <span class="math inline">\(MSE\)</span>) na podstawie zbioru uczącego.</p>
+<div id="przypadek-wielowymiarowy" class="section level2 hasAnchor" number="11.2">
+<h2><span class="header-section-number">11.2</span> Przypadek wielowymiarowy<a href="uogólnione-modele-addytywne.html#przypadek-wielowymiarowy" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>W przypadku gdy <span class="math inline">\(X\in \mathbb{R}^d\)</span> poszukujemy takiej <span class="math inline">\(d\)</span>-wymiarowej regresji <span class="math inline">\(f(x)\)</span>, która będzie minimalizowała wyrażenie
+<span class="math display">\[\begin{equation}
+    \min_f\sum_{i=1}^N(y_i-f(x_i))^2+\lambda J(f),
+\end{equation}\]</span>
+gdzie <span class="math inline">\(J\)</span> jest odpowiednią funkcją wyrażającą krzywoliniowość modelu. Dla <span class="math inline">\(X\in \mathbb{R}^2\)</span> przyjmuje postać
+<span class="math display">\[\begin{equation}
+    J(f)=\iint_{\mathbb{R}^2}\left[\left(\frac{\partial^2 f(x)}{\partial^2 x_1}\right)^2+2\left(\frac{\partial^2 f(x)}{\partial x_1\partial x_2}\right)^2+
+    \left(\frac{\partial^2 f(x)}{\partial^2 x_2}\right)^2\right]dx_1dx_2.
+\end{equation}\]</span>
+Rozwiązanie przyjmuje postać
+<span class="math display">\[\begin{equation}
+    f(x) = \beta_0+\beta&#39;x+\sum_{i=1}^N \alpha_ih_i(x),
+\end{equation}\]</span>
+gdzie <span class="math inline">\(h_i(x)=||x-x_j||^2\log||x-x_j||\)</span>.</p>
 </div>
-<div id="modele-klasyfikacyjne" class="section level2 hasAnchor" number="3.3">
-<h2><span class="header-section-number">3.3</span> Modele klasyfikacyjne<a href="podział-metod-data-mining.html#modele-klasyfikacyjne" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Podobnie jak modele regresyjne, modele klasyfikacyjne należą do grupy metod nadzorowanego uczenia maszynowego. Ich zadaniem jest właściwa klasyfikacja obiektów na podstawie wielkości predyktorów. Odpowiedzią modelu jest zawsze cecha typu jakościowego, natomiast predyktory mogą mieć dowolny typ. Wyróżnia się klasyfikację dwu i wielostanową. Lista modeli realizujących klasyfikację binarną jest nieco dłuższa niż w przypadku modeli z wielostanową cechą wynikową. Proces uczenia modelu klasyfikacyjnego również opiera się na optymalizacji funkcji celu. Tym razem są to zupełnie inne miary jakości dopasowania (np. trafność, czyli odsetek poprawnych klasyfikacji).</p>
+<div id="uogólnione-modele-addytywne-1" class="section level2 hasAnchor" number="11.3">
+<h2><span class="header-section-number">11.3</span> Uogólnione modele addytywne<a href="uogólnione-modele-addytywne.html#uogólnione-modele-addytywne-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Przez uogólnione modele addytywne (ang. <em>Generalized Additive Models</em>) rozumiemy klasę modeli, które poprzez funkcję łączącą, opisują warunkową wartość zmiennej wynikowej w następujący sposób
+<span class="math display">\[\begin{equation}
+    g(\E(Y|X))=g(\mu(X))=\alpha+f_1(X_1)+\dots+f_d(X_d),
+\end{equation}\]</span>
+gdzie <span class="math inline">\(g\)</span> jest funkcją łączącą. Najczęściej stosowanymi funkcjami łączącymi są:</p>
+<ul>
+<li><span class="math inline">\(g(\mu)=\mu\)</span> - stosowana w modelach, gdy zmienna wynikowa ma rozkład normalny;</li>
+<li><span class="math inline">\(g(\mu)=\logit\mu\)</span> - stosowana, gdy zmienna wynikowa ma rozkład dwumianowy;</li>
+<li><span class="math inline">\(g(\mu)=\probit\mu\)</span> - stosowana również w przypadku gdy zmienna ma rozkład dwumianowy, a <span class="math inline">\(\Phi^{-1}\)</span> oznacza odwrotność dystrybuanty standaryzowanego rozkładu normalnego;</li>
+<li><span class="math inline">\(g(\mu)=\log\mu\)</span> - stosowana, gdy zmienna wynikowa jest zmienną typu zliczeniowego (rozkład Poissona).</li>
+</ul>
+<div id="algorytm-uczenia-modelu-gam" class="section level3 hasAnchor" number="11.3.1">
+<h3><span class="header-section-number">11.3.1</span> Algorytm uczenia modelu GAM<a href="uogólnione-modele-addytywne.html#algorytm-uczenia-modelu-gam" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Algorytm uczenia wstecznego (ang. <em>backfitting</em>) przebiega wg następujących kroków:</p>
+<ol style="list-style-type: decimal">
+<li>Ustalamy wstępne oszacowania na <span class="math inline">\(\alpha=\bar{y}\)</span> i <span class="math inline">\(\hat{f}_j=0\)</span>.</li>
+<li>Dla <span class="math inline">\(j=1,\ldots,d,1,\ldots,d,1,\ldots\)</span> powtarzamy szacowanie
+<span class="math display">\[\begin{align}
+\hat{f}_j\leftarrow &amp;\mathcal{S}_j\left[(y_i-\hat{\alpha}-\sum_{k\neq j}\hat{f}_k(x_{ik}))^N_1\right],\\
+\hat{f}_j\leftarrow &amp;\hat{f}_j-\frac{1}{N}\sum_{i=1}^N\hat{f}_j(x_{ij})
+\end{align}\]</span>
+dopóki <span class="math inline">\(\hat{f}_j\)</span> osiągnie zbieżność. Funkcja <span class="math inline">\(\mathcal{S}_j\left[(y_i-\hat{\alpha}-\sum_{k\neq j}\hat{f}_k(x_{ik}))^N_1\right]\)</span> jest jednowymiarowym sześciennym splajnem o <span class="math inline">\(N\)</span> węzłach. W jej miejsce można przyjąć również inne funkcje, takie jak: jednowymiarowe lokalne regresje wielomianowe (ang. <em>LOESS - locally estimated scatterplot smoothing</em>), regresje liniowe, wielomianowe.</li>
+</ol>
+<div class="example">
+<p><span id="exm:gam" class="example"><strong>Przykład 11.1  </strong></span>Dla zilustrowania zasady działania uogólnionych modeli addytywnych przeprowadzimy analizę stężenia ozonu (<span class="math inline">\(O_3\)</span>) w zależności od wybranych parametrów meteorologicznych. Do zbudowania modelu GAM wykorzystamy funkcję <code>gam</code> pakietu <code>mgcv</code> <span class="citation">(<a href="#ref-R-mgcv">Wood 2003</a>)</span>.</p>
 </div>
-<div id="modele-grupujące" class="section level2 hasAnchor" number="3.4">
-<h2><span class="header-section-number">3.4</span> Modele grupujące<a href="podział-metod-data-mining.html#modele-grupujące" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Bardzo szeroką gamę modeli nienadzorowanych stanowią metody analizy skupień. Ich zadaniem jest grupowanie obiektów w możliwie najbardziej jednorodne grupy, na podstawie wartości atrybutów poddanych analizie. Ponieważ są to metody “bez nauczyciela”, to ocena ich przydatności ma nieco inny charakter i choć istnieją różne wskaźniki jakości grupowania, to trudno tu o obiektywne wskazanie najlepszego rozwiązania.</p>
+<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb269-1"><a href="uogólnione-modele-addytywne.html#cb269-1" tabindex="-1"></a><span class="fu">library</span>(faraway)</span>
+<span id="cb269-2"><a href="uogólnione-modele-addytywne.html#cb269-2" tabindex="-1"></a><span class="fu">head</span>(ozone)</span></code></pre></div>
+<pre><code>##   O3   vh wind humidity temp  ibh dpg ibt vis doy
+## 1  3 5710    4       28   40 2693 -25  87 250  33
+## 2  5 5700    3       37   45  590 -24 128 100  34
+## 3  5 5760    3       51   54 1450  25 139  60  35
+## 4  6 5720    4       69   35 1568  15 121  60  36
+## 5  4 5790    6       19   45 2631 -33 123 100  37
+## 6  4 5790    3       25   55  554 -28 182 250  38</code></pre>
+<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="uogólnione-modele-addytywne.html#cb271-1" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb271-2"><a href="uogólnione-modele-addytywne.html#cb271-2" tabindex="-1"></a>mod.gam <span class="ot">&lt;-</span> <span class="fu">gam</span>(O3<span class="sc">~</span><span class="fu">s</span>(temp, <span class="at">bs =</span> <span class="st">&quot;cr&quot;</span>, <span class="at">m =</span> <span class="dv">2</span>)<span class="sc">+</span><span class="fu">s</span>(ibh)<span class="sc">+</span><span class="fu">s</span>(ibt), <span class="at">data =</span> ozone)</span>
+<span id="cb271-3"><a href="uogólnione-modele-addytywne.html#cb271-3" tabindex="-1"></a><span class="fu">summary</span>(mod.gam)</span></code></pre></div>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## O3 ~ s(temp, bs = &quot;cr&quot;, m = 2) + s(ibh) + s(ibt)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  11.7758     0.2382   49.44   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##           edf Ref.df      F  p-value    
+## s(temp) 3.357  4.216 20.758  &lt; 2e-16 ***
+## s(ibh)  4.171  5.072  7.344 1.73e-06 ***
+## s(ibt)  2.111  2.729  1.403    0.212    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.708   Deviance explained = 71.7%
+## GCV = 19.348  Scale est. = 18.724    n = 330</code></pre>
+<p>W powyższym modelu użyto splajnów jako funkcji <span class="math inline">\(f_i\)</span>. W przypadku zmiennej <code>temp</code> był to sześcienny splajn z regularyzacją w postaci ciągłości drugiej pochodnej, a pozostałe są prostymi splajnami. Dopasowanie modelu sięga 71.7% a wartość uogólnionego sprawdzianu krzyżowego 19.35.</p>
+<p>Poniższy wykres pokazuje rodzaje transformacji użyte przy dopasowaniu modelu.</p>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="uogólnione-modele-addytywne.html#cb273-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
+<span id="cb273-2"><a href="uogólnione-modele-addytywne.html#cb273-2" tabindex="-1"></a><span class="fu">plot</span>(mod.gam, <span class="at">shade =</span> T, <span class="at">residuals =</span> T)</span></code></pre></div>
+<p><img src="EksploracjaDanych_files/figure-html/unnamed-chunk-85-1.png" width="1056" /></p>
+<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb274-1"><a href="uogólnione-modele-addytywne.html#cb274-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
 
 </div>
+</div>
+</div>
+<h3>Bibliografia<a href="bibliografia.html#bibliografia" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-R-mgcv" class="csl-entry">
+Wood, S. N. 2003. <span>“Thin-Plate Regression Splines.”</span> <em>Journal of the Royal Statistical Society (B)</em> 65 (1): 95–114.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="20">
+<li id="fn20"><p>czyli funkcja łączona<a href="uogólnione-modele-addytywne.html#fnref20" class="footnote-back">↩︎</a></p></li>
+</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="przygotowanie-danych.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="drzewa-decyzyjne.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="metoda-k-najbliższych-sąsiadów.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="metoda-wektorów-nośnych.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

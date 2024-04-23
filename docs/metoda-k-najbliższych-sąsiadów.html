@@ -4,33 +4,33 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Eksploracja danych</title>
+  <title>10 Metoda \(k\) najbliższych sąsiadów | Eksploracja danych</title>
   <meta name="description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   <meta name="generator" content="bookdown 0.38 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Eksploracja danych" />
+  <meta property="og:title" content="10 Metoda \(k\) najbliższych sąsiadów | Eksploracja danych" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   <meta name="github-repo" content="dax44/datamining" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Eksploracja danych" />
+  <meta name="twitter:title" content="10 Metoda \(k\) najbliższych sąsiadów | Eksploracja danych" />
   
   <meta name="twitter:description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   
 
 
 
-<meta name="date" content="2024-04-17" />
+<meta name="date" content="2024-04-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="roz1.html"/>
+<link rel="prev" href="bayes.html"/>
+<link rel="next" href="uogólnione-modele-addytywne.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -315,107 +315,105 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Eksploracja danych</h1>
-<p class="author multi-author"><em>Dariusz Majerek</em></p>
-<address class="author_afil">
-<div class="line-block">Katedra Matematyki Stosowanej<br />
-Wydział Podstaw Techniki<br />
-Politechnika Lubelska</div><br>
-<a class="author_email" href="mailto:#"><a href="mailto:d.majerek@pollub.pl" class="email">d.majerek@pollub.pl</a></a>
-</address>
-<p class="date"><em>2024-04-17</em></p>
-</div>
-<div id="wstęp" class="section level1 unnumbered hasAnchor">
-<h1>Wstęp<a href="index.html#wstęp" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="o-książce" class="section level2 unnumbered hasAnchor">
-<h2>O książce<a href="index.html#o-książce" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Niniejsza książka powstała na bazie doświadczeń autora, a głównym jej celem jest przybliżenie czytelnikowi podstaw z dziedziny <em>Data mining</em> studentom kierunku <em>Matematyka</em> Politechniki Lubelskiej. Będzie łączyć w sobie zarówno treści teoretyczne związane z przedstawianymi etapami eksploracji danych i budową modeli, jak i praktyczne wskazówki dotczące budowy modeli w środowisku <strong>R</strong> <span class="citation">(<a href="#ref-R-base">R Core Team 2018</a>)</span>. Podane zostaną również wskazówki, jak raportować wyniki analiz i jak dokonać właściwych ilustracji wyników. Bardzo użyteczny w napisaniu książki były pakiety programu R: <strong>bookdown</strong> <span class="citation">(<a href="#ref-R-bookdown">Xie 2018a</a>)</span>, <strong>knitr</strong> <span class="citation">(<a href="#ref-R-knitr">Xie 2018b</a>)</span> oraz pakiet <strong>rmarkdown</strong> <span class="citation">(<a href="#ref-R-rmarkdown">Allaire et al. 2018</a>)</span>.</p>
-</div>
-<div id="zakres-przedmiotu" class="section level2 unnumbered hasAnchor">
-<h2>Zakres przedmiotu<a href="index.html#zakres-przedmiotu" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Przedmiot <em>Eksploracja danych</em> będzie obejmował swoim zakresem eksplorację i wizualizację danych oraz uczenie maszynowe. Eksploracja danych ma na celu pozyskiwanie i systematyzację wiedzy pochodzącej z danych. Odbywa się ona głównie przy użyciu technik statystycznych, rachunku prawdopodobieństwa i metod z zakresu baz danych. Natomiast uczenie maszynowe, to gałąź nauki (obejmuje nie tylko statystykę, choć to na niej się głównie opiera) dotyczącej budowy modeli zdolnych do rozpoznawania wzorców, przewidywania wartości i klasyfikacji obiektów. Data mining to szybko rosnaca grupa metod analizy danych rozwijana nie tylko przez statystyków ale również przez biologów, genetyków, cybernetyków, informatyków, ekonomistów, osoby pracujace nad rozpoznawaniem obrazów i wiele innych grup zawodowych. W dzisiejszych czasch trudno sobie wyobrazić życie bez sztucznej inteligencji. Towarzyszy ona nam w codziennym, życiu kiedy korzystamy z telefonów komórkowych, wyszukiwarek internetowych, robotów sprzątających, automatycznych samochodów, nawigacji czy gier komputerowych. Lista ta jest niepełna i stale się wydłuża.</p>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<blockquote class="twitter-video">
-<p>
-href=“<a href="https://twitter.com/i/status/1091069356367200256" class="uri">https://twitter.com/i/status/1091069356367200256</a>”&gt;January 31, 2019
-</p>
-</blockquote>
-</div>
-<div id="zakres-technik-stosowanych-w-data-mining" class="section level2 unnumbered hasAnchor">
-<h2>Zakres technik stosowanych w data mining<a href="index.html#zakres-technik-stosowanych-w-data-mining" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li>statystyka opisowa</li>
-<li>wielowymiarowa analiza danych</li>
-<li>analiza szeregów czasowych</li>
-<li>analiza danych przestrzennych</li>
-<li>reguły asocjacji</li>
-<li>uczenie maszynowe<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, w tym:
-<ul>
-<li>klasyfikacja</li>
-<li>predykcja</li>
-<li>analiza skupień</li>
-<li><em>text mining</em></li>
-<li>analiza przeżycia</li>
-</ul></li>
-<li>i wiele innych</li>
-</ul>
-<div class="figure"><span style="display:block;" id="fig:cluster1"></span>
-<img src="images/cluster1.jpg" alt="Przykład nienadzorowanego uczenia maszynowego.\  *Źródło:*https://analyticstraining.com/cluster-analysis-for-business/" width="480" />
+<div id="metoda-k-najbliższych-sąsiadów" class="section level1 hasAnchor" number="10">
+<h1><span class="header-section-number">10</span> Metoda <span class="math inline">\(k\)</span> najbliższych sąsiadów<a href="metoda-k-najbliższych-sąsiadów.html#metoda-k-najbliższych-sąsiadów" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Technika <span class="math inline">\(k\)</span> najbliższych sąsiadów (ang. <em><span class="math inline">\(k\)</span>-Nearest Neighbors</em>) przewiduje wartość zmiennej wynikowej na podstawie <span class="math inline">\(k\)</span> najbliższych obserwacji zbioru uczącego. W przeciwieństwie do wspomnianych wcześniej modeli liniowych, nie posiada ona jawnej formy i należy do klasy technik nazywanych czarnymi skrzynkami (ang. <em>black box</em>). Może być wykorzystywana, zarówno do zadań klasyfikacyjnych, jak i regresyjnych. W obu przypadkach predykcja dla nowych wartości predyktorów przebiega podobnie.</p>
+<p>Niech <span class="math inline">\(\boldsymbol x_0\)</span> będzie obserwacją, dla której poszukujemy wartości zmiennej wynikowej <span class="math inline">\(y_0\)</span>. Na podstawie zbioru obserwacji <span class="math inline">\(\boldsymbol x\in T\)</span> zbioru uczącego wyznacza się <span class="math inline">\(k\)</span> najbliższych sąsiadów<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a>, gdzie <span class="math inline">\(k\)</span> jest z góry ustaloną wartością. Następnie, jeśli zadanie ma charakter klasyfikacyjny, to <span class="math inline">\(y_0\)</span> przypisuje się modę zmiennej wynikowej obserwacji będących <span class="math inline">\(k\)</span> najbliższymi sąsiadami. W przypadku zadań regresyjnych <span class="math inline">\(y_0\)</span> przypisuje się średnią lub medianę.</p>
+<p>Olbrzymie znaczenie dla wyników predykcji na podstawie metody <em>kNN</em> ma dobór metryki. Nie istnieje obiektywna technika wyboru najlepszej metryki, dlatego jej doboru dokonujemy metodą prób i błędów. Należy dodatkowo pamiętać, że wielkości mierzone <span class="math inline">\(\boldsymbol x\)</span> mogą się różnić zakresami zmienności, a co za tym idzie, mogą znacząco wpłynąć na mierzone odległości pomiędzy punktami. Dlatego zaleca się standaryzację zmiennych przed zastosowaniem metody <em>kNN</em>.</p>
+<p>Kolejnym parametrem, który ma znaczący wpływ na predykcję, jest liczba sąsiadów <span class="math inline">\(k\)</span>. Wybór zbyt małej liczby <span class="math inline">\(k\)</span> może doprowadzić do przeuczenia modelu jak to jest pokazane na rysunku <a href="metoda-k-najbliższych-sąsiadów.html#fig:knn1">10.1</a></p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:knn1"></span>
+<img src="EksploracjaDanych_files/figure-html/knn1-1.png" alt="Przykład klasyfikacji dla $k=1$" width="1056" />
 <p class="caption">
-Rysunek 0.1: Przykład nienadzorowanego uczenia maszynowego.  <em>Źródło:</em><a href="https://analyticstraining.com/cluster-analysis-for-business/" class="uri">https://analyticstraining.com/cluster-analysis-for-business/</a>
+Rysunek 10.1: Przykład klasyfikacji dla <span class="math inline">\(k=1\)</span>
 </p>
 </div>
-<blockquote class="twitter-video">
-<p>
-href=“<a href="https://twitter.com/i/status/1097199751072690176" class="uri">https://twitter.com/i/status/1097199751072690176</a>”&gt;Ferbruary 17, 2019
-</p>
-</blockquote>
-</div>
-<div id="etapy-eksploracji-danych" class="section level2 unnumbered hasAnchor">
-<h2>Etapy eksploracji danych<a href="index.html#etapy-eksploracji-danych" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
-<img src="images/dm_stages.jpg" alt="Etapy eksploracji danych [@kavakiotis2017]" width="725" />
+<p>Z kolei zbyt duża liczba sąsiadów powoduje obciążenie wyników (patrz rysunek <a href="metoda-k-najbliższych-sąsiadów.html#fig:knn2">10.2</a>)</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:knn2"></span>
+<img src="EksploracjaDanych_files/figure-html/knn2-1.png" alt="Przykład zastosowania 100 sąsiadów" width="1056" />
 <p class="caption">
-Rysunek 0.2: Etapy eksploracji danych <span class="citation">(<a href="#ref-kavakiotis2017">Kavakiotis et al. 2017</a>)</span>
+Rysunek 10.2: Przykład zastosowania 100 sąsiadów
 </p>
 </div>
-<ol style="list-style-type: decimal">
-<li>Czyszczenie danych - polega na usuwaniu braków danych, usuwaniu stałych zmiennych, imputacji braków danych oraz przygotowaniu danych do dalszych analiz.</li>
-<li>Integracja danych - łączenie danych pochodzących z różnych źródeł.</li>
-<li>Selekcja danych - wybór z bazy tych danych, które są potrzebne do dalszych analiz.</li>
-<li>Transformacja danych - przekształcenie i konsolidacja danych do postaci przydatnej do eksploracji.</li>
-<li>Eksploracja danych - zastosowanie technik wymienionych wcześniej w celu odnalezienia wzorców<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> i zależności.</li>
-<li>Ewaluacja modeli - ocena poprawności modeli oraz wzorców z nich uzyskanych.</li>
-<li>Wizualizacja wyników - graficzne przedstawienie odkrytych wzorców.</li>
-<li>Wdrażanie modeli - zastosowanie wyznaczonych wzorców.</li>
-</ol>
+<p>Dopiero dobór odpowiedniego <span class="math inline">\(k\)</span> daje model o stosunkowo niskiej wariancji i obciążeniu. Najczęściej liczby <span class="math inline">\(k\)</span> poszukujemy za pomocą próbkowania.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:knn3"></span>
+<img src="EksploracjaDanych_files/figure-html/knn3-1.png" alt="Model z optymalną liczbą sąsiadów" width="1056" />
+<p class="caption">
+Rysunek 10.3: Model z optymalną liczbą sąsiadów
+</p>
+</div>
+<div class="example">
+<p><span id="exm:knnprzklad1" class="example"><strong>Przykład 10.1  </strong></span>Klasyfikację z wykorzystaniem metody <em>kNN</em> przeprowadzimy na przykładzie danych zbioru <code>spam</code> ze strony <a href="https://archive.ics.uci.edu/dataset/94/spambase">spambase</a>. Metoda <em>kNN</em> ma wiele implementacji R-owych ale na potrzeby przykładu wykorzystamy funkcję <code>knn3</code> pakietu <code>caret</code>.</p>
+<p>Najpierw dokonamy oszacowania optymalnego <span class="math inline">\(k\)</span></p>
+</div>
+<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb258-2"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-2" tabindex="-1"></a></span>
+<span id="cb258-3"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-3" tabindex="-1"></a>spam <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;spam.csv&quot;</span>)</span>
+<span id="cb258-4"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-4" tabindex="-1"></a>spam <span class="ot">&lt;-</span> spam[,<span class="sc">-</span><span class="dv">1</span>] <span class="co"># usuwam licznik wierszy</span></span>
+<span id="cb258-5"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-5" tabindex="-1"></a><span class="fu">names</span>(spam)[<span class="dv">58</span>] <span class="ot">&lt;-</span> <span class="st">&quot;spam&quot;</span></span>
+<span id="cb258-6"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-6" tabindex="-1"></a>spam<span class="sc">$</span>spam <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(spam<span class="sc">$</span>spam)</span>
+<span id="cb258-7"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-7" tabindex="-1"></a></span>
+<span id="cb258-8"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-8" tabindex="-1"></a>spam.std <span class="ot">&lt;-</span> spam <span class="sc">%&gt;%</span> </span>
+<span id="cb258-9"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-9" tabindex="-1"></a>    <span class="fu">mutate_if</span>(is.numeric, scale)</span>
+<span id="cb258-10"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb258-11"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-11" tabindex="-1"></a>ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(spam), <span class="at">size =</span> <span class="fu">nrow</span>(spam)<span class="sc">*</span><span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>)</span>
+<span id="cb258-12"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-12" tabindex="-1"></a>dt.ucz <span class="ot">&lt;-</span> spam.std[ind,]</span>
+<span id="cb258-13"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-13" tabindex="-1"></a>dt.test <span class="ot">&lt;-</span> spam.std[<span class="sc">-</span>ind,]</span>
+<span id="cb258-14"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-14" tabindex="-1"></a></span>
+<span id="cb258-15"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-15" tabindex="-1"></a>acc <span class="ot">&lt;-</span> <span class="cf">function</span>(pred, obs){</span>
+<span id="cb258-16"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-16" tabindex="-1"></a>    tab <span class="ot">&lt;-</span> <span class="fu">table</span>(pred,obs)</span>
+<span id="cb258-17"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-17" tabindex="-1"></a>    acc <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(<span class="fu">prop.table</span>(tab)))</span>
+<span id="cb258-18"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-18" tabindex="-1"></a>    acc</span>
+<span id="cb258-19"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-19" tabindex="-1"></a>}</span>
+<span id="cb258-20"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-20" tabindex="-1"></a></span>
+<span id="cb258-21"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-21" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">40</span> <span class="sc">%&gt;%</span> </span>
+<span id="cb258-22"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-22" tabindex="-1"></a>    <span class="fu">map</span>(<span class="sc">~</span><span class="fu">knn3</span>(spam<span class="sc">~</span>., <span class="at">data =</span> dt.ucz, <span class="at">k =</span> .x)) <span class="sc">%&gt;%</span> </span>
+<span id="cb258-23"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-23" tabindex="-1"></a>    <span class="fu">map</span>(<span class="sc">~</span><span class="fu">predict</span>(.x, <span class="at">newdata =</span> dt.test, <span class="at">type =</span> <span class="st">&quot;class&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb258-24"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-24" tabindex="-1"></a>    <span class="fu">map_dbl</span>(<span class="sc">~</span><span class="fu">acc</span>(<span class="at">pred =</span> .x, <span class="at">obs =</span> dt.test<span class="sc">$</span>spam)) <span class="sc">%&gt;%</span> </span>
+<span id="cb258-25"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-25" tabindex="-1"></a>    <span class="fu">tibble</span>(<span class="at">k =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(.), <span class="at">acc=</span>.) <span class="sc">%&gt;%</span> </span>
+<span id="cb258-26"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-26" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(k, acc))<span class="sc">+</span></span>
+<span id="cb258-27"><a href="metoda-k-najbliższych-sąsiadów.html#cb258-27" tabindex="-1"></a>     <span class="fu">geom_line</span>()</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:knnrys"></span>
+<img src="EksploracjaDanych_files/figure-html/knnrys-1.png" alt="Ocena jakości dopasowania modelu dla różnej liczby sąsiadów" width="1056" />
+<p class="caption">
+Rysunek 10.4: Ocena jakości dopasowania modelu dla różnej liczby sąsiadów
+</p>
+</div>
+<p>Biorąc pod uwagę wykres <a href="metoda-k-najbliższych-sąsiadów.html#fig:knnrys">10.4</a> można rozważać 3 lub 5 sąsiadów jako optymalne rozwiązanie, ponieważ wówczas poprawność klasyfikacji jest najwyższa. Proponuje unikać rozwiązania z 1 najbliższym sąsiadem ponieważ, będzie się ono charakteryzowało duża zmiennością. Wybór <span class="math inline">\(k=3\)</span> wydaje się być optymalny.</p>
+<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb259-1"><a href="metoda-k-najbliższych-sąsiadów.html#cb259-1" tabindex="-1"></a>mod.knn <span class="ot">&lt;-</span> <span class="fu">knn3</span>(spam<span class="sc">~</span>., <span class="at">data =</span> dt.ucz,</span>
+<span id="cb259-2"><a href="metoda-k-najbliższych-sąsiadów.html#cb259-2" tabindex="-1"></a>                <span class="at">k =</span> <span class="dv">3</span>)</span>
+<span id="cb259-3"><a href="metoda-k-najbliższych-sąsiadów.html#cb259-3" tabindex="-1"></a>mod.knn</span></code></pre></div>
+<pre><code>## 3-nearest neighbor model
+## Training set outcome distribution:
+## 
+##    0    1 
+## 1860 1207</code></pre>
+<p>Predykcji dokonujemy w ten sam sposób co w innych modelach klasyfikacyjnych</p>
+<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb261-1"><a href="metoda-k-najbliższych-sąsiadów.html#cb261-1" tabindex="-1"></a>pred.knn.class <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod.knn, <span class="at">newdata =</span> dt.test, <span class="at">type =</span> <span class="st">&quot;class&quot;</span>)</span>
+<span id="cb261-2"><a href="metoda-k-najbliższych-sąsiadów.html#cb261-2" tabindex="-1"></a><span class="fu">head</span>(pred.knn.class)</span></code></pre></div>
+<pre><code>## [1] 1 1 1 1 1 1
+## Levels: 0 1</code></pre>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="metoda-k-najbliższych-sąsiadów.html#cb263-1" tabindex="-1"></a>pred.knn <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod.knn, <span class="at">newdata =</span> dt.test)</span>
+<span id="cb263-2"><a href="metoda-k-najbliższych-sąsiadów.html#cb263-2" tabindex="-1"></a><span class="fu">head</span>(pred.knn)</span></code></pre></div>
+<pre><code>##              0         1
+## [1,] 0.0000000 1.0000000
+## [2,] 0.3333333 0.6666667
+## [3,] 0.3333333 0.6666667
+## [4,] 0.0000000 1.0000000
+## [5,] 0.3333333 0.6666667
+## [6,] 0.0000000 1.0000000</code></pre>
+<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="metoda-k-najbliższych-sąsiadów.html#cb265-1" tabindex="-1"></a>(tab <span class="ot">&lt;-</span> <span class="fu">table</span>(pred.knn.class, dt.test<span class="sc">$</span>spam))</span></code></pre></div>
+<pre><code>##               
+## pred.knn.class   0   1
+##              0 869  88
+##              1  59 518</code></pre>
+<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="metoda-k-najbliższych-sąsiadów.html#cb267-1" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">diag</span>(<span class="fu">prop.table</span>(tab)))</span></code></pre></div>
+<pre><code>## [1] 0.9041721</code></pre>
 
-</div>
-</div>
-<h3>Bibliografia<a href="bibliografia.html#bibliografia" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
-<div id="ref-R-rmarkdown" class="csl-entry">
-Allaire, JJ, Yihui Xie, Jonathan McPherson, Javier Luraschi, Kevin Ushey, Aron Atkins, Hadley Wickham, Joe Cheng, Winston Chang, and Richard Iannone. 2018. <em>Rmarkdown: Dynamic Documents for r</em>. <a href="https://CRAN.R-project.org/package=rmarkdown">https://CRAN.R-project.org/package=rmarkdown</a>.
-</div>
-<div id="ref-kavakiotis2017" class="csl-entry">
-Kavakiotis, Ioannis, Olga Tsave, Athanasios Salifoglou, Nicos Maglaveras, Ioannis Vlahavas, and Ioanna Chouvarda. 2017. <span>“Machine <span>Learning</span> and <span>Data Mining Methods</span> in <span>Diabetes Research</span>.”</span> <em>Computational and Structural Biotechnology Journal</em> 15: 104–16.
-</div>
-<div id="ref-R-base" class="csl-entry">
-R Core Team. 2018. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
-</div>
-<div id="ref-R-bookdown" class="csl-entry">
-Xie, Yihui. 2018a. <em>Bookdown: Authoring Books and Technical Documents with r Markdown</em>. <a href="https://CRAN.R-project.org/package=bookdown">https://CRAN.R-project.org/package=bookdown</a>.
-</div>
-<div id="ref-R-knitr" class="csl-entry">
-———. 2018b. <em>Knitr: A General-Purpose Package for Dynamic Report Generation in r</em>. <a href="https://CRAN.R-project.org/package=knitr">https://CRAN.R-project.org/package=knitr</a>.
-</div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>ang. <em>machine learning</em><a href="index.html#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>ang. <em>patterns</em><a href="index.html#fnref2" class="footnote-back">↩︎</a></p></li>
+<ol start="19">
+<li id="fn19"><p>metrykę można wybierać dowolnie, choć najczęściej jest to metryka euklidesowa<a href="metoda-k-najbliższych-sąsiadów.html#fnref19" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -423,8 +421,8 @@ Xie, Yihui. 2018a. <em>Bookdown: Authoring Books and Technical Documents with r 
           </div>
         </div>
       </div>
-
-<a href="roz1.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bayes.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="uogólnione-modele-addytywne.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

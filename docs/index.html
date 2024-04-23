@@ -4,33 +4,33 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>7 Regresja logistyczna | Eksploracja danych</title>
+  <title>Eksploracja danych</title>
   <meta name="description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   <meta name="generator" content="bookdown 0.38 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="7 Regresja logistyczna | Eksploracja danych" />
+  <meta property="og:title" content="Eksploracja danych" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   <meta name="github-repo" content="dax44/datamining" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="7 Regresja logistyczna | Eksploracja danych" />
+  <meta name="twitter:title" content="Eksploracja danych" />
   
   <meta name="twitter:description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   
 
 
 
-<meta name="date" content="2024-04-17" />
+<meta name="date" content="2024-04-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="klasyfikatory-liniowe.html"/>
-<link rel="next" href="LDA.html"/>
+
+<link rel="next" href="roz1.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -315,163 +315,116 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="regresja-logistyczna" class="section level1 hasAnchor" number="7">
-<h1><span class="header-section-number">7</span> Regresja logistyczna<a href="regresja-logistyczna.html#regresja-logistyczna" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="model-1" class="section level2 hasAnchor" number="7.1">
-<h2><span class="header-section-number">7.1</span> Model<a href="regresja-logistyczna.html#model-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Regresja logistyczna (ang. <em>logistic regression</em>) jest techniką z rodziny klasyfikatorów liniowych z reprezentacją logistyczną, a formalnie należy do rodziny uogólnionych modeli liniowych (GLM). Stosowana jest wówczas, gdy zmienna wynikowa posiada dwa stany (sukces i porażka), kodowane najczęściej za pomocą 1 i 0. W tej metodzie modelowane jest warunkowe prawdopodobieństwo sukcesu za pomocą kombinacji liniowej predyktorów <span class="math inline">\(X\)</span>.</p>
-<p>Ogólna postać modelu
-<span class="math display">\[\begin{align}
-    Y\sim &amp;B(1, p)\\
-    p(X)=&amp;\E(Y|X)=\frac{\exp(\beta X)}{1+\exp(\beta X)},
-\end{align}\]</span>
-gdzie <span class="math inline">\(B(1,p)\)</span> jest rozkładem dwumianowym o prawdopodobieństwie sukcesu <span class="math inline">\(p\)</span>, a <span class="math inline">\(\beta X\)</span> oznacza kombinację liniową parametrów modelu i wartości zmiennych niezależnych, przyjmując, że <span class="math inline">\(x_0=1\)</span>. Jako funkcji łączącej (czyli opisującej związek między kombinacją liniową predyktorów i prawdopodobieństwem sukcesu) użyto <em>logitu</em>. Pozwala on na wygodną interpretację wyników w terminach szans.</p>
-<p>Szansą (ang. <em>odds</em>) nazywamy stosunek prawdopodobieństwa sukcesu do prawdopodobieństwa porażki
-<span class="math display">\[\begin{equation}
-    o = \frac{p}{1-p}.
-\end{equation}\]</span></p>
-<p>Ponieważ będziemy przyjmowali, że <span class="math inline">\(p\in (0,1)\)</span>, to <span class="math inline">\(o\in (0,\infty)\)</span>, a jej logarytm należy do przedziału <span class="math inline">\((-\infty, \infty)\)</span>.</p>
-<p>Zatem logarytm szansy jest kombinacją liniową predyktorów
-<span class="math display">\[\begin{equation}
-    \log\left[\frac{p(X)}{1-p(X)}\right]=\beta_0+\beta_1x_1+\ldots+\beta_dx_d.
-\end{equation}\]</span></p>
+<div id="header">
+<h1 class="title">Eksploracja danych</h1>
+<p class="author multi-author"><em>Dariusz Majerek</em></p>
+<address class="author_afil">
+<div class="line-block">Katedra Matematyki Stosowanej<br />
+Wydział Podstaw Techniki<br />
+Politechnika Lubelska</div><br>
+<a class="author_email" href="mailto:#"><a href="mailto:d.majerek@pollub.pl" class="email">d.majerek@pollub.pl</a></a>
+</address>
+<p class="date"><em>2024-04-23</em></p>
 </div>
-<div id="estymacja-parametrów-modelu" class="section level2 hasAnchor" number="7.2">
-<h2><span class="header-section-number">7.2</span> Estymacja parametrów modelu<a href="regresja-logistyczna.html#estymacja-parametrów-modelu" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Estymacji parametrów modelu logistycznego dokonujemy za pomocą metody największej wiarogodności. Funkcja wiarogodności w tym przypadku przyjmuje postać
-<span class="math display">\[\begin{equation}
-    L(X_1,\ldots,X_n,\beta)=\prod_{i=1}^{n}p(X_i)^Y_i[1-p(X_i)]^{1-Y_i},
-\end{equation}\]</span>
-gdzie wektor <span class="math inline">\(\beta\)</span> jest uwikłany w funkcji <span class="math inline">\(p(X_i)\)</span>. Maksymalizacji dokonujemy raczej po nałożeniu na funkcję wiarogodności logarytmu, bo to ułatwia szukanie ekstremum.
-<span class="math display">\[\begin{equation}
-    \log L(X_1,\ldots,X_n,\beta) = \sum_{i=1}^n(Y_i\log p(X_i)+(1-Y_i)\log(1-p(X_i))).
-\end{equation}\]</span></p>
+<div id="wstęp" class="section level1 unnumbered hasAnchor">
+<h1>Wstęp<a href="index.html#wstęp" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="o-książce" class="section level2 unnumbered hasAnchor">
+<h2>O książce<a href="index.html#o-książce" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Niniejsza książka powstała na bazie doświadczeń autora, a głównym jej celem jest przybliżenie czytelnikowi podstaw z dziedziny <em>Data mining</em> studentom kierunku <em>Matematyka</em> Politechniki Lubelskiej. Będzie łączyć w sobie zarówno treści teoretyczne związane z przedstawianymi etapami eksploracji danych i budową modeli, jak i praktyczne wskazówki dotczące budowy modeli w środowisku <strong>R</strong> <span class="citation">(<a href="#ref-R-base">R Core Team 2018</a>)</span>. Podane zostaną również wskazówki, jak raportować wyniki analiz i jak dokonać właściwych ilustracji wyników. Bardzo użyteczny w napisaniu książki były pakiety programu R: <strong>bookdown</strong> <span class="citation">(<a href="#ref-R-bookdown">Xie 2018a</a>)</span>, <strong>knitr</strong> <span class="citation">(<a href="#ref-R-knitr">Xie 2018b</a>)</span> oraz pakiet <strong>rmarkdown</strong> <span class="citation">(<a href="#ref-R-rmarkdown">Allaire et al. 2018</a>)</span>.</p>
 </div>
-<div id="interpretacja" class="section level2 hasAnchor" number="7.3">
-<h2><span class="header-section-number">7.3</span> Interpretacja<a href="regresja-logistyczna.html#interpretacja" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Interpretacja (lat. <em>ceteris paribus</em> - “inne takie samo”) poszczególnych parametrów modelu jest następująca:</p>
+<div id="zakres-przedmiotu" class="section level2 unnumbered hasAnchor">
+<h2>Zakres przedmiotu<a href="index.html#zakres-przedmiotu" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Przedmiot <em>Eksploracja danych</em> będzie obejmował swoim zakresem eksplorację i wizualizację danych oraz uczenie maszynowe. Eksploracja danych ma na celu pozyskiwanie i systematyzację wiedzy pochodzącej z danych. Odbywa się ona głównie przy użyciu technik statystycznych, rachunku prawdopodobieństwa i metod z zakresu baz danych. Natomiast uczenie maszynowe, to gałąź nauki (obejmuje nie tylko statystykę, choć to na niej się głównie opiera) dotyczącej budowy modeli zdolnych do rozpoznawania wzorców, przewidywania wartości i klasyfikacji obiektów. Data mining to szybko rosnaca grupa metod analizy danych rozwijana nie tylko przez statystyków ale również przez biologów, genetyków, cybernetyków, informatyków, ekonomistów, osoby pracujace nad rozpoznawaniem obrazów i wiele innych grup zawodowych. W dzisiejszych czasch trudno sobie wyobrazić życie bez sztucznej inteligencji. Towarzyszy ona nam w codziennym, życiu kiedy korzystamy z telefonów komórkowych, wyszukiwarek internetowych, robotów sprzątających, automatycznych samochodów, nawigacji czy gier komputerowych. Lista ta jest niepełna i stale się wydłuża.</p>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<blockquote class="twitter-video">
+<p>
+href=“<a href="https://twitter.com/i/status/1091069356367200256" class="uri">https://twitter.com/i/status/1091069356367200256</a>”&gt;January 31, 2019
+</p>
+</blockquote>
+</div>
+<div id="zakres-technik-stosowanych-w-data-mining" class="section level2 unnumbered hasAnchor">
+<h2>Zakres technik stosowanych w data mining<a href="index.html#zakres-technik-stosowanych-w-data-mining" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ul>
-<li>jeśli <span class="math inline">\(b_i&gt;0\)</span> - to zmienna <span class="math inline">\(x_i\)</span> ma wpływ stymulujący pojawienie się sukcesu,</li>
-<li>jeśli <span class="math inline">\(b_i&lt;0\)</span> - to zmienna <span class="math inline">\(x_i\)</span> ma wpływ ograniczający pojawienie się sukcesu,</li>
-<li>jeśli <span class="math inline">\(b_i=0\)</span> - to zmienna <span class="math inline">\(x_i\)</span> nie ma wpływu na pojawienie się sukcesu.</li>
-</ul>
-<p>Iloraz szans (ang. <em>odds ratio</em>) stosuje się w przypadku porównywania dwóch klas obserwacji. Jest on jak sama nazwa wskazuje ilorazem szans zajścia sukcesu w obu klasach
-<span class="math display">\[\begin{equation}
-    OR = \frac{p_1}{1-p_1}\frac{1-p_2}{p_2},
-\end{equation}\]</span>
-gdzie <span class="math inline">\(p_i\)</span> oznacza zajście sukcesu w <span class="math inline">\(i\)</span>-tej klasie.</p>
-<p>Interpretujemy go następująco:</p>
+<li>statystyka opisowa</li>
+<li>wielowymiarowa analiza danych</li>
+<li>analiza szeregów czasowych</li>
+<li>analiza danych przestrzennych</li>
+<li>reguły asocjacji</li>
+<li>uczenie maszynowe<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, w tym:
 <ul>
-<li>jeśli <span class="math inline">\(OR&gt;1\)</span> - to w pierwszej grupie zajście sukcesu jest bardziej prawdopodobne,</li>
-<li>jeśli <span class="math inline">\(OR&lt;1\)</span> - to w drugiej grupie zajście sukcesu jest bardziej prawdopodobne,</li>
-<li>jeśli <span class="math inline">\(OR=1\)</span> - to w obu grupach zajście sukcesu jest jednakowo prawdopodobne.</li>
+<li>klasyfikacja</li>
+<li>predykcja</li>
+<li>analiza skupień</li>
+<li><em>text mining</em></li>
+<li>analiza przeżycia</li>
+</ul></li>
+<li>i wiele innych</li>
 </ul>
-<div class="example">
-<p><span id="exm:logit" class="example"><strong>Przykład 7.1  </strong></span>Jako ilustrację działania regresji logistycznej użyjemy modelu dla danych ze zbioru <code>Default</code> pakietu <code>ISLR</code>.</p>
+<div class="figure"><span style="display:block;" id="fig:cluster1"></span>
+<img src="images/cluster1.jpg" alt="Przykład nienadzorowanego uczenia maszynowego.\  *Źródło:*https://analyticstraining.com/cluster-analysis-for-business/" width="480" />
+<p class="caption">
+Rysunek 0.1: Przykład nienadzorowanego uczenia maszynowego.  <em>Źródło:</em><a href="https://analyticstraining.com/cluster-analysis-for-business/" class="uri">https://analyticstraining.com/cluster-analysis-for-business/</a>
+</p>
 </div>
-<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="regresja-logistyczna.html#cb175-1" tabindex="-1"></a><span class="fu">library</span>(ISLR)</span>
-<span id="cb175-2"><a href="regresja-logistyczna.html#cb175-2" tabindex="-1"></a><span class="fu">head</span>(Default)</span></code></pre></div>
-<pre><code>##   default student   balance    income
-## 1      No      No  729.5265 44361.625
-## 2      No     Yes  817.1804 12106.135
-## 3      No      No 1073.5492 31767.139
-## 4      No      No  529.2506 35704.494
-## 5      No      No  785.6559 38463.496
-## 6      No     Yes  919.5885  7491.559</code></pre>
-<p>Zmienną zależną jest <code>default</code>, a pozostałe są predyktorami. najpierw dokonamy podziału próby na ucząca i testową, a następnie zbudujemy model.</p>
-<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="regresja-logistyczna.html#cb177-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2019</span>)</span>
-<span id="cb177-2"><a href="regresja-logistyczna.html#cb177-2" tabindex="-1"></a>ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(Default), <span class="at">size =</span> <span class="dv">2</span><span class="sc">/</span><span class="dv">3</span><span class="sc">*</span><span class="fu">nrow</span>(Default))</span>
-<span id="cb177-3"><a href="regresja-logistyczna.html#cb177-3" tabindex="-1"></a>dt.ucz <span class="ot">&lt;-</span> Default[ind,]</span>
-<span id="cb177-4"><a href="regresja-logistyczna.html#cb177-4" tabindex="-1"></a>dt.test <span class="ot">&lt;-</span> Default[<span class="sc">-</span>ind,]</span>
-<span id="cb177-5"><a href="regresja-logistyczna.html#cb177-5" tabindex="-1"></a>mod.logit <span class="ot">&lt;-</span> <span class="fu">glm</span>(default<span class="sc">~</span>., dt.ucz, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">&quot;logit&quot;</span>))</span>
-<span id="cb177-6"><a href="regresja-logistyczna.html#cb177-6" tabindex="-1"></a><span class="fu">summary</span>(mod.logit)</span></code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = default ~ ., family = binomial(&quot;logit&quot;), data = dt.ucz)
-## 
-## Coefficients:
-##               Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -1.128e+01  6.169e-01 -18.287   &lt;2e-16 ***
-## studentYes  -4.627e-01  2.862e-01  -1.617    0.106    
-## balance      5.830e-03  2.883e-04  20.221   &lt;2e-16 ***
-## income       9.460e-06  9.833e-06   0.962    0.336    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 1967.2  on 6665  degrees of freedom
-## Residual deviance: 1046.5  on 6662  degrees of freedom
-## AIC: 1054.5
-## 
-## Number of Fisher Scoring iterations: 8</code></pre>
-<p>Tylko <code>income</code> nie ma żadnego wpływu na prawdopodobieństwo stanu <code>Yes</code> zmiennej <code>default</code>. Zmienna <code>balance</code> wpływa stymulująco na prawdopodobieństwo pojawienia się sukcesu. Natomiast jeśli badana osoba jest studentem (<code>studentYes</code>), to ma wpływ ograniczający na pojawienie się sukcesu. Chcąc porównać dwie grupy obserwacji, przykładowo studentów z nie-studentami, możemy wykorzystać iloraz szans.</p>
-<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="regresja-logistyczna.html#cb179-1" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">cbind</span>(<span class="at">OR =</span> <span class="fu">coef</span>(mod.logit), <span class="fu">confint</span>(mod.logit))) <span class="sc">%&gt;%</span> </span>
-<span id="cb179-2"><a href="regresja-logistyczna.html#cb179-2" tabindex="-1"></a>    <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
-<table>
-<thead>
-<tr class="header">
-<th align="left"></th>
-<th align="right">OR</th>
-<th align="right">2.5 %</th>
-<th align="right">97.5 %</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">0.0000</td>
-<td align="right">0.0000</td>
-<td align="right">0.0000</td>
-</tr>
-<tr class="even">
-<td align="left">studentYes</td>
-<td align="right">0.6296</td>
-<td align="right">0.3598</td>
-<td align="right">1.1060</td>
-</tr>
-<tr class="odd">
-<td align="left">balance</td>
-<td align="right">1.0058</td>
-<td align="right">1.0053</td>
-<td align="right">1.0064</td>
-</tr>
-<tr class="even">
-<td align="left">income</td>
-<td align="right">1.0000</td>
-<td align="right">1.0000</td>
-<td align="right">1.0000</td>
-</tr>
-</tbody>
-</table>
-<p>Z powyższej tabeli wynika, że bycie studentem zmniejsza szanse na <code>Yes</code> w zmiennej <code>default</code> o około 37% (w stosunku do nie-studentów). Natomiast wzrost zmiennej <code>balance</code> przy zachowaniu pozostałych zmiennych na tym samym poziomie skutkuje wzrostem szans na <code>Yes</code> o około 0.6%.</p>
-<p>Chcąc przeprowadzić predykcję na podstawie modelu dla ustalonych wartości cech (np. <code>student = Yes</code>, <code>balance = $1000</code> i <code>income = $40000</code>) postępujemy następująco</p>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="regresja-logistyczna.html#cb180-1" tabindex="-1"></a>dt.new <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">student =</span> <span class="st">&quot;Yes&quot;</span>, <span class="at">balance =</span> <span class="dv">1000</span>, <span class="at">income =</span> <span class="dv">40000</span>)</span>
-<span id="cb180-2"><a href="regresja-logistyczna.html#cb180-2" tabindex="-1"></a><span class="fu">predict</span>(mod.logit, <span class="at">newdata =</span> dt.new, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span></code></pre></div>
-<pre><code>##           1 
-## 0.003931398</code></pre>
-<p>Otrzymany wynik jest oszacowanym prawdopodobieństwem warunkowym wystąpienia sukcesu (<code>default = Yes</code>). Widać zatem, że poziomy badanych cech sprzyjają raczej porażce.</p>
-<p>Jeśli chcemy sprawdzić jakość klasyfikacji na zbiorze testowym, to musimy ustalić na jakim poziomie prawdopodobieństwa będziemy uznawać obserwację za sukces. W zależności od tego, na predykcji jakiego stanu zależy nam bardziej, możemy różnie dobierać ten próg (bez żadnych dodatkowych przesłanek najczęściej jest to 0.5).</p>
-<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="regresja-logistyczna.html#cb182-1" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod.logit, <span class="at">newdata =</span> dt.test, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb182-2"><a href="regresja-logistyczna.html#cb182-2" tabindex="-1"></a>pred.class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(pred <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="st">&quot;Yes&quot;</span>, <span class="st">&quot;No&quot;</span>)</span>
-<span id="cb182-3"><a href="regresja-logistyczna.html#cb182-3" tabindex="-1"></a>(tab <span class="ot">&lt;-</span> <span class="fu">table</span>(pred.class, dt.test<span class="sc">$</span>default))</span></code></pre></div>
-<pre><code>##           
-## pred.class   No  Yes
-##        No  3211   71
-##        Yes   15   37</code></pre>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="regresja-logistyczna.html#cb184-1" tabindex="-1"></a>(acc <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(<span class="fu">prop.table</span>(tab))))</span></code></pre></div>
-<pre><code>## [1] 0.9742052</code></pre>
-<p>Klasyfikacja na poziomie 97% wskazuje na dobre dopasowanie modelu.</p>
+<blockquote class="twitter-video">
+<p>
+href=“<a href="https://twitter.com/i/status/1097199751072690176" class="uri">https://twitter.com/i/status/1097199751072690176</a>”&gt;Ferbruary 17, 2019
+</p>
+</blockquote>
+</div>
+<div id="etapy-eksploracji-danych" class="section level2 unnumbered hasAnchor">
+<h2>Etapy eksploracji danych<a href="index.html#etapy-eksploracji-danych" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
+<img src="images/dm_stages.jpg" alt="Etapy eksploracji danych [@kavakiotis2017]" width="725" />
+<p class="caption">
+Rysunek 0.2: Etapy eksploracji danych <span class="citation">(<a href="#ref-kavakiotis2017">Kavakiotis et al. 2017</a>)</span>
+</p>
+</div>
+<ol style="list-style-type: decimal">
+<li>Czyszczenie danych - polega na usuwaniu braków danych, usuwaniu stałych zmiennych, imputacji braków danych oraz przygotowaniu danych do dalszych analiz.</li>
+<li>Integracja danych - łączenie danych pochodzących z różnych źródeł.</li>
+<li>Selekcja danych - wybór z bazy tych danych, które są potrzebne do dalszych analiz.</li>
+<li>Transformacja danych - przekształcenie i konsolidacja danych do postaci przydatnej do eksploracji.</li>
+<li>Eksploracja danych - zastosowanie technik wymienionych wcześniej w celu odnalezienia wzorców<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> i zależności.</li>
+<li>Ewaluacja modeli - ocena poprawności modeli oraz wzorców z nich uzyskanych.</li>
+<li>Wizualizacja wyników - graficzne przedstawienie odkrytych wzorców.</li>
+<li>Wdrażanie modeli - zastosowanie wyznaczonych wzorców.</li>
+</ol>
 
 </div>
+</div>
+<h3>Bibliografia<a href="bibliografia.html#bibliografia" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-R-rmarkdown" class="csl-entry">
+Allaire, JJ, Yihui Xie, Jonathan McPherson, Javier Luraschi, Kevin Ushey, Aron Atkins, Hadley Wickham, Joe Cheng, Winston Chang, and Richard Iannone. 2018. <em>Rmarkdown: Dynamic Documents for r</em>. <a href="https://CRAN.R-project.org/package=rmarkdown">https://CRAN.R-project.org/package=rmarkdown</a>.
+</div>
+<div id="ref-kavakiotis2017" class="csl-entry">
+Kavakiotis, Ioannis, Olga Tsave, Athanasios Salifoglou, Nicos Maglaveras, Ioannis Vlahavas, and Ioanna Chouvarda. 2017. <span>“Machine <span>Learning</span> and <span>Data Mining Methods</span> in <span>Diabetes Research</span>.”</span> <em>Computational and Structural Biotechnology Journal</em> 15: 104–16.
+</div>
+<div id="ref-R-base" class="csl-entry">
+R Core Team. 2018. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-R-bookdown" class="csl-entry">
+Xie, Yihui. 2018a. <em>Bookdown: Authoring Books and Technical Documents with r Markdown</em>. <a href="https://CRAN.R-project.org/package=bookdown">https://CRAN.R-project.org/package=bookdown</a>.
+</div>
+<div id="ref-R-knitr" class="csl-entry">
+———. 2018b. <em>Knitr: A General-Purpose Package for Dynamic Report Generation in r</em>. <a href="https://CRAN.R-project.org/package=knitr">https://CRAN.R-project.org/package=knitr</a>.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>ang. <em>machine learning</em><a href="index.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>ang. <em>patterns</em><a href="index.html#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="klasyfikatory-liniowe.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="LDA.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+
+<a href="roz1.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

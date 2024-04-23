@@ -4,33 +4,33 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Page not found | Eksploracja danych</title>
+  <title>7 Regresja logistyczna | Eksploracja danych</title>
   <meta name="description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   <meta name="generator" content="bookdown 0.38 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Page not found | Eksploracja danych" />
+  <meta property="og:title" content="7 Regresja logistyczna | Eksploracja danych" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   <meta name="github-repo" content="dax44/datamining" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Page not found | Eksploracja danych" />
+  <meta name="twitter:title" content="7 Regresja logistyczna | Eksploracja danych" />
   
   <meta name="twitter:description" content="Książka stanowi materiał źródłowy do przeprowadzenia przedmiotu Eksploracja Danych." />
   
 
 
 
-<meta name="date" content="2024-04-17" />
+<meta name="date" content="2024-04-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-
+<link rel="prev" href="klasyfikatory-liniowe.html"/>
+<link rel="next" href="LDA.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -315,19 +315,163 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="page-not-found" class="section level1">
-<h1>Page not found</h1>
-<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
-<p>You may want to try searching to find the page's new location, or use
-the table of contents to find the page you are looking for.</p>
+<div id="regresja-logistyczna" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">7</span> Regresja logistyczna<a href="regresja-logistyczna.html#regresja-logistyczna" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="model-1" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> Model<a href="regresja-logistyczna.html#model-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Regresja logistyczna (ang. <em>logistic regression</em>) jest techniką z rodziny klasyfikatorów liniowych z reprezentacją logistyczną, a formalnie należy do rodziny uogólnionych modeli liniowych (GLM). Stosowana jest wówczas, gdy zmienna wynikowa posiada dwa stany (sukces i porażka), kodowane najczęściej za pomocą 1 i 0. W tej metodzie modelowane jest warunkowe prawdopodobieństwo sukcesu za pomocą kombinacji liniowej predyktorów <span class="math inline">\(X\)</span>.</p>
+<p>Ogólna postać modelu
+<span class="math display">\[\begin{align}
+    Y\sim &amp;B(1, p)\\
+    p(X)=&amp;\E(Y|X)=\frac{\exp(\beta X)}{1+\exp(\beta X)},
+\end{align}\]</span>
+gdzie <span class="math inline">\(B(1,p)\)</span> jest rozkładem dwumianowym o prawdopodobieństwie sukcesu <span class="math inline">\(p\)</span>, a <span class="math inline">\(\beta X\)</span> oznacza kombinację liniową parametrów modelu i wartości zmiennych niezależnych, przyjmując, że <span class="math inline">\(x_0=1\)</span>. Jako funkcji łączącej (czyli opisującej związek między kombinacją liniową predyktorów i prawdopodobieństwem sukcesu) użyto <em>logitu</em>. Pozwala on na wygodną interpretację wyników w terminach szans.</p>
+<p>Szansą (ang. <em>odds</em>) nazywamy stosunek prawdopodobieństwa sukcesu do prawdopodobieństwa porażki
+<span class="math display">\[\begin{equation}
+    o = \frac{p}{1-p}.
+\end{equation}\]</span></p>
+<p>Ponieważ będziemy przyjmowali, że <span class="math inline">\(p\in (0,1)\)</span>, to <span class="math inline">\(o\in (0,\infty)\)</span>, a jej logarytm należy do przedziału <span class="math inline">\((-\infty, \infty)\)</span>.</p>
+<p>Zatem logarytm szansy jest kombinacją liniową predyktorów
+<span class="math display">\[\begin{equation}
+    \log\left[\frac{p(X)}{1-p(X)}\right]=\beta_0+\beta_1x_1+\ldots+\beta_dx_d.
+\end{equation}\]</span></p>
+</div>
+<div id="estymacja-parametrów-modelu" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> Estymacja parametrów modelu<a href="regresja-logistyczna.html#estymacja-parametrów-modelu" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Estymacji parametrów modelu logistycznego dokonujemy za pomocą metody największej wiarogodności. Funkcja wiarogodności w tym przypadku przyjmuje postać
+<span class="math display">\[\begin{equation}
+    L(X_1,\ldots,X_n,\beta)=\prod_{i=1}^{n}p(X_i)^Y_i[1-p(X_i)]^{1-Y_i},
+\end{equation}\]</span>
+gdzie wektor <span class="math inline">\(\beta\)</span> jest uwikłany w funkcji <span class="math inline">\(p(X_i)\)</span>. Maksymalizacji dokonujemy raczej po nałożeniu na funkcję wiarogodności logarytmu, bo to ułatwia szukanie ekstremum.
+<span class="math display">\[\begin{equation}
+    \log L(X_1,\ldots,X_n,\beta) = \sum_{i=1}^n(Y_i\log p(X_i)+(1-Y_i)\log(1-p(X_i))).
+\end{equation}\]</span></p>
+</div>
+<div id="interpretacja" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> Interpretacja<a href="regresja-logistyczna.html#interpretacja" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Interpretacja (lat. <em>ceteris paribus</em> - “inne takie samo”) poszczególnych parametrów modelu jest następująca:</p>
+<ul>
+<li>jeśli <span class="math inline">\(b_i&gt;0\)</span> - to zmienna <span class="math inline">\(x_i\)</span> ma wpływ stymulujący pojawienie się sukcesu,</li>
+<li>jeśli <span class="math inline">\(b_i&lt;0\)</span> - to zmienna <span class="math inline">\(x_i\)</span> ma wpływ ograniczający pojawienie się sukcesu,</li>
+<li>jeśli <span class="math inline">\(b_i=0\)</span> - to zmienna <span class="math inline">\(x_i\)</span> nie ma wpływu na pojawienie się sukcesu.</li>
+</ul>
+<p>Iloraz szans (ang. <em>odds ratio</em>) stosuje się w przypadku porównywania dwóch klas obserwacji. Jest on jak sama nazwa wskazuje ilorazem szans zajścia sukcesu w obu klasach
+<span class="math display">\[\begin{equation}
+    OR = \frac{p_1}{1-p_1}\frac{1-p_2}{p_2},
+\end{equation}\]</span>
+gdzie <span class="math inline">\(p_i\)</span> oznacza zajście sukcesu w <span class="math inline">\(i\)</span>-tej klasie.</p>
+<p>Interpretujemy go następująco:</p>
+<ul>
+<li>jeśli <span class="math inline">\(OR&gt;1\)</span> - to w pierwszej grupie zajście sukcesu jest bardziej prawdopodobne,</li>
+<li>jeśli <span class="math inline">\(OR&lt;1\)</span> - to w drugiej grupie zajście sukcesu jest bardziej prawdopodobne,</li>
+<li>jeśli <span class="math inline">\(OR=1\)</span> - to w obu grupach zajście sukcesu jest jednakowo prawdopodobne.</li>
+</ul>
+<div class="example">
+<p><span id="exm:logit" class="example"><strong>Przykład 7.1  </strong></span>Jako ilustrację działania regresji logistycznej użyjemy modelu dla danych ze zbioru <code>Default</code> pakietu <code>ISLR</code>.</p>
+</div>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="regresja-logistyczna.html#cb175-1" tabindex="-1"></a><span class="fu">library</span>(ISLR)</span>
+<span id="cb175-2"><a href="regresja-logistyczna.html#cb175-2" tabindex="-1"></a><span class="fu">head</span>(Default)</span></code></pre></div>
+<pre><code>##   default student   balance    income
+## 1      No      No  729.5265 44361.625
+## 2      No     Yes  817.1804 12106.135
+## 3      No      No 1073.5492 31767.139
+## 4      No      No  529.2506 35704.494
+## 5      No      No  785.6559 38463.496
+## 6      No     Yes  919.5885  7491.559</code></pre>
+<p>Zmienną zależną jest <code>default</code>, a pozostałe są predyktorami. najpierw dokonamy podziału próby na ucząca i testową, a następnie zbudujemy model.</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="regresja-logistyczna.html#cb177-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2019</span>)</span>
+<span id="cb177-2"><a href="regresja-logistyczna.html#cb177-2" tabindex="-1"></a>ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(Default), <span class="at">size =</span> <span class="dv">2</span><span class="sc">/</span><span class="dv">3</span><span class="sc">*</span><span class="fu">nrow</span>(Default))</span>
+<span id="cb177-3"><a href="regresja-logistyczna.html#cb177-3" tabindex="-1"></a>dt.ucz <span class="ot">&lt;-</span> Default[ind,]</span>
+<span id="cb177-4"><a href="regresja-logistyczna.html#cb177-4" tabindex="-1"></a>dt.test <span class="ot">&lt;-</span> Default[<span class="sc">-</span>ind,]</span>
+<span id="cb177-5"><a href="regresja-logistyczna.html#cb177-5" tabindex="-1"></a>mod.logit <span class="ot">&lt;-</span> <span class="fu">glm</span>(default<span class="sc">~</span>., dt.ucz, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">&quot;logit&quot;</span>))</span>
+<span id="cb177-6"><a href="regresja-logistyczna.html#cb177-6" tabindex="-1"></a><span class="fu">summary</span>(mod.logit)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = default ~ ., family = binomial(&quot;logit&quot;), data = dt.ucz)
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -1.128e+01  6.169e-01 -18.287   &lt;2e-16 ***
+## studentYes  -4.627e-01  2.862e-01  -1.617    0.106    
+## balance      5.830e-03  2.883e-04  20.221   &lt;2e-16 ***
+## income       9.460e-06  9.833e-06   0.962    0.336    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1967.2  on 6665  degrees of freedom
+## Residual deviance: 1046.5  on 6662  degrees of freedom
+## AIC: 1054.5
+## 
+## Number of Fisher Scoring iterations: 8</code></pre>
+<p>Tylko <code>income</code> nie ma żadnego wpływu na prawdopodobieństwo stanu <code>Yes</code> zmiennej <code>default</code>. Zmienna <code>balance</code> wpływa stymulująco na prawdopodobieństwo pojawienia się sukcesu. Natomiast jeśli badana osoba jest studentem (<code>studentYes</code>), to ma wpływ ograniczający na pojawienie się sukcesu. Chcąc porównać dwie grupy obserwacji, przykładowo studentów z nie-studentami, możemy wykorzystać iloraz szans.</p>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="regresja-logistyczna.html#cb179-1" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">cbind</span>(<span class="at">OR =</span> <span class="fu">coef</span>(mod.logit), <span class="fu">confint</span>(mod.logit))) <span class="sc">%&gt;%</span> </span>
+<span id="cb179-2"><a href="regresja-logistyczna.html#cb179-2" tabindex="-1"></a>    <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.0000</td>
+<td align="right">0.0000</td>
+<td align="right">0.0000</td>
+</tr>
+<tr class="even">
+<td align="left">studentYes</td>
+<td align="right">0.6296</td>
+<td align="right">0.3598</td>
+<td align="right">1.1060</td>
+</tr>
+<tr class="odd">
+<td align="left">balance</td>
+<td align="right">1.0058</td>
+<td align="right">1.0053</td>
+<td align="right">1.0064</td>
+</tr>
+<tr class="even">
+<td align="left">income</td>
+<td align="right">1.0000</td>
+<td align="right">1.0000</td>
+<td align="right">1.0000</td>
+</tr>
+</tbody>
+</table>
+<p>Z powyższej tabeli wynika, że bycie studentem zmniejsza szanse na <code>Yes</code> w zmiennej <code>default</code> o około 37% (w stosunku do nie-studentów). Natomiast wzrost zmiennej <code>balance</code> przy zachowaniu pozostałych zmiennych na tym samym poziomie skutkuje wzrostem szans na <code>Yes</code> o około 0.6%.</p>
+<p>Chcąc przeprowadzić predykcję na podstawie modelu dla ustalonych wartości cech (np. <code>student = Yes</code>, <code>balance = $1000</code> i <code>income = $40000</code>) postępujemy następująco</p>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="regresja-logistyczna.html#cb180-1" tabindex="-1"></a>dt.new <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">student =</span> <span class="st">&quot;Yes&quot;</span>, <span class="at">balance =</span> <span class="dv">1000</span>, <span class="at">income =</span> <span class="dv">40000</span>)</span>
+<span id="cb180-2"><a href="regresja-logistyczna.html#cb180-2" tabindex="-1"></a><span class="fu">predict</span>(mod.logit, <span class="at">newdata =</span> dt.new, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span></code></pre></div>
+<pre><code>##           1 
+## 0.003931398</code></pre>
+<p>Otrzymany wynik jest oszacowanym prawdopodobieństwem warunkowym wystąpienia sukcesu (<code>default = Yes</code>). Widać zatem, że poziomy badanych cech sprzyjają raczej porażce.</p>
+<p>Jeśli chcemy sprawdzić jakość klasyfikacji na zbiorze testowym, to musimy ustalić na jakim poziomie prawdopodobieństwa będziemy uznawać obserwację za sukces. W zależności od tego, na predykcji jakiego stanu zależy nam bardziej, możemy różnie dobierać ten próg (bez żadnych dodatkowych przesłanek najczęściej jest to 0.5).</p>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="regresja-logistyczna.html#cb182-1" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod.logit, <span class="at">newdata =</span> dt.test, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb182-2"><a href="regresja-logistyczna.html#cb182-2" tabindex="-1"></a>pred.class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(pred <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="st">&quot;Yes&quot;</span>, <span class="st">&quot;No&quot;</span>)</span>
+<span id="cb182-3"><a href="regresja-logistyczna.html#cb182-3" tabindex="-1"></a>(tab <span class="ot">&lt;-</span> <span class="fu">table</span>(pred.class, dt.test<span class="sc">$</span>default))</span></code></pre></div>
+<pre><code>##           
+## pred.class   No  Yes
+##        No  3211   71
+##        Yes   15   37</code></pre>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="regresja-logistyczna.html#cb184-1" tabindex="-1"></a>(acc <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(<span class="fu">prop.table</span>(tab))))</span></code></pre></div>
+<pre><code>## [1] 0.9742052</code></pre>
+<p>Klasyfikacja na poziomie 97% wskazuje na dobre dopasowanie modelu.</p>
+
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-
+<a href="klasyfikatory-liniowe.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="LDA.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

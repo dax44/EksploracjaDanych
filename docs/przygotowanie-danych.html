@@ -22,7 +22,7 @@
 
 
 
-<meta name="date" content="2024-04-17" />
+<meta name="date" content="2024-04-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -324,36 +324,36 @@ div.csl-indent {
 <span id="cb32-4"><a href="przygotowanie-danych.html#cb32-4" tabindex="-1"></a>                    <span class="st">&quot;% successful (2009)&quot;</span>,  <span class="st">&quot;abc@!*&quot;</span>, <span class="st">&quot;&quot;</span>)</span>
 <span id="cb32-5"><a href="przygotowanie-danych.html#cb32-5" tabindex="-1"></a>test_df</span></code></pre></div>
 <pre><code>##       hIgHlo REPEAT VALUE REPEAT VALUE % successful (2009)     abc@!*
-## 1  1.5535012   1.13588690    0.4902314         -0.83873999 -0.4059206
-## 2  0.7078038   0.08996162    0.1330255         -0.27984003 -0.6884127
-## 3 -0.9910803   0.90991209    2.2080218          0.04391679 -0.2805482
+## 1  0.6168258    0.2199210    0.7472476         -0.01442705 -1.0376863
+## 2 -1.6412652   -0.3723289    0.6567005          1.16991530  0.8756566
+## 3  0.6354212    0.7113021   -0.5793268          0.10611187  0.5580122
 ##             
-## 1  0.4707926
-## 2 -0.7054134
-## 3 -0.7085539</code></pre>
+## 1 -0.6409736
+## 2  0.3027098
+## 3 -0.8205682</code></pre>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="przygotowanie-danych.html#cb34-1" tabindex="-1"></a><span class="do">## do poprawy nazw zmiennych użyjemy funkcji make.names</span></span>
 <span id="cb34-2"><a href="przygotowanie-danych.html#cb34-2" tabindex="-1"></a><span class="fu">names</span>(test_df) <span class="ot">&lt;-</span> <span class="fu">make.names</span>(<span class="fu">names</span>(test_df))</span>
 <span id="cb34-3"><a href="przygotowanie-danych.html#cb34-3" tabindex="-1"></a>test_df</span></code></pre></div>
 <pre><code>##       hIgHlo REPEAT.VALUE REPEAT.VALUE X..successful..2009.     abc...
-## 1  1.5535012   1.13588690    0.4902314          -0.83873999 -0.4059206
-## 2  0.7078038   0.08996162    0.1330255          -0.27984003 -0.6884127
-## 3 -0.9910803   0.90991209    2.2080218           0.04391679 -0.2805482
+## 1  0.6168258    0.2199210    0.7472476          -0.01442705 -1.0376863
+## 2 -1.6412652   -0.3723289    0.6567005           1.16991530  0.8756566
+## 3  0.6354212    0.7113021   -0.5793268           0.10611187  0.5580122
 ##            X
-## 1  0.4707926
-## 2 -0.7054134
-## 3 -0.7085539</code></pre>
+## 1 -0.6409736
+## 2  0.3027098
+## 3 -0.8205682</code></pre>
 <p>Efekt końcowy choć skuteczny, to nie jest zadowalający. Czyszczenia nazw zmiennych można też dokonać stosując funkcję <code>clean_names</code> pakietu <strong>janitor</strong> <span class="citation">(<a href="#ref-R-janitor">Firke 2018</a>)</span>. Pozwala on również na usuwanie pustych wierszy i kolumn, znajdowanie zduplikowanych rekordów, itp.</p>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="przygotowanie-danych.html#cb36-1" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
 <span id="cb36-2"><a href="przygotowanie-danych.html#cb36-2" tabindex="-1"></a>test_df <span class="sc">%&gt;%</span> <span class="co"># aby na stałe zmienić nazwy zmiennych trzeba podstawienia</span></span>
 <span id="cb36-3"><a href="przygotowanie-danych.html#cb36-3" tabindex="-1"></a>    <span class="fu">clean_names</span>()</span></code></pre></div>
 <pre><code>##     h_ig_hlo repeat_value repeat_value_2 x_successful_2009        abc
-## 1  1.5535012   1.13588690      0.4902314       -0.83873999 -0.4059206
-## 2  0.7078038   0.08996162      0.1330255       -0.27984003 -0.6884127
-## 3 -0.9910803   0.90991209      2.2080218        0.04391679 -0.2805482
+## 1  0.6168258    0.2199210      0.7472476       -0.01442705 -1.0376863
+## 2 -1.6412652   -0.3723289      0.6567005        1.16991530  0.8756566
+## 3  0.6354212    0.7113021     -0.5793268        0.10611187  0.5580122
 ##            x
-## 1  0.4707926
-## 2 -0.7054134
-## 3 -0.7085539</code></pre>
+## 1 -0.6409736
+## 2  0.3027098
+## 3 -0.8205682</code></pre>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="przygotowanie-danych.html#cb38-1" tabindex="-1"></a><span class="co"># przykładowe dane</span></span>
 <span id="cb38-2"><a href="przygotowanie-danych.html#cb38-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">w1=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="cn">NA</span>),<span class="at">w2=</span><span class="fu">c</span>(<span class="cn">NA</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="cn">NA</span>), <span class="at">w3=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="cn">NA</span>,<span class="dv">1</span>,<span class="cn">NA</span>))</span>
 <span id="cb38-3"><a href="przygotowanie-danych.html#cb38-3" tabindex="-1"></a>x</span></code></pre></div>
